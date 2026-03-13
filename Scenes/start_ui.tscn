@@ -2,6 +2,20 @@
 
 [ext_resource type="Script" uid="uid://bhwqypk7n8utc" path="res://Scripts/start_ui.gd" id="1_8k21b"]
 [ext_resource type="Texture2D" uid="uid://bycb0tn4lmn3d" path="res://icon.svg" id="1_hs70x"]
+[ext_resource type="Theme" uid="uid://bmun2ysgx4il8" path="res://Themes/Button.tres" id="3_avrgi"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wfxj5"]
+draw_center = false
+border_width_left = 30
+border_width_top = 30
+border_width_right = 30
+border_width_bottom = 30
+border_color = Color(0, 0, 0, 1)
+border_blend = true
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
 
 [node name="StartUI" type="Control" unique_id=523426118]
 layout_mode = 3
@@ -13,7 +27,7 @@ grow_vertical = 2
 script = ExtResource("1_8k21b")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1049389023]
-self_modulate = Color(1, 1, 1, 0.08627451)
+self_modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,6 +35,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_hs70x")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=83767390]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.35686275, 0.3019608, 0.31764707, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1640333222]
 layout_mode = 1
@@ -41,8 +64,8 @@ theme_override_constants/separation = 30
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=117798941]
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_font_sizes/font_size = 128
-text = "Title"
+theme_override_font_sizes/font_size = 80
+text = "Titan’s Wake"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -58,28 +81,31 @@ theme_override_constants/separation = 30
 
 [node name="Play" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1478888576]
 layout_mode = 2
-theme_override_font_sizes/font_size = 36
+theme = ExtResource("3_avrgi")
 text = "Play"
 
 [node name="Button2" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=3359453]
 layout_mode = 2
-theme_override_font_sizes/font_size = 36
+theme = ExtResource("3_avrgi")
 text = "Button"
 
 [node name="Button3" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1280320549]
 layout_mode = 2
+theme = ExtResource("3_avrgi")
 theme_override_font_sizes/font_size = 36
 text = "Button"
 
 [node name="Quit" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1988123475]
 layout_mode = 2
-theme_override_font_sizes/font_size = 36
+theme = ExtResource("3_avrgi")
 text = "Quit"
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=2104311988]
+process_mode = 3
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
 size_flags_horizontal = 10
+theme_override_styles/panel = SubResource("StyleBoxFlat_wfxj5")
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
