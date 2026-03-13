@@ -8,8 +8,23 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
-config/name="Game-jam-file"
-config/features=PackedStringArray("4.5", "Forward Plus")
+config/name="Unknown"
+run/main_scene="uid://bw1j84xhoel56"
+config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+PlayerData="*uid://bj6241x0fhpbm"
+Global="*uid://r6vd26hu8lx1"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720

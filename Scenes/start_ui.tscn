@@ -1,0 +1,85 @@
+[gd_scene format=3 uid="uid://bw1j84xhoel56"]
+
+[ext_resource type="Script" uid="uid://bhwqypk7n8utc" path="res://Scripts/start_ui.gd" id="1_8k21b"]
+[ext_resource type="Texture2D" uid="uid://bycb0tn4lmn3d" path="res://icon.svg" id="1_hs70x"]
+
+[node name="StartUI" type="Control" unique_id=523426118]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8k21b")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1049389023]
+self_modulate = Color(1, 1, 1, 0.08627451)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_hs70x")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1640333222]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 60
+theme_override_constants/margin_right = 60
+theme_override_constants/margin_bottom = 60
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1465611327]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=117798941]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 128
+text = "Title"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1850743107]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1526663802]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 30
+
+[node name="Play" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1478888576]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Play"
+
+[node name="Button2" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=3359453]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Button"
+
+[node name="Button3" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1280320549]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Button"
+
+[node name="Quit" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1988123475]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "Quit"
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=2104311988]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
