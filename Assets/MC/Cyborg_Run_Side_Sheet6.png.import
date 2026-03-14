@@ -2,18 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-
-uid="uid://iq47s06fybor"
-
-path="res://.godot/imported/Cyborg.png-d31f1632c8a909c8a5d8565ececd6a7e.ctex"
+uid="uid://c0c2e4b44kplm"
+path="res://.godot/imported/Cyborg_Run_Side_Sheet6.png-577582c9a6169d47efa4a39e263ab4d1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://PlaceHolders/Cyborg.png"
-dest_files=["res://.godot/imported/Cyborg.png-d31f1632c8a909c8a5d8565ececd6a7e.ctex"]
+source_file="res://Assets/MC/Cyborg_Run_Side_Sheet6.png"
+dest_files=["res://.godot/imported/Cyborg_Run_Side_Sheet6.png-577582c9a6169d47efa4a39e263ab4d1.ctex"]
 
 [params]
 

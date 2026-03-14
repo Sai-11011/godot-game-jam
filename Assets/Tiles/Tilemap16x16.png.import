@@ -2,18 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-
-uid="uid://iq47s06fybor"
-
-path="res://.godot/imported/Cyborg.png-d31f1632c8a909c8a5d8565ececd6a7e.ctex"
+uid="uid://1hf6tr6eon2x"
+path="res://.godot/imported/Tilemap16x16.png-957a2ce7eb31c05738f2676ccd9a4f97.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://PlaceHolders/Cyborg.png"
-dest_files=["res://.godot/imported/Cyborg.png-d31f1632c8a909c8a5d8565ececd6a7e.ctex"]
+source_file="res://Assets/Tiles/Tilemap16x16.png"
+dest_files=["res://.godot/imported/Tilemap16x16.png-957a2ce7eb31c05738f2676ccd9a4f97.ctex"]
 
 [params]
 
