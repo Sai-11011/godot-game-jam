@@ -128,10 +128,13 @@ animations = [{
 }]
 
 [node name="Player" type="CharacterBody2D" unique_id=1455887580]
+y_sort_enabled = true
 script = ExtResource("1_v0iea")
 
 [node name="Collisionpolygon2D" type="CollisionPolygon2D" parent="." unique_id=324234448]
-polygon = PackedVector2Array(-2, 0, -9, 13, 2, 13, 0, -4, -6, -4)
+y_sort_enabled = true
+position = Vector2(2, -2)
+polygon = PackedVector2Array(-1, -9, -5, 3, 0, 4, 2, 1)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1616223039]
 zoom = Vector2(2, 2)
@@ -141,3 +144,4 @@ sprite_frames = SubResource("SpriteFrames_f1ek2")
 animation = &"walk-right"
 autoplay = "idle-left"
 frame_progress = 0.76387113
+offset = Vector2(3, -12)
