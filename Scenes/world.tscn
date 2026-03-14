@@ -31,6 +31,9 @@ texture_region_size = Vector2i(18, 20)
 [sub_resource type="TileSet" id="TileSet_5ukr8"]
 sources/0 = SubResource("TileSetAtlasSource_fo5ed")
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_5a7ea"]
+radius = 15128.0
+
 [node name="World" type="Node2D" unique_id=1173223952]
 
 [node name="Ground" type="TileMapLayer" parent="." unique_id=1976541260]
@@ -44,3 +47,8 @@ tile_set = SubResource("TileSet_5ukr8")
 
 [node name="Player" parent="." unique_id=1455887580 instance=ExtResource("1_a02cp")]
 position = Vector2(-48, 9)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=933929453]
+shape = SubResource("CircleShape2D_5a7ea")
+disabled = true
+debug_color = Color(0, 0.6313726, 0.7411765, 0.07450981)
