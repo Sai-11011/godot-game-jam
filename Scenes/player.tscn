@@ -137,7 +137,17 @@ position = Vector2(2, -2)
 polygon = PackedVector2Array(-1, -9, -5, 3, 0, 4, 2, 1)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1616223039]
-zoom = Vector2(2, 2)
+zoom = Vector2(1.5, 1.5)
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+rotation_smoothing_enabled = true
+rotation_smoothing_speed = 8.0
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_left_margin = 0.1
+drag_top_margin = 0.1
+drag_right_margin = 0.1
+drag_bottom_margin = 0.1
 
 [node name="PlayerAnimation" type="AnimatedSprite2D" parent="." unique_id=844829674]
 sprite_frames = SubResource("SpriteFrames_f1ek2")
