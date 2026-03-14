@@ -34,6 +34,9 @@ sources/0 = SubResource("TileSetAtlasSource_fo5ed")
 [sub_resource type="CircleShape2D" id="CircleShape2D_5a7ea"]
 radius = 15128.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_8j60k"]
+radius = 256.0
+
 [node name="World" type="Node2D" unique_id=1173223952]
 
 [node name="Ground" type="TileMapLayer" parent="." unique_id=1976541260]
@@ -52,3 +55,7 @@ position = Vector2(-48, 9)
 shape = SubResource("CircleShape2D_5a7ea")
 disabled = true
 debug_color = Color(0, 0.627451, 0.75686276, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionShape2D" unique_id=1545830694]
+shape = SubResource("CircleShape2D_8j60k")
+debug_color = Color(0, 0.6, 0.7019608, 0.5882353)
