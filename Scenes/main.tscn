@@ -1,4 +1,4 @@
-[gd_scene format=4 uid="uid://vw6xnynjt3vm"]
+[gd_scene format=4 uid="uid://j0liqir73bx3"]
 
 [ext_resource type="PackedScene" uid="uid://lpy8gwja1wd3" path="res://Scenes/shard_spawner.tscn" id="1_jjvhh"]
 [ext_resource type="Texture2D" uid="uid://dcu0khymo75wy" path="res://Assets/Tiles/Tilemap16x16-1.png.png" id="2_kry3j"]
