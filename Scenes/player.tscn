@@ -151,6 +151,7 @@ drag_right_margin = 0.1
 drag_bottom_margin = 0.1
 
 [node name="PlayerAnimation" type="AnimatedSprite2D" parent="." unique_id=844829674]
+position = Vector2(-1, 12)
 sprite_frames = SubResource("SpriteFrames_f1ek2")
 animation = &"walk-right"
 autoplay = "idle-left"
@@ -160,19 +161,16 @@ offset = Vector2(3, -12)
 [node name="Compass" type="Node2D" parent="." unique_id=1891374764]
 z_index = 10
 
-[node name="Green" type="Polygon2D" parent="Compass" unique_id=600620291]
-position = Vector2(50, 0)
+[node name="Red" type="Polygon2D" parent="Compass" unique_id=1477179927]
+color = Color(1, 0, 0, 1)
+polygon = PackedVector2Array(44, -3, 46, 0, 44, 3, 55, 0)
+
+[node name="Green" type="Polygon2D" parent="Compass" unique_id=116037363]
 color = Color(0, 1, 0, 1)
-polygon = PackedVector2Array(3, -17, 14, -13, 3, -9)
+polygon = PackedVector2Array(44, -3, 46, 0, 44, 3, 55, 0)
 
-[node name="Red" type="Polygon2D" parent="Compass" unique_id=1128266166]
-position = Vector2(50, 0)
-color = Color(1, 0, 0, 0.5882353)
-polygon = PackedVector2Array(3, -17, 14, -13, 3, -9)
-
-[node name="Blue" type="Polygon2D" parent="Compass" unique_id=361589542]
-position = Vector2(50, 0)
-color = Color(0, 0, 1, 0.5882353)
-polygon = PackedVector2Array(3, -17, 14, -13, 3, -9)
+[node name="Blue" type="Polygon2D" parent="Compass" unique_id=551747776]
+color = Color(0, 0, 1, 1)
+polygon = PackedVector2Array(44, -3, 46, 0, 44, 3, 55, 0)
 
 [node name="HUD" parent="." unique_id=130902195 instance=ExtResource("4_vgqql")]
