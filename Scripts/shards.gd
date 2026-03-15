@@ -1,8 +1,9 @@
 extends Area2D
 
 @export var shard_type: String = "red" 
-
 @onready var visual_rect = $ColorRect
+
+var is_claimed: bool = false 
 
 func _ready():
 	add_to_group("shards")
@@ -16,9 +17,16 @@ func _ready():
 	Global.apply_levitation(visual_rect, 8.0, 1.2)
 
 func _on_body_entered(body: Node2D):
+	if is_claimed:
+		return 
+
 	if body.name == "Player":
+		is_claimed = true # Lock it!
 		PlayerData.collect_shard(shard_type) 
 		queue_free()
 		
-	elif body.is_in_group("Slime"):
-		queue_free()
+	elif body.is_in_group("slime"):
+		if body.slime_color == shard_type and not body.is_eating:
+			is_claimed = true 
+			
+			body.eat(self)

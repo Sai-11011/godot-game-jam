@@ -6,13 +6,15 @@ const SCENES := {
 	"start_ui":"uid://bw1j84xhoel56",
 	"main":"uid://vw6xnynjt3vm",
 	"shards":"uid://c2ibw0tgue5r6",
-	"shard_spawner":"uid://lpy8gwja1wd3"
+	"shard_spawner":"uid://lpy8gwja1wd3",
+	"slime":"uid://rgk1e6hvv0pp",
+	"slash":"uid://u1prav8aslt0"
 }
 
 # ENEMY DATA 
 var  enemies_data := {
 	"slime":{
-		"speed" : 350,
+		"speed" : 240,
 		"damage" : 0,
 		"base_health" : 20
 	},

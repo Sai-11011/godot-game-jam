@@ -3,8 +3,8 @@ extends Node2D
 @export var shard_scene: PackedScene = load(Global.SCENES.shards)
 
 # Map boundaries (adjust these based on your final arena size)
-var min_spawn_radius: float = 500.0
-var max_spawn_radius: float = 2500.0
+var min_spawn_radius: float = 750.0
+var max_spawn_radius: float = 7550.0
 
 func _ready():
 	$SpawnTimer.timeout.connect(_on_spawn_timer_timeout)

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ylxycletse6"
-path="res://.godot/imported/Shield-eye_Side.png-c814308708758dd1529128d6bd3c971c.ctex"
+uid="uid://cuw3nnbehped1"
+path="res://.godot/imported/Cyborg_Run_Right_Side.png-68c45eb376629b2f0a5331e63fcb0348.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Enemies/Shield-eye_Side.png"
-dest_files=["res://.godot/imported/Shield-eye_Side.png-c814308708758dd1529128d6bd3c971c.ctex"]
+source_file="res://Assets/MC/Cyborg_Run_Right_Side.png"
+dest_files=["res://.godot/imported/Cyborg_Run_Right_Side.png-68c45eb376629b2f0a5331e63fcb0348.ctex"]
 
 [params]
 

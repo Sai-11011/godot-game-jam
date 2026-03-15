@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ehawmfjlr258"
-path="res://.godot/imported/Cyborg_Idle_Sheet6.png-dbaf85618d645d1dd7f3829a09ae67ce.ctex"
+uid="uid://c3dk7dyk4sj2t"
+path="res://.godot/imported/Slime_Eating_Right.png-81245cb8d9ffefb367aaacf7a6c14544.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/MC/Cyborg_Idle_Sheet6.png"
-dest_files=["res://.godot/imported/Cyborg_Idle_Sheet6.png-dbaf85618d645d1dd7f3829a09ae67ce.ctex"]
+source_file="res://Assets/Enemies/Slime_Eating_Right.png"
+dest_files=["res://.godot/imported/Slime_Eating_Right.png-81245cb8d9ffefb367aaacf7a6c14544.ctex"]
 
 [params]
 

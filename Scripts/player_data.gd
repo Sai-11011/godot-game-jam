@@ -14,6 +14,29 @@ var attacks := {
 	"green":0
 }
 
+var attack_stats := {
+	"base":{
+		"range":130,
+		"cooldown":0.3,
+		"attack_time":0.18,#duration of attack 
+	},
+	"high":{
+		"range":0,#this buffs all attacks for 5 seconds
+		"cooldown":3,
+		"attack_time":5,
+	},
+	"thrust":{
+		"range":199,
+		"cooldown":1,
+		"attack_time":0.1#player moves to the range in this time
+	},
+	"bullet":{
+		"range":500,#longest range
+		"cooldown":0.6,
+		"attack_time":10 #unti queue free
+	}
+}
+
 # PLAYER BASE STATS 
 var max_health: int = 100
 var current_health: int = 100
