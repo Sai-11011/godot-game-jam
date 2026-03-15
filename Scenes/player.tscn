@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://chny23dbskf7g" path="res://Scripts/player.gd" id="1_v0iea"]
 [ext_resource type="Texture2D" uid="uid://knwk7e0rgruf" path="res://Assets/MC/Cyborg_Run_Side_Sheet6 - Copy.png" id="2_6t5aa"]
 [ext_resource type="Texture2D" uid="uid://c0c2e4b44kplm" path="res://Assets/MC/Cyborg_Run_Side_Sheet6.png" id="2_cvnsp"]
+[ext_resource type="PackedScene" uid="uid://yqhkv2dsrv7y" path="res://Scenes/hud.tscn" id="4_vgqql"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f1ek2"]
 atlas = ExtResource("2_6t5aa")
@@ -155,3 +156,23 @@ animation = &"walk-right"
 autoplay = "idle-left"
 frame_progress = 0.76387113
 offset = Vector2(3, -12)
+
+[node name="Compass" type="Node2D" parent="." unique_id=1891374764]
+z_index = 10
+
+[node name="Green" type="Polygon2D" parent="Compass" unique_id=600620291]
+position = Vector2(50, 0)
+color = Color(0, 1, 0, 1)
+polygon = PackedVector2Array(3, -17, 14, -13, 3, -9)
+
+[node name="Red" type="Polygon2D" parent="Compass" unique_id=1128266166]
+position = Vector2(50, 0)
+color = Color(1, 0, 0, 0.5882353)
+polygon = PackedVector2Array(3, -17, 14, -13, 3, -9)
+
+[node name="Blue" type="Polygon2D" parent="Compass" unique_id=361589542]
+position = Vector2(50, 0)
+color = Color(0, 0, 1, 0.5882353)
+polygon = PackedVector2Array(3, -17, 14, -13, 3, -9)
+
+[node name="HUD" parent="." unique_id=130902195 instance=ExtResource("4_vgqql")]
