@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c0c2e4b44kplm"
-path="res://.godot/imported/Cyborg_Run_Side_Sheet6.png-577582c9a6169d47efa4a39e263ab4d1.ctex"
+uid="uid://dkt85nq4b8ne4"
+path="res://.godot/imported/Cyborg_Run_Left_Side.png-bf5ddde6ee183cebab8c1e29653e2a48.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/MC/Cyborg_Run_Side_Sheet6.png"
-dest_files=["res://.godot/imported/Cyborg_Run_Side_Sheet6.png-577582c9a6169d47efa4a39e263ab4d1.ctex"]
+source_file="res://Assets/MC/Cyborg_Run_Left_Side.png"
+dest_files=["res://.godot/imported/Cyborg_Run_Left_Side.png-bf5ddde6ee183cebab8c1e29653e2a48.ctex"]
 
 [params]
 

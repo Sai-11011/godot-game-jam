@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://u1prav8aslt0"]
+
+[ext_resource type="Script" uid="uid://buhjqjueug7b0" path="res://Scripts/slash.gd" id="1_jvrl8"]
+
+[node name="Slash" type="Area2D" unique_id=428289164]
+script = ExtResource("1_jvrl8")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=871403013]
+position = Vector2(-7, 0)
+rotation = -1.5707964
+polygon = PackedVector2Array(-11, -3, -11, 0, -10, 2, -8, 5, -7, 6, -5, 8, -2, 10, 0, 11, 2, 10, 5, 8, 7, 6, 9, 3, 10, 1, 11, -1, 12, -3, 7, 3, 3, 6, 0, 7, -4, 6, -8, 3, -10, 0)
+
+[node name="Polygon2D" type="Polygon2D" parent="CollisionPolygon2D" unique_id=650122661]
+polygon = PackedVector2Array(-11, -3, -11, 0, -10, 2, -8, 5, -5, 8, -3, 9, 0, 11, 3, 9, 5, 8, 7, 6, 9, 3, 12, -3, 7, 3, 3, 6, 0, 7, -4, 6, -8, 3, -10, 0)
+
+[node name="Timer" type="Timer" parent="." unique_id=1745272830]
+wait_time = 0.15
+autostart = true

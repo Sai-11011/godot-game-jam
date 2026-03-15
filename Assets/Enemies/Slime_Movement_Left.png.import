@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://knwk7e0rgruf"
-path="res://.godot/imported/Cyborg_Run_Side_Sheet6 - Copy.png-de706ac1b3a02e9c367c61c3fb7c0c37.ctex"
+uid="uid://db8lb4l027lcr"
+path="res://.godot/imported/Slime_Movement_Left.png-73f4bdaa94fb8d15e9c013effdceb20b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/MC/Cyborg_Run_Side_Sheet6 - Copy.png"
-dest_files=["res://.godot/imported/Cyborg_Run_Side_Sheet6 - Copy.png-de706ac1b3a02e9c367c61c3fb7c0c37.ctex"]
+source_file="res://Assets/Enemies/Slime_Movement_Left.png"
+dest_files=["res://.godot/imported/Slime_Movement_Left.png-73f4bdaa94fb8d15e9c013effdceb20b.ctex"]
 
 [params]
 
