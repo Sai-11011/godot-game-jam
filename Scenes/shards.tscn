@@ -3,19 +3,20 @@
 [ext_resource type="Script" uid="uid://bc0e7kgfunkwe" path="res://Scripts/shards.gd" id="1_fi12b"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_a10an"]
-radius = 16.0
-height = 46.0
+radius = 12.0
+height = 26.0
 
 [node name="Shards" type="Area2D" unique_id=939801697]
+z_index = 5
 script = ExtResource("1_fi12b")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=624276824]
-position = Vector2(0, -28)
+position = Vector2(0, -14)
 shape = SubResource("CapsuleShape2D_a10an")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=2137795420]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 20.0
+offset_bottom = 20.0
 rotation = 3.9269907
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

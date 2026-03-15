@@ -32,6 +32,7 @@ text = "5:00"
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
+theme_override_constants/separation = 30
 
 [node name="HealthBar" type="ProgressBar" parent="MarginContainer/StatsContainer" unique_id=2092916845]
 custom_minimum_size = Vector2(300, 0)
@@ -39,14 +40,20 @@ layout_mode = 2
 theme_override_styles/fill = SubResource("StyleBoxFlat_bjfho")
 value = 100.0
 
-[node name="ShardCounters" type="HBoxContainer" parent="MarginContainer/StatsContainer" unique_id=490416494]
+[node name="ShardCounters" type="VBoxContainer" parent="MarginContainer/StatsContainer" unique_id=2102646984]
 layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/separation = 10
+alignment = 1
 
 [node name="HeavyCount" type="Label" parent="MarginContainer/StatsContainer/ShardCounters" unique_id=179393975]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_fccik")
 
 [node name="ThrustCount" type="Label" parent="MarginContainer/StatsContainer/ShardCounters" unique_id=2031948140]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_fccik")
 
 [node name="BulletCount" type="Label" parent="MarginContainer/StatsContainer/ShardCounters" unique_id=901330102]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_fccik")

@@ -5,6 +5,7 @@ extends Area2D
 @onready var visual_rect = $ColorRect
 
 func _ready():
+	add_to_group("shards")
 	if shard_type == "red":
 		visual_rect.color = Color.RED
 	elif shard_type == "blue":
