@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://lpy8gwja1wd3"]
+
+[ext_resource type="Script" uid="uid://cqyo0d1a33i1g" path="res://Scripts/shard_spawner.gd" id="1_wird5"]
+
+[node name="ShardSpawner" type="Node2D" unique_id=1764429282]
+script = ExtResource("1_wird5")
+
+[node name="SpawnTimer" type="Timer" parent="." unique_id=484002595]
+wait_time = 3.0
+autostart = true
