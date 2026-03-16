@@ -8,23 +8,24 @@ const SCENES := {
 	"shards":"uid://c2ibw0tgue5r6",
 	"shard_spawner":"uid://lpy8gwja1wd3",
 	"slime":"uid://rgk1e6hvv0pp",
-	"slash":"uid://u1prav8aslt0"
+	"slash":"uid://u1prav8aslt0",
+	"bullet":"uid://bbmy6821audd1"
 }
 
 # ENEMY DATA 
 var  enemies_data := {
 	"slime":{
-		"speed" : 240,
+		"speed" : 130,
 		"damage" : 0,
-		"base_health" : 20
+		"base_health" : 30
 	},
 	"eye":{
-		"speed" : 220,
+		"speed" : 100,
 		"damage" : 30,
 		"base_health" : 60
 	},
 	"sheild":{
-		"speed" : 120,
+		"speed" : 80,
 		"damage" : 10,
 		"base_health" : 150
 	},

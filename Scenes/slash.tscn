@@ -16,3 +16,6 @@ polygon = PackedVector2Array(-11, -3, -11, 0, -10, 2, -8, 5, -5, 8, -3, 9, 0, 11
 [node name="Timer" type="Timer" parent="." unique_id=1745272830]
 wait_time = 0.15
 autostart = true
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
