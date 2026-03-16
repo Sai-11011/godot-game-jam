@@ -1,12 +1,12 @@
 extends Area2D
 
-@export var shard_type: String = "red" 
+@export var shard_type: String
 @onready var visual_rect = $ColorRect
 
 var is_claimed: bool = false 
 
 func _ready():
-	add_to_group("shards")
+	add_to_group("Shards")
 	if shard_type == "red":
 		visual_rect.color = Color.RED
 	elif shard_type == "blue":

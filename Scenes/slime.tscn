@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://rgk1e6hvv0pp"]
 
 [ext_resource type="Script" uid="uid://c7v66vqub57t7" path="res://Scripts/slime.gd" id="1_f4si1"]
-[ext_resource type="Texture2D" uid="uid://bcn8ri3n4s5pj" path="res://Assets/enemies/Slime_Eating_Left.png" id="2_5gljc"]
-[ext_resource type="Texture2D" uid="uid://c3dk7dyk4sj2t" path="res://Assets/enemies/Slime_Eating_Right.png" id="3_vblni"]
-[ext_resource type="Texture2D" uid="uid://db8lb4l027lcr" path="res://Assets/enemies/Slime_Movement_Left.png" id="4_e388w"]
-[ext_resource type="Texture2D" uid="uid://b6qmh17pwkxcf" path="res://Assets/enemies/Slime_Movement_Right.png" id="5_r4o34"]
+[ext_resource type="Texture2D" uid="uid://bcn8ri3n4s5pj" path="res://Assets/Enemies/Slime_Eating_Left.png" id="2_5gljc"]
+[ext_resource type="Texture2D" uid="uid://c3dk7dyk4sj2t" path="res://Assets/Enemies/Slime_Eating_Right.png" id="3_vblni"]
+[ext_resource type="Texture2D" uid="uid://db8lb4l027lcr" path="res://Assets/Enemies/Slime_Movement_Left.png" id="4_e388w"]
+[ext_resource type="Texture2D" uid="uid://b6qmh17pwkxcf" path="res://Assets/Enemies/Slime_Movement_Right.png" id="5_r4o34"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jokqx"]
 radius = 4.1231055
@@ -225,3 +225,5 @@ shape = SubResource("CircleShape2D_jokqx")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1604336958]
 sprite_frames = SubResource("SpriteFrames_llvkk")
 animation = &"eat_right"
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=738394325]

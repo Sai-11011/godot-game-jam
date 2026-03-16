@@ -5,7 +5,6 @@ extends CanvasLayer
 @onready var bullet_count = $MarginContainer/StatsContainer/ShardCounters/BulletCount
 
 func _process(_delta):
-	# Update your UI to show available attacks
 	heavy_count.text = "Heavy: " + str(PlayerData.attacks["red"])
 	thrust_count.text = "Thrust: " + str(PlayerData.attacks["blue"])
 	bullet_count.text = "Bullet: " + str(PlayerData.attacks["green"])
