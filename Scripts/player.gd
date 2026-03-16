@@ -1,4 +1,5 @@
 extends CharacterBody2D
+
 #NODE
 @onready var red_pointer = $Compass/Red
 @onready var blue_pointer = $Compass/Blue
@@ -6,6 +7,8 @@ extends CharacterBody2D
 @onready var sprite = $PlayerAnimation
 @onready var thrust_hitbox = $ThrustHitbox
 @onready var heavy_particles =  $HeavyBuffParticles
+@onready var camera = $Camera2D
+
 #STATS
 var attack_stats := PlayerData.attack_stats
 var acceleration = 800
@@ -13,6 +16,9 @@ var friction = 900
 var can_attack: bool = true 
 var can_heavy_attack: bool = true
 var facing_dir: String = "right" 
+var current_zoom := 1.0
+var spawn_radius:= 800
+
 #SCENES
 var slash_scene: PackedScene = load(Global.SCENES.slash)
 var bullet_scene: PackedScene = load(Global.SCENES.bullet)
@@ -44,18 +50,21 @@ func _physics_process(delta: float) -> void:
 	update_compass(blue_pointer, "blue")
 	update_compass(green_pointer, "green")
 	
+	#input keys
 	if Input.is_action_just_pressed("attack"):
 		perform_base_attack()
 	if Input.is_action_just_pressed("thrust"):
 		perform_thrust_attack()
 	if Input.is_action_just_pressed("bullet"): 
 		perform_bullet_attack()
-	if Input.is_action_just_pressed("heavy"): # Make sure to map "heavy" in your Input Map!
+	if Input.is_action_just_pressed("heavy"):
 		perform_heavy_attack()
+	if Input.is_action_just_pressed("zoom"):
+		apply_zoom()
 
 # UI ARROWS
 func update_compass(pointer: Polygon2D, target_color: String):
-	var shards = get_tree().get_nodes_in_group("shards")
+	var shards = get_tree().get_nodes_in_group("Shards")
 	var nearest_shard = null
 	var shortest_distance = INF
 	
@@ -162,11 +171,7 @@ func perform_bullet_attack():
 	
 	# Spawn the bullet
 	var bullet = bullet_scene.instantiate()
-	var spawn_offset = Vector2.ZERO
-	if facing_dir == "right": spawn_offset = Vector2.RIGHT * 20.0
-	elif facing_dir == "left": spawn_offset = Vector2.LEFT * 20.0
-	elif facing_dir == "up": spawn_offset = Vector2.UP * 20.0
-	elif facing_dir == "down": spawn_offset = Vector2.DOWN * 20.0
+	var spawn_offset = Vector2.UP * 30.0
 	
 	bullet.global_position = global_position + spawn_offset
 	bullet.target_pos = target_pos 
@@ -318,3 +323,18 @@ func _on_thrust_hit_box_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Enemy"):
 		if body.has_method("take_damage"):
 			body.take_damage(PlayerData.current_damage)
+
+func apply_zoom():
+	if current_zoom == 1.0:
+		spawn_radius = 500
+		current_zoom = 1.5
+	elif current_zoom == 1.5:
+		spawn_radius = 400
+		current_zoom = 2
+	elif current_zoom == 2:
+		spawn_radius = 300
+		current_zoom = 3
+	else :
+		spawn_radius = 800
+		current_zoom = 1
+	camera.zoom = Vector2(current_zoom,current_zoom)

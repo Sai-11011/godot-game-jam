@@ -5,8 +5,9 @@ var shards_collected := {
 	"red": 0,
 	"blue": 0,
 	"green": 0,
-	"top": 0
 }
+var has_top_orb := false
+ 
 # KNOCKBACK FORCE
 var knockback_forces := {
 	"slash": 300.0,   
@@ -87,7 +88,7 @@ func apply_stats():
 	max_health = 100 + (shards_collected["green"] * 15)
 	
 	# Top Orb -> +50% to all stats
-	if shards_collected["top"] > 0:
+	if has_top_orb :
 		is_prime_heart_active = true
 		current_damage *= 1.50
 		current_speed *= 1.50
@@ -99,7 +100,6 @@ func increase_enemy_difficulty():
 	print("Difficulty Increased! Multiplier is now: ", enemy_stat_multiplier)
 
 func apply_knockback(enemy: Node2D, source_pos: Vector2, attack_type: String):
-	# Make sure the enemy actually has the knockback function
 	if enemy.has_method("receive_knockback"):
 		var force = knockback_forces.get(attack_type, 0.0)
 		var push_dir = source_pos.direction_to(enemy.global_position)

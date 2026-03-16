@@ -17,22 +17,41 @@ var  enemies_data := {
 	"slime":{
 		"speed" : 130,
 		"damage" : 0,
-		"base_health" : 30
+		"base_health" : 20,
+		"vision":1000
 	},
 	"eye":{
 		"speed" : 100,
-		"damage" : 30,
-		"base_health" : 60
+		"damage" : 10,
+		"base_health" : 60,
+		"vision":600,#you change it for the best for the ranged attacker
 	},
 	"sheild":{
 		"speed" : 80,
-		"damage" : 10,
-		"base_health" : 150
+		"damage" : 35,
+		"base_health" : 160,
+		"vision":400,#you change it for the best for the tank and heavy hitter
 	},
 }
 
 # global functions
 
+# The universal AI function any enemy can call!
+func calculate_smart_velocity(enemy_pos: Vector2, nav_agent: NavigationAgent2D, target: Node2D, stats: Dictionary, wander_dir: Vector2) -> Vector2:
+	var distance_to_target = INF
+	if is_instance_valid(target):
+		distance_to_target = enemy_pos.distance_to(target.global_position)
+		
+	if distance_to_target <= stats["vision"]:
+		nav_agent.target_position = target.global_position
+		
+		if not nav_agent.is_navigation_finished():
+			var next_path_pos = nav_agent.get_next_path_position()
+			return enemy_pos.direction_to(next_path_pos) * stats["speed"]
+			
+	return wander_dir * (stats["speed"] * 0.5)
+
+# function for the levitation effect
 func apply_levitation(visual_node: CanvasItem, float_distance: float = 8.0, duration: float = 1.0):
 	var tween = visual_node.create_tween().set_loops()
 	
