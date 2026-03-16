@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+var knockback_velocity: Vector2 = Vector2.ZERO
+
 @onready var anim = $AnimatedSprite2D
 var stats =Global.enemies_data.slime
 var health = stats.base_health
@@ -7,10 +9,10 @@ var slime_color: String
 var current_shard: Node2D = null 
 var speed: float
 var is_eating: bool = false
-var facing_dir: String = "down" # Remembers where to bite!
+var facing_dir: String = "down" 
 
 func _ready():
-	# 1. Color the sprites
+	# Color the sprites
 	add_to_group("slime")
 	if slime_color == "red":
 		anim.modulate = Color.LIGHT_SALMON
@@ -21,30 +23,33 @@ func _ready():
 		
 	speed = stats["speed"]
 
-func _physics_process(_delta):
-	if is_eating:
-		return
-	var target_shard = get_nearest_matching_shard()
-
-	if target_shard:
-		var direction = global_position.direction_to(target_shard.global_position)
-		velocity = direction * speed
-		# 4 dir movement
-		if abs(velocity.x) > abs(velocity.y):
-			if velocity.x > 0:
-				facing_dir = "right"
-			else:
-				facing_dir = "left"
-		else:
-			if velocity.y > 0:
-				facing_dir = "down"
-			else:
-				facing_dir = "up"
-		anim.play("move_" + facing_dir)
-		move_and_slide()
+func _physics_process(delta):
+	if knockback_velocity != Vector2.ZERO:
+		velocity = knockback_velocity
+		knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, 3000 * delta)
 	else:
-		velocity = Vector2.ZERO
-		anim.pause()
+		if is_eating:
+			return
+		var target_shard = get_nearest_matching_shard()
+		if target_shard:
+			var direction = global_position.direction_to(target_shard.global_position)
+			velocity = direction * speed
+			# 4 dir movement
+			if abs(velocity.x) > abs(velocity.y):
+				if velocity.x > 0:
+					facing_dir = "right"
+				else:
+					facing_dir = "left"
+			else:
+				if velocity.y > 0:
+					facing_dir = "down"
+				else:
+					facing_dir = "up"
+			anim.play("move_" + facing_dir)
+		else:
+			velocity = Vector2.ZERO
+			anim.pause()
+	move_and_slide()
 
 func get_nearest_matching_shard() -> Node2D:
 	var shards = get_tree().get_nodes_in_group("shards")
@@ -80,8 +85,6 @@ func eat(target_shard: Node2D):
 
 func take_damage(damage_amount: float):
 	health -= damage_amount
-	print("Slime took damage! Remaining health: ", health)
-	
 	if health <= 0:
 		die()
 
@@ -89,3 +92,6 @@ func die():
 	if is_instance_valid(current_shard):
 		current_shard.is_claimed = false
 	queue_free()
+
+func receive_knockback(force_vector: Vector2):
+	knockback_velocity = force_vector

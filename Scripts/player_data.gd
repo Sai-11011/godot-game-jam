@@ -7,11 +7,18 @@ var shards_collected := {
 	"green": 0,
 	"top": 0
 }
+# KNOCKBACK FORCE
+var knockback_forces := {
+	"slash": 300.0,   
+	"thrust": 800.0,  
+	"bullet": 900.0   
+}
+
 # ATTACK INVENTORY
 var attacks := {
 	"red":0,
-	"blue":0,
-	"green":0
+	"blue":10,
+	"green":100
 }
 
 var attack_stats := {
@@ -42,8 +49,9 @@ var max_health: int = 100
 var current_health: int = 100
 var base_damage: float = 20.0 
 var current_damage: float = 20.0
-var base_speed: float = 250.0
-var current_speed: float = 250.0
+var base_speed: float = 150.0
+var current_speed: float = 150.0
+var heavy_is_active :bool = false
 
 # SHARD CAPS & MULTIPLIERS 
 const MAX_SPEED_BONUS: float = 1 # +100% max
@@ -89,3 +97,14 @@ func apply_stats():
 func increase_enemy_difficulty():
 	enemy_stat_multiplier += 0.05
 	print("Difficulty Increased! Multiplier is now: ", enemy_stat_multiplier)
+
+func apply_knockback(enemy: Node2D, source_pos: Vector2, attack_type: String):
+	# Make sure the enemy actually has the knockback function
+	if enemy.has_method("receive_knockback"):
+		var force = knockback_forces.get(attack_type, 0.0)
+		var push_dir = source_pos.direction_to(enemy.global_position)
+		if push_dir == Vector2.ZERO:
+			push_dir = Vector2.RIGHT.rotated(randf() * TAU)
+		var knockback_vector = push_dir * force
+		
+		enemy.receive_knockback(knockback_vector)

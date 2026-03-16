@@ -218,6 +218,33 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_x3wgy"]
+
+[sub_resource type="Gradient" id="Gradient_x3wgy"]
+colors = PackedColorArray(0.9647059, 0.18039216, 0, 0.50980395, 1, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_3smsa"]
+gradient = SubResource("Gradient_x3wgy")
+
+[sub_resource type="Curve" id="Curve_x3wgy"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_3smsa"]
+curve = SubResource("Curve_x3wgy")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8erm5"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 15.0
+angular_velocity_min = -90.000015
+angular_velocity_max = 89.999985
+gravity = Vector3(0, -98, 0)
+scale_min = 3.0
+scale_max = 5.0
+scale_curve = SubResource("CurveTexture_3smsa")
+color_ramp = SubResource("GradientTexture1D_3smsa")
+
 [node name="Player" type="CharacterBody2D" unique_id=1455887580]
 y_sort_enabled = true
 script = ExtResource("1_v0iea")
@@ -243,7 +270,7 @@ drag_bottom_margin = 0.1
 [node name="PlayerAnimation" type="AnimatedSprite2D" parent="." unique_id=844829674]
 position = Vector2(-1, 12)
 sprite_frames = SubResource("SpriteFrames_f1ek2")
-animation = &"walk_down"
+animation = &"idle_right"
 autoplay = "idle_right"
 offset = Vector2(3, -12)
 
@@ -263,3 +290,18 @@ color = Color(0, 0, 1, 1)
 polygon = PackedVector2Array(44, -3, 46, 0, 44, 3, 55, 0)
 
 [node name="HUD" parent="." unique_id=130902195 instance=ExtResource("4_vgqql")]
+
+[node name="ThrustHitbox" type="Area2D" parent="." unique_id=2076225368]
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ThrustHitbox" unique_id=1332630398]
+shape = SubResource("CapsuleShape2D_x3wgy")
+
+[node name="HeavyBuffParticles" type="GPUParticles2D" parent="." unique_id=54943065]
+position = Vector2(0, 16)
+emitting = false
+amount = 30
+sub_emitter = NodePath(".")
+process_material = SubResource("ParticleProcessMaterial_8erm5")
+
+[connection signal="body_entered" from="ThrustHitbox" to="." method="_on_thrust_hit_box_body_entered"]
