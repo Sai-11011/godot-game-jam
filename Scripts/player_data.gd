@@ -1,5 +1,7 @@
 extends Node
 
+signal max_health_update
+
 # SHARD INVENTORY 
 var shards_collected := {
 	"red": 0,
@@ -86,6 +88,9 @@ func apply_stats():
 	
 	# Green Shard -> +15 Max Health
 	max_health = 100 + (shards_collected["green"] * 15)
+	current_health += int(max_health * 0.15)
+	current_health = min(current_health,max_health)
+	max_health_update.emit()
 	
 	# Top Orb -> +50% to all stats
 	if has_top_orb :

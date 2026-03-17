@@ -14,7 +14,6 @@ func _on_body_entered(body: Node2D):
 		if body.has_method("take_damage"):
 			body.take_damage(PlayerData.current_damage)
 			
-			# Grab the exact forward direction of the slash
 			var push_direction = Vector2.RIGHT.rotated(rotation)
 			var force = PlayerData.knockback_forces["slash"]
 			body.receive_knockback(push_direction * force)
