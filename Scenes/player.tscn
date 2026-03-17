@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://saj535dyh3ql" path="res://Assets/MC/Cyborg_Sword-up_Side_Sheet7.png" id="2_3smsa"]
 [ext_resource type="Texture2D" uid="uid://cdef2s0f0lmqc" path="res://Assets/MC/Cyborg_Idle_Left.png" id="2_x3wgy"]
 [ext_resource type="Texture2D" uid="uid://br7llh0511qsy" path="res://Assets/MC/Cyborg_Idle_Right.png" id="3_3smsa"]
+[ext_resource type="Texture2D" uid="uid://ulhd670gmxt0" path="res://Assets/MC/Cyborg_Getting-Hit_Side_Sheet3.png" id="3_gymyn"]
 [ext_resource type="PackedScene" uid="uid://yqhkv2dsrv7y" path="res://Scenes/hud.tscn" id="4_vgqql"]
 [ext_resource type="Texture2D" uid="uid://dkt85nq4b8ne4" path="res://Assets/MC/Cyborg_Run_Left_Side.png" id="4_x3wgy"]
 [ext_resource type="Texture2D" uid="uid://cuw3nnbehped1" path="res://Assets/MC/Cyborg_Run_Right_Side.png" id="5_3smsa"]
@@ -38,6 +39,18 @@ region = Rect2(160, 0, 32, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_qpa8y"]
 atlas = ExtResource("2_3smsa")
 region = Rect2(192, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e6mvm"]
+atlas = ExtResource("3_gymyn")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_57lvd"]
+atlas = ExtResource("3_gymyn")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ie7r7"]
+atlas = ExtResource("3_gymyn")
+region = Rect2(64, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_sbwqj"]
 atlas = ExtResource("5_tx1dd")
@@ -210,6 +223,20 @@ animations = [{
 "loop": false,
 "name": &"bullet",
 "speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e6mvm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_57lvd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ie7r7")
+}],
+"loop": false,
+"name": &"hit",
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -410,7 +437,7 @@ position = Vector2(1, -2)
 polygon = PackedVector2Array(-2, -2, -7, 3, -1, 7, 5, 2)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1616223039]
-zoom = Vector2(1.5, 1.5)
+zoom = Vector2(2, 2)
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
 rotation_smoothing_enabled = true
@@ -425,7 +452,7 @@ drag_bottom_margin = 0.1
 [node name="PlayerAnimation" type="AnimatedSprite2D" parent="." unique_id=844829674]
 position = Vector2(1, -10)
 sprite_frames = SubResource("SpriteFrames_f1ek2")
-animation = &"walk_up"
+animation = &"hit"
 autoplay = "idle_right"
 
 [node name="Compass" type="Node2D" parent="." unique_id=1891374764]

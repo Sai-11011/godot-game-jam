@@ -53,9 +53,9 @@ func _physics_process(delta: float) -> void:
 					shoot_at_player(player.global_position)
 			elif distance <= vision:
 				# Player is too far (outside 150px), walk towards them
-				#nav_agent.target_position = player.global_position
-				#var next_path_pos = nav_agent.get_next_path_position()
-				var direction = global_position.direction_to(player.global_position)
+				nav_agent.target_position = player.global_position
+				var next_path_pos = nav_agent.get_next_path_position()
+				var direction = global_position.direction_to(next_path_pos)
 				velocity = direction * speed
 			else:
 				# Player out of vision, wander
@@ -92,7 +92,8 @@ func shoot_at_player(target_pos: Vector2):
 	
 	var bullet = enemy_bullet_scene.instantiate()
 	get_parent().add_child(bullet) # ADD IT FIRST!
-	
+	if facing_dir == "up":
+		bullet.z_index = z_index - 1
 	# THEN do all the position and rotation math
 	bullet.global_position = global_position
 	bullet.direction = global_position.direction_to(target_pos)

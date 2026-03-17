@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://c3dk7dyk4sj2t" path="res://Assets/Enemies/Slime_Eating_Right.png" id="3_vblni"]
 [ext_resource type="Texture2D" uid="uid://db8lb4l027lcr" path="res://Assets/Enemies/Slime_Movement_Left.png" id="4_e388w"]
 [ext_resource type="Texture2D" uid="uid://b6qmh17pwkxcf" path="res://Assets/Enemies/Slime_Movement_Right.png" id="5_r4o34"]
+[ext_resource type="Texture2D" uid="uid://bs3ftumr6ygm8" path="res://Assets/textures/light.svg" id="6_5gljc"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jokqx"]
 radius = 4.1231055
@@ -229,3 +230,8 @@ sprite_frames = SubResource("SpriteFrames_llvkk")
 animation = &"eat_right"
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=738394325]
+avoidance_enabled = true
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=214743216]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("6_5gljc")
