@@ -23,6 +23,7 @@ var is_attacking: bool = false
 #SCENES
 var slash_scene: PackedScene = load(Global.SCENES.slash)
 var bullet_scene: PackedScene = load(Global.SCENES.bullet)
+var game_over_scene : PackedScene = load(Global.SCENES.game_over)
 
 func _physics_process(delta: float) -> void:
 	# MOVEMENT LOGIC
@@ -194,6 +195,7 @@ func perform_bullet_attack():
 		await sprite.animation_finished
 	sprite.offset = Vector2.ZERO
 	is_attacking = false
+	facing_dir = "right"
 	sprite.play("idle_" + facing_dir)
 	
 	await get_tree().create_timer(cooldown_time).timeout
@@ -348,10 +350,20 @@ func apply_zoom():
 	elif current_zoom == 1.5:
 		spawn_radius = 400
 		current_zoom = 2
-	elif current_zoom == 2:
-		spawn_radius = 300
-		current_zoom = 3
 	else :
 		spawn_radius = 800
 		current_zoom = 1
 	camera.zoom = Vector2(current_zoom,current_zoom)
+	
+signal health_bar_update
+
+func take_damage(damage:int)-> void:
+	PlayerData.current_health -= damage
+	health_bar_update.emit()
+	
+	if PlayerData.current_health <= 0:
+		die()
+		
+
+func die():
+	get_tree().change_scene_to_packed(game_over_scene)

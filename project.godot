@@ -35,6 +35,8 @@ window/stretch/mode="viewport"
 Enemy=""
 Shards=""
 Slime=""
+Ranger=""
+Player=""
 
 [input]
 

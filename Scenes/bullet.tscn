@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bbmy6821audd1"]
 
 [ext_resource type="Script" uid="uid://dq28t0hg3qn5" path="res://Scripts/bullet.gd" id="1_xjght"]
-[ext_resource type="Texture2D" uid="uid://bwf2pxg1gmvse" path="res://Assets/MC/Green energy.png" id="2_oduel"]
+[ext_resource type="Texture2D" uid="uid://bwf2pxg1gmvse" path="res://Assets/textures/Green energy.png" id="2_oduel"]
 [ext_resource type="Texture2D" uid="uid://bs3ftumr6ygm8" path="res://Assets/textures/light.svg" id="3_ycag2"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_oduel"]

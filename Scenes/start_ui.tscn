@@ -82,6 +82,7 @@ size_flags_horizontal = 4
 theme_override_constants/separation = 50
 
 [node name="Play" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1478888576]
+process_mode = 3
 custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
 theme = ExtResource("3_avrgi")
