@@ -37,6 +37,7 @@ Shards=""
 Slime=""
 Ranger=""
 Player=""
+bake_me=""
 
 [input]
 

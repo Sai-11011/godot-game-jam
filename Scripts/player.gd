@@ -16,9 +16,11 @@ var friction = 900
 var can_attack: bool = true 
 var can_heavy_attack: bool = true
 var facing_dir: String = "right" 
-var current_zoom := 1.0
+var current_zoom := 2.0
 var spawn_radius:= 800
 var is_attacking: bool = false
+var is_dead: bool = false
+var is_invincible: bool = false
 
 #SCENES
 var slash_scene: PackedScene = load(Global.SCENES.slash)
@@ -41,11 +43,11 @@ func _physics_process(delta: float) -> void:
 				facing_dir = "down"
 			else:
 				facing_dir = "up"
-		if not is_attacking:
+		if not is_attacking and sprite.animation != "hit":
 			sprite.play("walk_" + facing_dir)
 		velocity = velocity.move_toward(direction * speed, acceleration * delta)
 	else:
-		if not is_attacking:
+		if not is_attacking and sprite.animation != "hit":
 			sprite.play("idle_" + facing_dir)
 		velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
 	move_and_slide()
@@ -54,16 +56,17 @@ func _physics_process(delta: float) -> void:
 	update_compass(blue_pointer, "blue")
 	update_compass(green_pointer, "green")
 	
-	#input keys
-	if Input.is_action_just_pressed("attack"):
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("attack"):
 		perform_base_attack()
-	if Input.is_action_just_pressed("thrust"):
+	elif event.is_action_pressed("thrust"):
 		perform_thrust_attack()
-	if Input.is_action_just_pressed("bullet"): 
+	elif event.is_action_pressed("bullet"): 
 		perform_bullet_attack()
-	if Input.is_action_just_pressed("heavy"):
+	elif event.is_action_pressed("heavy"):
 		perform_heavy_attack()
-	if Input.is_action_just_pressed("zoom"):
+	elif event.is_action_pressed("zoom"):
 		apply_zoom()
 
 # UI ARROWS
@@ -121,42 +124,78 @@ func perform_thrust_attack():
 		
 	can_attack = false 
 	PlayerData.attacks["blue"] -= 1
+	is_invincible = true # BECOME INVINCIBLE
 	
 	var thrust_stats = PlayerData.attack_stats.thrust
 	var thrust_range = thrust_stats["range"]
 	var attack_duration = thrust_stats["attack_time"]
 	var cooldown_time = thrust_stats["cooldown"]
 	
-	# Get the direction with the most enemies!
 	var dash_dir = get_best_thrust_direction(thrust_range)
-	
 	if dash_dir == Vector2.ZERO:
 		if facing_dir == "right": dash_dir = Vector2.RIGHT
 		elif facing_dir == "left": dash_dir = Vector2.LEFT
 		elif facing_dir == "up": dash_dir = Vector2.UP
 		elif facing_dir == "down": dash_dir = Vector2.DOWN
+		
 	var target_pos = global_position + (dash_dir * thrust_range)
+	
+	# Phase through space using the Tween
 	var tween = create_tween()
 	tween.tween_property(self, "global_position", target_pos, attack_duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	
+	# Damage enemies during the dash
 	var hit_radius = 40.0 
 	var enemies = get_tree().get_nodes_in_group("Enemy")
-	
 	for enemy in enemies:
-		# This Godot math function draws a perfect, unbroken line from start to finish
 		var closest_point = Geometry2D.get_closest_point_to_segment(enemy.global_position, global_position, target_pos)
-		
 		if closest_point.distance_to(enemy.global_position) <= hit_radius:
 			if enemy.has_method("take_damage"):
 				enemy.take_damage(PlayerData.current_damage)
 				PlayerData.apply_knockback(enemy, global_position, "thrust")
 	
-	# GHOST TRAIL LOGIC
-	while tween.is_running():
+	# Ghost trail loop
+	while tween and tween.is_running():
+		if not is_inside_tree(): break 
 		spawn_ghost_trail()
 		await get_tree().create_timer(0.03).timeout
+		
+	# --- NEW COLLISION PROPEL LOGIC ---
+	if is_inside_tree():
+		# test_move checks if our current position is overlapping a solid physics body
+		var is_stuck = test_move(global_transform, Vector2.ZERO)
+		
+		if is_stuck:
+			var step = 10.0 # How many pixels to jump per check
+			var max_forward_checks = 15 # Look up to 150px forward (good for pillars)
+			var found_safe_spot = false
+			
+			# 1. Propel Forward (through pillars)
+			for i in range(1, max_forward_checks + 1):
+				var test_transform = global_transform
+				test_transform.origin += dash_dir * (step * i)
+				
+				# If this new spot is NOT stuck, move there and break the loop
+				if not test_move(test_transform, Vector2.ZERO):
+					global_position = test_transform.origin
+					trigger_wall_pop_effect()
+					found_safe_spot = true
+					break
+					
+			# 2. Propel Backward (Hit the map wall)
+			if not found_safe_spot:
+				# If we couldn't find an exit forward, we hit the infinite void. Reverse direction!
+				for i in range(1, 50): # Look far backward to get back into the arena
+					var test_transform = global_transform
+					test_transform.origin -= dash_dir * (step * i)
+					
+					if not test_move(test_transform, Vector2.ZERO):
+						global_position = test_transform.origin
+						trigger_wall_pop_effect()
+						break
+
+	is_invincible = false # REMOVE INVINCIBILITY
 	
-	# RESTORE ATTACK ABILITY AFTER COOLDOWN
 	await get_tree().create_timer(cooldown_time).timeout
 	can_attack = true
 
@@ -178,10 +217,15 @@ func perform_bullet_attack():
 	sprite.play("bullet")
 	sprite.frame = 0
 	
-	# 2. Wait for the exact attack frame
+	# 2. Wait for the exact attack frame safely!
 	var target_frame = 5
-	while sprite.frame < target_frame and sprite.is_playing():
-		await sprite.frame_changed
+	while sprite.animation == "bullet" and sprite.frame < target_frame:
+		await get_tree().process_frame 
+		
+	if sprite.animation != "bullet":
+		is_attacking = false
+		can_attack = true
+		return 
 	
 	var bullet = bullet_scene.instantiate()
 	var spawn_offset = Vector2.UP * 30.0
@@ -325,6 +369,17 @@ func get_best_bullet_target_pos(attack_range: float) -> Vector2:
 			
 	return best_target_pos
 # effects
+func trigger_wall_pop_effect():
+	# Store the current color (in case they are heavily buffed/red)
+	var current_color = sprite.modulate
+	
+	# Flash bright white/cyan
+	sprite.modulate = Color(2.0, 3.0, 3.0, 1.0) 
+	
+	# Fade back to normal over 0.2 seconds
+	var flash_tween = create_tween()
+	flash_tween.tween_property(sprite, "modulate", current_color, 0.2)
+	
 func spawn_ghost_trail():
 	var ghost = Sprite2D.new()
 	# Grab the exact frame of animation the player is currently in
@@ -357,13 +412,31 @@ func apply_zoom():
 	
 signal health_bar_update
 
-func take_damage(damage:int)-> void:
+func take_damage(damage: int) -> void:
+	if is_dead or is_invincible:
+		return 
+		
 	PlayerData.current_health -= damage
 	health_bar_update.emit()
+	is_attacking = false 
 	
 	if PlayerData.current_health <= 0:
-		die()
+		is_dead = true 
+		sprite.play("hit")
+		await sprite.animation_finished
+		if is_inside_tree():
+			die()
+	else:
+		sprite.play("hit")
+		await sprite.animation_finished # Wait for the hit flash to end
 		
+		# UNLOCK THE ANIMATION:
+		# Change the string away from "hit" so _physics_process can take over again!
+		if sprite.animation == "hit" and not is_dead:
+			sprite.play("idle_" + facing_dir)
 
 func die():
-	get_tree().change_scene_to_packed(game_over_scene)
+	if get_tree() != null: 
+		set_physics_process(false)
+		can_attack = false
+		get_tree().change_scene_to_packed(game_over_scene)
