@@ -18,6 +18,7 @@ var can_heavy_attack: bool = true
 var facing_dir: String = "right" 
 var current_zoom := 1.0
 var spawn_radius:= 800
+var is_attacking: bool = false
 
 #SCENES
 var slash_scene: PackedScene = load(Global.SCENES.slash)
@@ -39,10 +40,12 @@ func _physics_process(delta: float) -> void:
 				facing_dir = "down"
 			else:
 				facing_dir = "up"
-		sprite.play("walk_" + facing_dir)
+		if not is_attacking:
+			sprite.play("walk_" + facing_dir)
 		velocity = velocity.move_toward(direction * speed, acceleration * delta)
 	else:
-		sprite.play("idle_" + facing_dir)
+		if not is_attacking:
+			sprite.play("idle_" + facing_dir)
 		velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
 	move_and_slide()
 	
@@ -162,23 +165,37 @@ func perform_bullet_attack():
 		
 	can_attack = false 
 	PlayerData.attacks["green"] -= 1
+	is_attacking = true
 	
 	var bullet_stats = PlayerData.attack_stats.bullet
 	var bullet_range = bullet_stats["range"]
 	var cooldown_time = bullet_stats["cooldown"]
-	
 	var target_pos = get_best_bullet_target_pos(bullet_range)
 	
-	# Spawn the bullet
+	# 1. Shift the offset to fix the art, then play!
+	sprite.offset = Vector2(0, -16) 
+	sprite.play("bullet")
+	sprite.frame = 0
+	
+	# 2. Wait for the exact attack frame
+	var target_frame = 5
+	while sprite.frame < target_frame and sprite.is_playing():
+		await sprite.frame_changed
+	
 	var bullet = bullet_scene.instantiate()
 	var spawn_offset = Vector2.UP * 30.0
-	
+	spawn_offset.x -= 1 
 	bullet.global_position = global_position + spawn_offset
 	bullet.target_pos = target_pos 
-	
 	get_tree().current_scene.add_child(bullet)
 	
-	# Start the cooldown
+	var total_frames = sprite.sprite_frames.get_frame_count("bullet")
+	if sprite.is_playing() and sprite.animation == "bullet" and sprite.frame < (total_frames - 1):
+		await sprite.animation_finished
+	sprite.offset = Vector2.ZERO
+	is_attacking = false
+	sprite.play("idle_" + facing_dir)
+	
 	await get_tree().create_timer(cooldown_time).timeout
 	can_attack = true
 

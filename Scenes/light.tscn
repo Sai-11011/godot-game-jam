@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://dcij8nfph1qn7"]
+
+[ext_resource type="Texture2D" uid="uid://bmxog0c5inj7" path="res://Assets/objects/Standing-torch_1_Sheet6.png" id="1_veqsg"]
+[ext_resource type="Texture2D" uid="uid://bs3ftumr6ygm8" path="res://Assets/textures/light.svg" id="2_wh1uv"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wh1uv"]
+atlas = ExtResource("1_veqsg")
+region = Rect2(0, 0, 6, 27)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hsho4"]
+atlas = ExtResource("1_veqsg")
+region = Rect2(6, 0, 6, 27)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a6465"]
+atlas = ExtResource("1_veqsg")
+region = Rect2(12, 0, 6, 27)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tklua"]
+atlas = ExtResource("1_veqsg")
+region = Rect2(18, 0, 6, 27)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xlako"]
+atlas = ExtResource("1_veqsg")
+region = Rect2(24, 0, 6, 27)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_du6kw"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wh1uv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hsho4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a6465")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tklua")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xlako")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
+
+[node name="light" type="Node2D" unique_id=1020038977]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=91283450]
+sprite_frames = SubResource("SpriteFrames_du6kw")
+autoplay = "default"
+frame_progress = 0.833134
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=845429744]
+position = Vector2(0, -6)
+scale = Vector2(3.7387757, 3.2464614)
+texture = ExtResource("2_wh1uv")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1780614611]
+collision_layer = 2
+collision_mask = 5
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=790733213]
+polygon = PackedVector2Array(-1, 0, -1, 7, -3, 10, -3, 13, 3, 13, 3, 10, 1, 7, 1, 0)

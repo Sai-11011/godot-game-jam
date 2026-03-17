@@ -5,7 +5,7 @@ extends Node2D
 @onready var tank_scene: PackedScene
 
 @export var player: CharacterBody2D 
-
+var max_slimes = 50
 var spawn_radius: int = 400
 
 func _on_enemy_spawn_timer_timeout():
@@ -16,7 +16,9 @@ func spawn_slime():
 	if slime_scene == null or player == null:
 		push_error("Slime Scene or Player is missing in the Inspector!")
 		return
-		
+	var current_enemies = get_tree().get_nodes_in_group("Slime").size()
+	if current_enemies >= max_slimes:
+		return
 	var new_slime = slime_scene.instantiate()
 	var available_colors = ["red", "blue", "green"]
 	var chosen_color = available_colors[randi() % available_colors.size()]

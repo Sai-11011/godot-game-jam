@@ -1,22 +1,29 @@
 [gd_scene format=3 uid="uid://bbmy6821audd1"]
 
 [ext_resource type="Script" uid="uid://dq28t0hg3qn5" path="res://Scripts/bullet.gd" id="1_xjght"]
+[ext_resource type="Texture2D" uid="uid://bwf2pxg1gmvse" path="res://Assets/MC/Green energy.png" id="2_oduel"]
+[ext_resource type="Texture2D" uid="uid://bs3ftumr6ygm8" path="res://Assets/textures/light.svg" id="3_ycag2"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_oduel"]
-radius = 5.0
-
-[sub_resource type="SphereMesh" id="SphereMesh_ycag2"]
-radius = 5.0
-height = 10.0
+radius = 4.0
 
 [node name="Bullet" type="Area2D" unique_id=2056501857]
+collision_layer = 8
+collision_mask = 4
 script = ExtResource("1_xjght")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=56855540]
 shape = SubResource("CircleShape2D_oduel")
+debug_color = Color(0, 0.79607844, 0.92941177, 0)
 
-[node name="MeshInstance2D" type="MeshInstance2D" parent="." unique_id=475020638]
-modulate = Color(0, 1, 0, 1)
-mesh = SubResource("SphereMesh_ycag2")
+[node name="MeshInstance2D" type="Sprite2D" parent="." unique_id=1196708818]
+self_modulate = Color(0.69863904, 1, 0.67045575, 1)
+texture = ExtResource("2_oduel")
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=987027149]
+position = Vector2(-2.3841858e-07, 0)
+scale = Vector2(0.064453125, 0.057617143)
+color = Color(0, 1, 0, 1)
+texture = ExtResource("3_ycag2")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
