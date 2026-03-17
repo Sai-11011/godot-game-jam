@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://buhjqjueug7b0" path="res://Scripts/slash.gd" id="1_jvrl8"]
 
 [node name="Slash" type="Area2D" unique_id=428289164]
+collision_layer = 8
+collision_mask = 4
 script = ExtResource("1_jvrl8")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=871403013]

@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
 var knockback_velocity: Vector2 = Vector2.ZERO
-
+@onready var nav_agent = $NavigationAgent2D
 @onready var anim = $AnimatedSprite2D
 var stats = Global.enemies_data.slime
 var health = stats.base_health
@@ -50,8 +50,10 @@ func _physics_process(delta):
 		var target_shard = get_nearest_matching_shard()
 		
 		if target_shard:
-			# TARGET FOUND: Move directly towards it
-			var direction = global_position.direction_to(target_shard.global_position)
+			# navigation
+			nav_agent.target_position = target_shard.global_position
+			var next_path_pos = nav_agent.get_next_path_position()
+			var direction = global_position.direction_to(next_path_pos)
 			velocity = direction * speed
 		else:
 			# NO TARGET IN RANGE: Wander randomly

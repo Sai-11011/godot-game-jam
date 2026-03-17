@@ -217,6 +217,8 @@ animations = [{
 }]
 
 [node name="Slime" type="CharacterBody2D" unique_id=1047331107 groups=["Enemy", "Slime"]]
+collision_layer = 4
+collision_mask = 46
 script = ExtResource("1_f4si1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1408814259]

@@ -1,11 +1,41 @@
 [gd_scene format=3 uid="uid://casb6ahlpll03"]
 
 [ext_resource type="Script" uid="uid://chny23dbskf7g" path="res://Scripts/player.gd" id="1_v0iea"]
+[ext_resource type="Texture2D" uid="uid://saj535dyh3ql" path="res://Assets/MC/Cyborg_Sword-up_Side_Sheet7.png" id="2_3smsa"]
 [ext_resource type="Texture2D" uid="uid://cdef2s0f0lmqc" path="res://Assets/MC/Cyborg_Idle_Left.png" id="2_x3wgy"]
 [ext_resource type="Texture2D" uid="uid://br7llh0511qsy" path="res://Assets/MC/Cyborg_Idle_Right.png" id="3_3smsa"]
 [ext_resource type="PackedScene" uid="uid://yqhkv2dsrv7y" path="res://Scenes/hud.tscn" id="4_vgqql"]
 [ext_resource type="Texture2D" uid="uid://dkt85nq4b8ne4" path="res://Assets/MC/Cyborg_Run_Left_Side.png" id="4_x3wgy"]
 [ext_resource type="Texture2D" uid="uid://cuw3nnbehped1" path="res://Assets/MC/Cyborg_Run_Right_Side.png" id="5_3smsa"]
+[ext_resource type="Texture2D" uid="uid://bs3ftumr6ygm8" path="res://Assets/textures/light.svg" id="8_8erm5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wohnl"]
+atlas = ExtResource("2_3smsa")
+region = Rect2(0, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_36dho"]
+atlas = ExtResource("2_3smsa")
+region = Rect2(32, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yh6i2"]
+atlas = ExtResource("2_3smsa")
+region = Rect2(64, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nv4vc"]
+atlas = ExtResource("2_3smsa")
+region = Rect2(96, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8gxox"]
+atlas = ExtResource("2_3smsa")
+region = Rect2(128, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_11gg7"]
+atlas = ExtResource("2_3smsa")
+region = Rect2(160, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qpa8y"]
+atlas = ExtResource("2_3smsa")
+region = Rect2(192, 0, 32, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_h4iuc"]
 atlas = ExtResource("2_x3wgy")
@@ -105,7 +135,36 @@ region = Rect2(160, 0, 32, 33)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_f1ek2"]
 animations = [{
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wohnl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_36dho")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yh6i2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nv4vc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8gxox")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_11gg7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qpa8y")
+}],
+"loop": false,
+"name": &"bullet",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h4iuc")
+}],
 "loop": true,
 "name": &"idle_down",
 "speed": 5.0
@@ -156,12 +215,18 @@ animations = [{
 "name": &"idle_right",
 "speed": 8.0
 }, {
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_olqyp")
+}],
 "loop": true,
 "name": &"idle_up",
 "speed": 5.0
 }, {
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_olqyp")
+}],
 "loop": true,
 "name": &"walk_down",
 "speed": 5.0
@@ -212,7 +277,10 @@ animations = [{
 "name": &"walk_right",
 "speed": 10.0
 }, {
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h4iuc")
+}],
 "loop": true,
 "name": &"walk_up",
 "speed": 5.0
@@ -247,6 +315,7 @@ color_ramp = SubResource("GradientTexture1D_3smsa")
 
 [node name="Player" type="CharacterBody2D" unique_id=1455887580]
 y_sort_enabled = true
+collision_mask = 50
 script = ExtResource("1_v0iea")
 
 [node name="Collisionpolygon2D" type="CollisionPolygon2D" parent="." unique_id=324234448]
@@ -255,7 +324,6 @@ position = Vector2(5, 8)
 polygon = PackedVector2Array(-1, -9, -5, 3, 0, 4, 2, 1)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1616223039]
-zoom = Vector2(3, 3)
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
 rotation_smoothing_enabled = true
@@ -270,7 +338,7 @@ drag_bottom_margin = 0.1
 [node name="PlayerAnimation" type="AnimatedSprite2D" parent="." unique_id=844829674]
 position = Vector2(-1, 12)
 sprite_frames = SubResource("SpriteFrames_f1ek2")
-animation = &"idle_right"
+animation = &"walk_up"
 autoplay = "idle_right"
 offset = Vector2(3, -12)
 
@@ -292,6 +360,8 @@ polygon = PackedVector2Array(44, -3, 46, 0, 44, 3, 55, 0)
 [node name="HUD" parent="." unique_id=130902195 instance=ExtResource("4_vgqql")]
 
 [node name="ThrustHitbox" type="Area2D" parent="." unique_id=2076225368]
+collision_layer = 8
+collision_mask = 4
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ThrustHitbox" unique_id=1332630398]
@@ -303,5 +373,12 @@ emitting = false
 amount = 30
 sub_emitter = NodePath(".")
 process_material = SubResource("ParticleProcessMaterial_8erm5")
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=1602773180]
+self_modulate = Color(1, 0.7520891, 0.5303806, 1)
+position = Vector2(0, -8.526513e-14)
+scale = Vector2(0.06933594, 0.058593757)
+color = Color(1, 1, 1, 0.5882353)
+texture = ExtResource("8_8erm5")
 
 [connection signal="body_entered" from="ThrustHitbox" to="." method="_on_thrust_hit_box_body_entered"]

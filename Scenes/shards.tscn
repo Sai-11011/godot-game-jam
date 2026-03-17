@@ -8,6 +8,8 @@ height = 26.0
 
 [node name="Shards" type="Area2D" unique_id=939801697]
 z_index = 5
+collision_layer = 32
+collision_mask = 5
 script = ExtResource("1_fi12b")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=624276824]
