@@ -65,12 +65,21 @@ alignment = 1
 
 [node name="HeavyCount" type="Label" parent="MarginContainer/StatsContainer/ShardCounters" unique_id=179393975]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_fccik")
 
 [node name="ThrustCount" type="Label" parent="MarginContainer/StatsContainer/ShardCounters" unique_id=2031948140]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_fccik")
 
 [node name="BulletCount" type="Label" parent="MarginContainer/StatsContainer/ShardCounters" unique_id=901330102]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_fccik")
