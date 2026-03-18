@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://bs6kcurb4niw3"]
+
+[ext_resource type="Script" uid="uid://ce2m8a16rybwk" path="res://Scripts/tank.gd" id="1_0ys04"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_r30pj"]
+
+[node name="Tank" type="CharacterBody2D" unique_id=1322696617 groups=["Enemy", "Tank"]]
+script = ExtResource("1_0ys04")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1407916124]
+shape = SubResource("CircleShape2D_r30pj")
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1126137828]
+polygon = PackedVector2Array(-6, 9, 6, 9, 11, 2, 12, -5, 8, -2, 8, -2, 8, -9, 6, -13, 7, -19, 3, -13, 0, -19, -3, -13, -8, -19, -6, -13, -7, -9, -7, -2, -11, -5, -10, 2)
+
+[node name="Line2D" type="Line2D" parent="Polygon2D" unique_id=1991412490]
+points = PackedVector2Array(-3, -8, -3, -7)
+width = 3.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D2" type="Line2D" parent="Polygon2D" unique_id=1597511336]
+points = PackedVector2Array(4, -8, 4, -7)
+width = 3.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=334301600]

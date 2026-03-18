@@ -21,6 +21,7 @@ var spawn_radius:= 800
 var is_attacking: bool = false
 var is_dead: bool = false
 var is_invincible: bool = false
+var knockback_velocity: Vector2 = Vector2.ZERO
 
 #SCENES
 var slash_scene: PackedScene = load(Global.SCENES.slash)
@@ -29,6 +30,12 @@ var game_over_scene : PackedScene = load(Global.SCENES.game_over)
 
 func _physics_process(delta: float) -> void:
 	# MOVEMENT LOGIC
+	if knockback_velocity != Vector2.ZERO:
+		velocity = knockback_velocity
+		knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, 3000 * delta)
+		move_and_slide()
+		return 
+	
 	var direction = Input.get_vector("left", "right", "up", "down")
 	if direction != Vector2.ZERO:
 		var speed = PlayerData.current_speed
@@ -369,6 +376,15 @@ func get_best_bullet_target_pos(attack_range: float) -> Vector2:
 			
 	return best_target_pos
 # effects
+func receive_knockback(force_vector: Vector2):
+	# If the player is invincible (like during a dash), ignore the push!
+	if is_invincible: return 
+	
+	knockback_velocity = force_vector
+	
+	# Optional: Cancel attacks if you get hit hard
+	is_attacking = false
+
 func trigger_wall_pop_effect():
 	# Flash the player
 	var current_color = sprite.modulate

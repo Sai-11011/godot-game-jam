@@ -2,13 +2,13 @@ extends Node2D
 
 @onready var slime_scene: PackedScene = load(Global.SCENES.slime)
 @onready var ranger_scene: PackedScene = load(Global.SCENES.ranger)
-# @onready var tank_scene: PackedScene # Commented out until ready
+@onready var tank_scene: PackedScene = load(Global.SCENES.tank) 
 
 @export var player: CharacterBody2D 
 
-var max_slimes = 30
-var max_rangers = 80
-# var max_tanks = 50
+var max_slimes = 40
+var max_rangers = 60
+var max_tanks = 50
 
 # Create the "Donut"
 var min_spawn_radius: float = 400.0
@@ -19,7 +19,7 @@ func _on_enemy_spawn_timer_timeout():
 		return
 	
 	if randf() < 0.3:
-		spawn_ranger()
+		spawn_tank()
 	else:
 		spawn_slime()
 
@@ -34,7 +34,16 @@ func spawn_ranger():
 	var new_ranger = ranger_scene.instantiate()
 	new_ranger.global_position = get_valid_spawn_position() # Use the helper function!
 	add_child(new_ranger)
-	
+
+func spawn_tank():
+	var current_enemies = get_tree().get_nodes_in_group("Tank").size()
+	if current_enemies >= max_tanks:
+		return
+		
+	var new_tank = tank_scene.instantiate()
+	new_tank.global_position = get_valid_spawn_position() # Use the helper function!
+	add_child(new_tank)
+
 func spawn_slime():
 	var current_enemies = get_tree().get_nodes_in_group("Slime").size()
 	if current_enemies >= max_slimes:
