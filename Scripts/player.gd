@@ -12,13 +12,14 @@ extends CharacterBody2D
 #STATS
 var attack_stats := PlayerData.attack_stats
 var acceleration = 800
-var friction = 900
+var friction = 1000
 var can_attack: bool = true 
 var can_heavy_attack: bool = true
 var facing_dir: String = "right" 
 var current_zoom := 2.0
 var spawn_radius:= 800
 var is_attacking: bool = false
+var is_hit: bool = false
 var is_dead: bool = false
 var is_invincible: bool = false
 var knockback_velocity: Vector2 = Vector2.ZERO
@@ -54,9 +55,15 @@ func _physics_process(delta: float) -> void:
 			sprite.play("walk_" + facing_dir)
 		velocity = velocity.move_toward(direction * speed, acceleration * delta)
 	else:
-		if not is_attacking and sprite.animation != "hit":
+		if not is_attacking and not is_hit:
 			sprite.play("idle_" + facing_dir)
 		velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
+		
+	if facing_dir == "left" and is_hit:
+		sprite.scale.x = -1
+	else:
+		sprite.scale.x = 1
+		
 	move_and_slide()
 	
 	update_compass(red_pointer, "red")
@@ -436,19 +443,30 @@ func take_damage(damage: int) -> void:
 	is_attacking = false 
 	
 	if PlayerData.current_health <= 0:
-		is_dead = true 
+		is_dead = true
+		is_hit = true
 		sprite.play("hit")
+		flash_red()
 		await sprite.animation_finished
+		is_hit = false
 		if is_inside_tree():
 			die()
 	else:
+		is_hit = true
 		sprite.play("hit")
+		flash_red()
 		await sprite.animation_finished # Wait for the hit flash to end
+		is_hit = false
 		
 		# UNLOCK THE ANIMATION:
 		# Change the string away from "hit" so _physics_process can take over again!
 		if sprite.animation == "hit" and not is_dead:
 			sprite.play("idle_" + facing_dir)
+
+func flash_red():
+	sprite.modulate = Color(1, 0.3, 0.3, 0.7)
+	await get_tree().create_timer(0.15).timeout
+	sprite.modulate = Color(1, 1, 1)
 
 func die():
 	if get_tree() != null: 
