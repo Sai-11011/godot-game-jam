@@ -200,11 +200,11 @@ z_index = 10
 default_color = Color(0, 1, 1, 1)
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="." unique_id=663110741]
-visible = false
 navigation_polygon = SubResource("NavigationPolygon_kry3j")
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=755674456]
+visible = false
 shape = SubResource("CircleShape2D_fevyy")
 debug_color = Color(0.8509804, 0, 0.13725491, 0)
 metadata/_edit_lock_ = true
@@ -218,6 +218,5 @@ shape = SubResource("CircleShape2D_d1ilt")
 debug_color = Color(1, 1, 1, 0.05882353)
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1641982088]
-visible = false
 color = Color(0.8646751, 0.86467516, 0.8646751, 1)
 metadata/_edit_lock_ = true
