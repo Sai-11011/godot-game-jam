@@ -12,7 +12,6 @@ var player: Node2D
 
 func _ready():
 	player = get_tree().get_first_node_in_group("Player")
-	$SpawnTimer.timeout.connect(_on_spawn_timer_timeout)
 
 func _on_spawn_timer_timeout():
 	if shard_scene == null:
