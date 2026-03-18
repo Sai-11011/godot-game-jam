@@ -370,15 +370,14 @@ func get_best_bullet_target_pos(attack_range: float) -> Vector2:
 	return best_target_pos
 # effects
 func trigger_wall_pop_effect():
-	# Store the current color (in case they are heavily buffed/red)
+	# Flash the player
 	var current_color = sprite.modulate
-	
-	# Flash bright white/cyan
 	sprite.modulate = Color(2.0, 3.0, 3.0, 1.0) 
-	
-	# Fade back to normal over 0.2 seconds
 	var flash_tween = create_tween()
 	flash_tween.tween_property(sprite, "modulate", current_color, 0.2)
+	
+	# --- NEW: TELL THE ARENA TO FLASH! ---
+	get_tree().call_group("Arena", "flash_barrier")
 	
 func spawn_ghost_trail():
 	var ghost = Sprite2D.new()

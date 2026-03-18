@@ -71,6 +71,12 @@ func _physics_process(delta: float) -> void:
 				if velocity.y > 0: facing_dir = "down"
 				else: facing_dir = "up"
 			sprite.texture = sprites[facing_dir]
+			var target_rotation = (velocity.x / speed) * 0.2 # 0.2 is the max tilt angle
+			sprite.rotation = lerp(sprite.rotation, target_rotation, 10.0 * delta)
+		else:
+			# Smoothly level out when standing still to shoot
+			sprite.rotation = lerp(sprite.rotation, 0.0, 10.0 * delta)
+		
 	move_and_slide()
 
 func pick_new_wander_direction():

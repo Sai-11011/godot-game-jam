@@ -32,12 +32,28 @@ func _on_spawn_timer_timeout():
 		var chosen_color = available_colors[randi() % available_colors.size()]
 		new_shard.shard_type = chosen_color 
 		
-		# Calculate position around the PLAYER, not the map center
-		var random_angle = randf_range(0.0, TAU) 
-		var random_distance = randf_range(min_spawn_radius, max_spawn_radius) 
-		var spawn_offset = Vector2.RIGHT.rotated(random_angle) * random_distance
-		
-		new_shard.global_position = player.global_position + spawn_offset
-		
+		new_shard.global_position = get_valid_spawn_position()
 		new_shard.add_to_group("Shards")
 		add_child(new_shard)
+
+func get_valid_spawn_position() -> Vector2:
+	var max_attempts = 15 # Don't get stuck in an infinite loop!
+	var space_state = get_world_2d().direct_space_state
+	var query = PhysicsPointQueryParameters2D.new()
+	
+	# We want to check Layer 1 (where your pillars and arena walls are)
+	query.collision_mask = 1 
+	
+	for i in range(max_attempts):
+		var random_angle = randf_range(0.0, TAU) 
+		var random_distance = randf_range(min_spawn_radius, max_spawn_radius)
+		var spawn_offset = Vector2.RIGHT.rotated(random_angle) * random_distance
+		var target_pos = player.global_position + spawn_offset
+		
+		query.position = target_pos
+		var hits = space_state.intersect_point(query)
+		
+		if hits.is_empty():
+			return target_pos
+			
+	return player.global_position

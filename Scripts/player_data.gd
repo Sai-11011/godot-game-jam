@@ -19,9 +19,9 @@ var knockback_forces := {
 
 # ATTACK INVENTORY
 var attacks := {
-	"red":0,
-	"blue":10,
-	"green":100
+	"red":30,
+	"blue":30,
+	"green":30
 }
 
 var attack_stats := {
