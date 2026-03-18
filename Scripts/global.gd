@@ -9,7 +9,11 @@ const SCENES := {
 	"shard_spawner":"uid://lpy8gwja1wd3",
 	"slime":"uid://rgk1e6hvv0pp",
 	"slash":"uid://u1prav8aslt0",
-	"bullet":"uid://bbmy6821audd1"
+	"bullet":"uid://bbmy6821audd1",
+	"ranger":"uid://drgiul5p1eh42",
+	"enemy_bullet":"uid://bf41tpk8csayd",
+	"game_over":"uid://d2hjnmw6yepcr",
+	"tank":"uid://bs6kcurb4niw3"
 }
 
 # ENEMY DATA 
@@ -20,22 +24,21 @@ var  enemies_data := {
 		"base_health" : 20,
 		"vision":1000
 	},
-	"eye":{
+	"ranger":{
 		"speed" : 100,
 		"damage" : 10,
 		"base_health" : 60,
-		"vision":600,#you change it for the best for the ranged attacker
+		"vision":500,#you change it for the best for the ranged attacker
 	},
-	"sheild":{
-		"speed" : 80,
+	"tank":{
+		"speed" : 50,
 		"damage" : 35,
 		"base_health" : 160,
-		"vision":400,#you change it for the best for the tank and heavy hitter
+		"vision":350,#you change it for the best for the tank and heavy hitter
 	},
 }
 
 # global functions
-
 # The universal AI function any enemy can call!
 func calculate_smart_velocity(enemy_pos: Vector2, nav_agent: NavigationAgent2D, target: Node2D, stats: Dictionary, wander_dir: Vector2) -> Vector2:
 	var distance_to_target = INF
@@ -62,3 +65,10 @@ func apply_levitation(visual_node: CanvasItem, float_distance: float = 8.0, dura
 	
 	# Tween DOWN: Smoothly move the Y position back to the start
 	tween.tween_property(visual_node, "position:y", start_y, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+func apply_knockback(source_pos: Vector2, target: Node2D, power: float):
+	# Make sure the target actually has the ability to be pushed
+	if target.has_method("receive_knockback"):
+		# Calculate the angle from the explosion outward to the target
+		var push_direction = source_pos.direction_to(target.global_position)
+		target.receive_knockback(push_direction * power)

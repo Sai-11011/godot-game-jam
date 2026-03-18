@@ -6,4 +6,5 @@
 script = ExtResource("1_wird5")
 
 [node name="SpawnTimer" type="Timer" parent="." unique_id=484002595]
+wait_time = 4.0
 autostart = true

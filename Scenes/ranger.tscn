@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://drgiul5p1eh42"]
+
+[ext_resource type="Script" uid="uid://dis4py5a3fx72" path="res://Scripts/ranger.gd" id="1_5x117"]
+[ext_resource type="Texture2D" uid="uid://bbn1o4ovcxkc4" path="res://Assets/Enemies/Shield-eye_Down.png" id="2_4mesp"]
+[ext_resource type="Texture2D" uid="uid://bs3ftumr6ygm8" path="res://Assets/textures/light.svg" id="3_4mesp"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wvth2"]
+
+[node name="Ranger" type="CharacterBody2D" unique_id=1204798920 groups=["Enemy", "Ranger"]]
+collision_layer = 4
+collision_mask = 15
+script = ExtResource("1_5x117")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1464988528]
+shape = SubResource("RectangleShape2D_wvth2")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=202129613]
+texture = ExtResource("2_4mesp")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=382591859]
+avoidance_enabled = true
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=304395964]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("3_4mesp")

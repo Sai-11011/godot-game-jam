@@ -2,15 +2,16 @@ extends Area2D
 
 var target_pos: Vector2
 var explosion_radius: float = 100.0 # How wide the spread damage is
-var damage: float = 10
+var damage: float = PlayerData.current_damage
 var speed: float = 500.0
+var pulse_tween: Tween 
 
 func _ready():
 	scale = Vector2(0.1, 0.1) #small to big
 	
-	var pulse_tween = create_tween().set_loops()
-	pulse_tween.tween_property(self, "scale", Vector2(1.2, 1.2), 0.3).set_trans(Tween.TRANS_SINE)
-	pulse_tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.3).set_trans(Tween.TRANS_SINE)
+	pulse_tween = create_tween().set_loops()
+	pulse_tween.tween_property(self, "scale", Vector2(1.2, 1.2), 0.5).set_trans(Tween.TRANS_SINE)
+	pulse_tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.5).set_trans(Tween.TRANS_SINE)
 	
 	var tween = create_tween()
 	tween.tween_interval(0.3) 
@@ -25,11 +26,21 @@ func _on_body_entered(body: Node2D):
 		explode()
 
 func explode():
+	if pulse_tween:
+		pulse_tween.kill()
 	set_deferred("monitoring", false)
-	
 	var tween = create_tween()
-	tween.tween_property(self, "scale", Vector2(3.0, 3.0), 0.2)
-	tween.tween_property(self, "modulate:a", 0.0, 0.2)
+	tween.set_parallel(true)
+	# Use TRANS_QUART or TRANS_EXPO for that snappy "explosion" feel
+	tween.set_trans(Tween.TRANS_QUART)
+	tween.set_ease(Tween.EASE_OUT)
+
+	# Scale up fast, then slow down
+	tween.tween_property(self, "scale", Vector2(20.0, 20.0), 0.3)
+
+	# Fade out (using EASE_IN makes it disappear more toward the end of the scale)
+	tween.tween_property(self, "modulate:a", 0.0, 0.3).set_ease(Tween.EASE_OUT)
+	tween.set_parallel(false) 
 	tween.tween_callback(queue_free)
 	
 	# SPREAD DAMAGE & KNOCKBACK MATH

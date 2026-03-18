@@ -4,10 +4,13 @@
 [ext_resource type="Texture2D" uid="uid://saj535dyh3ql" path="res://Assets/MC/Cyborg_Sword-up_Side_Sheet7.png" id="2_3smsa"]
 [ext_resource type="Texture2D" uid="uid://cdef2s0f0lmqc" path="res://Assets/MC/Cyborg_Idle_Left.png" id="2_x3wgy"]
 [ext_resource type="Texture2D" uid="uid://br7llh0511qsy" path="res://Assets/MC/Cyborg_Idle_Right.png" id="3_3smsa"]
+[ext_resource type="Texture2D" uid="uid://ulhd670gmxt0" path="res://Assets/MC/Cyborg_Getting-Hit_Side_Sheet3.png" id="3_gymyn"]
 [ext_resource type="PackedScene" uid="uid://yqhkv2dsrv7y" path="res://Scenes/hud.tscn" id="4_vgqql"]
 [ext_resource type="Texture2D" uid="uid://dkt85nq4b8ne4" path="res://Assets/MC/Cyborg_Run_Left_Side.png" id="4_x3wgy"]
 [ext_resource type="Texture2D" uid="uid://cuw3nnbehped1" path="res://Assets/MC/Cyborg_Run_Right_Side.png" id="5_3smsa"]
+[ext_resource type="Texture2D" uid="uid://du0iod16fn48v" path="res://Assets/MC/Cyborg_Run_Down_Sheet6.png" id="5_tx1dd"]
 [ext_resource type="Texture2D" uid="uid://bs3ftumr6ygm8" path="res://Assets/textures/light.svg" id="8_8erm5"]
+[ext_resource type="Texture2D" uid="uid://bmlo1vs5i2gt5" path="res://Assets/MC/Cyborg_Run_Up_Sheet6.png" id="8_gymyn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wohnl"]
 atlas = ExtResource("2_3smsa")
@@ -36,6 +39,26 @@ region = Rect2(160, 0, 32, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_qpa8y"]
 atlas = ExtResource("2_3smsa")
 region = Rect2(192, 0, 32, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e6mvm"]
+atlas = ExtResource("3_gymyn")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_57lvd"]
+atlas = ExtResource("3_gymyn")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ie7r7"]
+atlas = ExtResource("3_gymyn")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sbwqj"]
+atlas = ExtResource("5_tx1dd")
+region = Rect2(0, 0, 25, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r7t2e"]
+atlas = ExtResource("5_tx1dd")
+region = Rect2(125, 0, 25, 34)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_h4iuc"]
 atlas = ExtResource("2_x3wgy")
@@ -85,6 +108,30 @@ region = Rect2(128, 0, 32, 33)
 atlas = ExtResource("3_3smsa")
 region = Rect2(160, 0, 32, 33)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_nmr2m"]
+atlas = ExtResource("8_gymyn")
+region = Rect2(0, 0, 25, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c1k8q"]
+atlas = ExtResource("8_gymyn")
+region = Rect2(125, 0, 25, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xwi16"]
+atlas = ExtResource("5_tx1dd")
+region = Rect2(25, 0, 25, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sweqm"]
+atlas = ExtResource("5_tx1dd")
+region = Rect2(50, 0, 25, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ph33w"]
+atlas = ExtResource("5_tx1dd")
+region = Rect2(75, 0, 25, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7ldla"]
+atlas = ExtResource("5_tx1dd")
+region = Rect2(100, 0, 25, 34)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_8erm5"]
 atlas = ExtResource("4_x3wgy")
 region = Rect2(160, 0, 32, 33)
@@ -133,6 +180,22 @@ region = Rect2(128, 0, 32, 33)
 atlas = ExtResource("5_3smsa")
 region = Rect2(160, 0, 32, 33)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_ax3m3"]
+atlas = ExtResource("8_gymyn")
+region = Rect2(25, 0, 25, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3vlem"]
+atlas = ExtResource("8_gymyn")
+region = Rect2(50, 0, 25, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8eeqe"]
+atlas = ExtResource("8_gymyn")
+region = Rect2(75, 0, 25, 34)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5x828"]
+atlas = ExtResource("8_gymyn")
+region = Rect2(100, 0, 25, 34)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_f1ek2"]
 animations = [{
 "frames": [{
@@ -163,7 +226,24 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_h4iuc")
+"texture": SubResource("AtlasTexture_e6mvm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_57lvd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ie7r7")
+}],
+"loop": false,
+"name": &"hit",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sbwqj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r7t2e")
 }],
 "loop": true,
 "name": &"idle_down",
@@ -217,7 +297,10 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_olqyp")
+"texture": SubResource("AtlasTexture_nmr2m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c1k8q")
 }],
 "loop": true,
 "name": &"idle_up",
@@ -225,7 +308,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_olqyp")
+"texture": SubResource("AtlasTexture_sbwqj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xwi16")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sweqm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ph33w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7ldla")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r7t2e")
 }],
 "loop": true,
 "name": &"walk_down",
@@ -279,7 +377,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_h4iuc")
+"texture": SubResource("AtlasTexture_nmr2m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ax3m3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3vlem")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8eeqe")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5x828")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c1k8q")
 }],
 "loop": true,
 "name": &"walk_up",
@@ -313,17 +426,18 @@ scale_max = 5.0
 scale_curve = SubResource("CurveTexture_3smsa")
 color_ramp = SubResource("GradientTexture1D_3smsa")
 
-[node name="Player" type="CharacterBody2D" unique_id=1455887580]
+[node name="Player" type="CharacterBody2D" unique_id=1455887580 groups=["Player"]]
 y_sort_enabled = true
-collision_mask = 50
+collision_mask = 34
 script = ExtResource("1_v0iea")
 
 [node name="Collisionpolygon2D" type="CollisionPolygon2D" parent="." unique_id=324234448]
 y_sort_enabled = true
-position = Vector2(5, 8)
-polygon = PackedVector2Array(-1, -9, -5, 3, 0, 4, 2, 1)
+position = Vector2(1, -2)
+polygon = PackedVector2Array(-2, -2, -7, 3, -1, 7, 5, 2)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1616223039]
+zoom = Vector2(2, 2)
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
 rotation_smoothing_enabled = true
@@ -336,11 +450,10 @@ drag_right_margin = 0.1
 drag_bottom_margin = 0.1
 
 [node name="PlayerAnimation" type="AnimatedSprite2D" parent="." unique_id=844829674]
-position = Vector2(-1, 12)
+position = Vector2(1, -10)
 sprite_frames = SubResource("SpriteFrames_f1ek2")
-animation = &"walk_up"
+animation = &"hit"
 autoplay = "idle_right"
-offset = Vector2(3, -12)
 
 [node name="Compass" type="Node2D" parent="." unique_id=1891374764]
 z_index = 10
@@ -360,6 +473,7 @@ polygon = PackedVector2Array(44, -3, 46, 0, 44, 3, 55, 0)
 [node name="HUD" parent="." unique_id=130902195 instance=ExtResource("4_vgqql")]
 
 [node name="ThrustHitbox" type="Area2D" parent="." unique_id=2076225368]
+position = Vector2(-1, -10)
 collision_layer = 8
 collision_mask = 4
 monitoring = false
@@ -376,9 +490,15 @@ process_material = SubResource("ParticleProcessMaterial_8erm5")
 
 [node name="PointLight2D" type="PointLight2D" parent="." unique_id=1602773180]
 self_modulate = Color(1, 0.7520891, 0.5303806, 1)
-position = Vector2(0, -8.526513e-14)
+position = Vector2(0, -11.999999)
 scale = Vector2(0.06933594, 0.058593757)
 color = Color(1, 1, 1, 0.5882353)
 texture = ExtResource("8_8erm5")
+
+[node name="HitBox" type="Area2D" parent="." unique_id=1483307326]
+collision_mask = 52
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="HitBox" unique_id=1649666134]
+polygon = PackedVector2Array(-4, -21, -6, -13, -5, 1, 5, 1, 5, -14, 1, -27)
 
 [connection signal="body_entered" from="ThrustHitbox" to="." method="_on_thrust_hit_box_body_entered"]

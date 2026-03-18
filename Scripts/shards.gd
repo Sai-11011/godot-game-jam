@@ -14,7 +14,7 @@ func _ready():
 	elif shard_type == "green":
 		visual_rect.color = Color.GREEN
 		
-	Global.apply_levitation(visual_rect, 12.0, 1.0)
+	Global.apply_levitation(self, 12.0, 1.0)
 
 func _on_body_entered(body: Node2D):
 	if is_claimed:
@@ -23,7 +23,7 @@ func _on_body_entered(body: Node2D):
 	if body.name == "Player":
 		is_claimed = true # Lock it!
 		PlayerData.collect_shard(shard_type) 
-		PlayerData.apply_stats()
+		PlayerData.apply_stats(shard_type)
 		queue_free()
 		
 	elif body.is_in_group("slime"):

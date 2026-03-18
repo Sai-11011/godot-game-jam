@@ -1,5 +1,7 @@
 extends Node
 
+signal max_health_update
+
 # SHARD INVENTORY 
 var shards_collected := {
 	"red": 0,
@@ -17,9 +19,9 @@ var knockback_forces := {
 
 # ATTACK INVENTORY
 var attacks := {
-	"red":0,
-	"blue":10,
-	"green":100
+	"red":30,
+	"blue":30,
+	"green":30
 }
 
 var attack_stats := {
@@ -34,7 +36,7 @@ var attack_stats := {
 		"attack_time":5,
 	},
 	"thrust":{
-		"range":199,
+		"range":200,
 		"cooldown":1,
 		"attack_time":0.1#player moves to the range in this time
 	},
@@ -73,9 +75,10 @@ func collect_shard(color: String):
 			attacks[color] += 3   # 3 Bullets per Green Shard
 		else:
 			attacks[color]+= 1 # 1 Attack use increasc for other Shards
-		apply_stats()
+		
+		apply_stats(color)
 
-func apply_stats():
+func apply_stats(color_collected=""):
 	# Red Shard -> +5% Base Attack Damage per shard
 	var red_bonus = shards_collected["red"] * 0.05
 	current_damage = base_damage * (1.0 + red_bonus)
@@ -83,8 +86,7 @@ func apply_stats():
 	# Blue Shard -> +10% Movement Speed (Capped at +100%)
 	var blue_bonus = min(shards_collected["blue"] * 0.1, MAX_SPEED_BONUS)
 	current_speed = base_speed * (1.0 + blue_bonus)
-	
-	# Green Shard -> +15 Max Health
+	# Green Shard -> +15 Max Health	
 	max_health = 100 + (shards_collected["green"] * 15)
 	
 	# Top Orb -> +50% to all stats
@@ -93,6 +95,11 @@ func apply_stats():
 		current_damage *= 1.50
 		current_speed *= 1.50
 		max_health = int(max_health * 1.50)
+	
+	if color_collected == "green":
+		current_health += int(max_health * 0.15)
+	current_health = min(current_health,max_health)
+	max_health_update.emit()
 
 # ENEMY SCALING FUNCTION 
 func increase_enemy_difficulty():
@@ -108,3 +115,21 @@ func apply_knockback(enemy: Node2D, source_pos: Vector2, attack_type: String):
 		var knockback_vector = push_dir * force
 		
 		enemy.receive_knockback(knockback_vector)
+
+func reset_data():
+	# Reset Health & Stats
+	max_health = 100
+	current_health = 100
+	base_damage = 20.0 
+	current_damage = 20.0
+	base_speed = 150.0
+	current_speed = 150.0
+	
+	# Reset Inventory
+	shards_collected = {"red": 0, "blue": 0, "green": 0}
+	attacks = {"red": 0, "blue": 10, "green": 100}
+	has_top_orb = false
+	
+	# Reset Game Scaling
+	enemy_stat_multiplier = 1.0 
+	game_time_seconds = 0.0

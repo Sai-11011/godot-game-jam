@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bwf2pxg1gmvse"
-path="res://.godot/imported/Green energy.png-ae6cc96315f0ce8797af998bc1046a3d.ctex"
+uid="uid://bam6kphe581sm"
+path="res://.godot/imported/bullet.png-f20e0560020c6cf04d9441cf5450c08d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/MC/Green energy.png"
-dest_files=["res://.godot/imported/Green energy.png-ae6cc96315f0ce8797af998bc1046a3d.ctex"]
+source_file="res://Assets/textures/bullet.png"
+dest_files=["res://.godot/imported/bullet.png-f20e0560020c6cf04d9441cf5450c08d.ctex"]
 
 [params]
 
