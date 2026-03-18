@@ -14,7 +14,7 @@ func _ready():
 	elif shard_type == "green":
 		visual_rect.color = Color.GREEN
 		
-	Global.apply_levitation(visual_rect, 12.0, 1.0)
+	Global.apply_levitation(self, 12.0, 1.0)
 
 func _on_body_entered(body: Node2D):
 	if is_claimed:
