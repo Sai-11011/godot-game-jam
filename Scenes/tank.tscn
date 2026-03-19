@@ -1,26 +1,75 @@
 [gd_scene format=3 uid="uid://bs6kcurb4niw3"]
 
 [ext_resource type="Script" uid="uid://ce2m8a16rybwk" path="res://Scripts/tank.gd" id="1_0ys04"]
+[ext_resource type="Texture2D" uid="uid://bdqqp8u7phynf" path="res://Assets/Enemies/Head-statue_Down_Attack-Sheet8.png" id="2_r30pj"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_r30pj"]
+radius = 18.027756
+
+[sub_resource type="Animation" id="Animation_7f80w"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_42q8f"]
+resource_name = "slam_down"
+length = 1.3666667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.16666669, 0.33333337, 0.5, 0.66666675, 0.83333325, 1, 1.1666666),
+"transitions": PackedFloat32Array(0.4829682, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.8666667),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"execute_slam"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_2nc7w"]
+_data = {
+&"RESET": SubResource("Animation_7f80w"),
+&"slam_down": SubResource("Animation_42q8f")
+}
 
 [node name="Tank" type="CharacterBody2D" unique_id=1322696617 groups=["Enemy", "Tank"]]
+collision_layer = 4
+collision_mask = 11
 script = ExtResource("1_0ys04")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1407916124]
 shape = SubResource("CircleShape2D_r30pj")
 
-[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1126137828]
-polygon = PackedVector2Array(-6, 9, 6, 9, 11, 2, 12, -5, 8, -2, 8, -2, 8, -9, 6, -13, 7, -19, 3, -13, 0, -19, -3, -13, -8, -19, -6, -13, -7, -9, -7, -2, -11, -5, -10, 2)
-
-[node name="Line2D" type="Line2D" parent="Polygon2D" unique_id=1991412490]
-points = PackedVector2Array(-3, -8, -3, -7)
-width = 3.0
-default_color = Color(0, 0, 0, 1)
-
-[node name="Line2D2" type="Line2D" parent="Polygon2D" unique_id=1597511336]
-points = PackedVector2Array(4, -8, 4, -7)
-width = 3.0
-default_color = Color(0, 0, 0, 1)
-
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=334301600]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1953891831]
+libraries/ = SubResource("AnimationLibrary_2nc7w")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2037963080]
+texture = ExtResource("2_r30pj")
+hframes = 8

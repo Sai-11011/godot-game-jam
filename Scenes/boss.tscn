@@ -1,0 +1,138 @@
+[gd_scene format=3 uid="uid://b4lwqpalh710x"]
+
+[ext_resource type="Script" uid="uid://chtseaxsq05at" path="res://Scripts/boss.gd" id="1_mh6p8"]
+[ext_resource type="Texture2D" uid="uid://ckr2ksq75nim4" path="res://Assets/Enemies/Boss/Boss-body-Sheet6.png" id="2_qtle2"]
+[ext_resource type="Texture2D" uid="uid://bs3ftumr6ygm8" path="res://Assets/textures/light.svg" id="3_yq25j"]
+[ext_resource type="Texture2D" uid="uid://du1j3x7n2cu0u" path="res://Assets/Enemies/Boss/Boss-head-angles-Sheet8.png" id="4_odcco"]
+[ext_resource type="Script" uid="uid://ck7hj4pmqsgb7" path="res://Scripts/cubes.gd" id="5_q76ad"]
+[ext_resource type="Texture2D" uid="uid://dtsxnsr83sphy" path="res://Assets/Enemies/Boss/Boss_Block.png" id="6_nuv35"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lel8w"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6xjeg"]
+radius = 22.022715
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mh6p8"]
+bg_color = Color(1, 0, 0, 1)
+
+[node name="Boss" type="CharacterBody2D" unique_id=1719500555 groups=["Enemy"]]
+y_sort_enabled = true
+collision_layer = 4
+collision_mask = 11
+script = ExtResource("1_mh6p8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1063687110]
+shape = SubResource("CapsuleShape2D_lel8w")
+
+[node name="BodySprite" type="Sprite2D" parent="." unique_id=1845467871]
+y_sort_enabled = true
+position = Vector2(0, 27)
+texture = ExtResource("2_qtle2")
+hframes = 6
+metadata/_edit_group_ = true
+
+[node name="PointLight2D" type="PointLight2D" parent="BodySprite" unique_id=990294352]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_yq25j")
+
+[node name="HeadSprite" type="Sprite2D" parent="." unique_id=2005139916]
+y_sort_enabled = true
+position = Vector2(-2, -63)
+texture = ExtResource("4_odcco")
+hframes = 8
+
+[node name="OrbitCenter" type="Node2D" parent="." unique_id=204339233]
+y_sort_enabled = true
+
+[node name="GreenCube" type="Area2D" parent="OrbitCenter" unique_id=243274028 groups=["Enemy"]]
+y_sort_enabled = true
+position = Vector2(69, -40)
+collision_layer = 4
+collision_mask = 11
+script = ExtResource("5_q76ad")
+cube_color = "green"
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="OrbitCenter/GreenCube" unique_id=75874516]
+self_modulate = Color(0.5377862, 1, 0.50600433, 1)
+texture = ExtResource("6_nuv35")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OrbitCenter/GreenCube" unique_id=394510326]
+shape = SubResource("CircleShape2D_6xjeg")
+
+[node name="HealthBar" type="ProgressBar" parent="OrbitCenter/GreenCube" unique_id=1753474713]
+offset_left = -40.0
+offset_top = -42.0
+offset_right = 40.0
+offset_bottom = -30.0
+theme_override_font_sizes/font_size = 5
+theme_override_styles/fill = SubResource("StyleBoxFlat_mh6p8")
+max_value = 150.0
+step = 1.0
+value = 150.0
+
+[node name="RedCube" type="Area2D" parent="OrbitCenter" unique_id=463477966 groups=["Enemy"]]
+y_sort_enabled = true
+position = Vector2(0, 80)
+collision_layer = 4
+collision_mask = 11
+script = ExtResource("5_q76ad")
+cube_color = "red"
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="OrbitCenter/RedCube" unique_id=362785831]
+self_modulate = Color(1, 0.38795537, 0.3197254, 1)
+texture = ExtResource("6_nuv35")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OrbitCenter/RedCube" unique_id=1513326654]
+shape = SubResource("CircleShape2D_6xjeg")
+
+[node name="HealthBar" type="ProgressBar" parent="OrbitCenter/RedCube" unique_id=63633267]
+offset_left = -40.0
+offset_top = -42.0
+offset_right = 40.0
+offset_bottom = -30.0
+theme_override_font_sizes/font_size = 5
+theme_override_styles/fill = SubResource("StyleBoxFlat_mh6p8")
+max_value = 150.0
+step = 1.0
+value = 150.0
+
+[node name="BlueCube" type="Area2D" parent="OrbitCenter" unique_id=2049640550 groups=["Enemy"]]
+y_sort_enabled = true
+position = Vector2(-69, -40)
+collision_layer = 4
+collision_mask = 11
+script = ExtResource("5_q76ad")
+cube_color = "blue"
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="OrbitCenter/BlueCube" unique_id=972735436]
+self_modulate = Color(0.5157923, 0.6725292, 1, 1)
+texture = ExtResource("6_nuv35")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OrbitCenter/BlueCube" unique_id=248197580]
+shape = SubResource("CircleShape2D_6xjeg")
+
+[node name="HealthBar" type="ProgressBar" parent="OrbitCenter/BlueCube" unique_id=1723110905]
+offset_left = -40.0
+offset_top = -42.0
+offset_right = 40.0
+offset_bottom = -30.0
+theme_override_font_sizes/font_size = 5
+theme_override_styles/fill = SubResource("StyleBoxFlat_mh6p8")
+max_value = 150.0
+step = 1.0
+value = 150.0
+
+[node name="HealthBar" type="ProgressBar" parent="." unique_id=1705086609]
+custom_minimum_size = Vector2(150, 10)
+offset_left = -71.0
+offset_top = -145.0
+offset_right = 79.0
+offset_bottom = -127.0
+theme_override_font_sizes/font_size = 10
+theme_override_styles/fill = SubResource("StyleBoxFlat_mh6p8")
+max_value = 2000.0
+step = 1.0
+value = 2000.0

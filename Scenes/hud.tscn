@@ -2,9 +2,10 @@
 
 [ext_resource type="Script" uid="uid://ko2ylgordrwi" path="res://Scripts/hud.gd" id="1_e0onf"]
 [ext_resource type="FontFile" uid="uid://bff2euuw1dwit" path="res://Assets/fonts/PressStart2P-Regular.ttf" id="2_fccik"]
+[ext_resource type="Script" uid="uid://d12sh5lfv4hcf" path="res://Scripts/timer_label.gd" id="3_bjfho"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bjfho"]
-bg_color = Color(1, 0.2627451, 0, 1)
+bg_color = Color(1.1310726e-06, 0.63421637, 9.62615e-07, 1)
 
 [node name="HUD" type="CanvasLayer" unique_id=130902195]
 script = ExtResource("1_e0onf")
@@ -27,6 +28,7 @@ size_flags_vertical = 0
 theme_override_fonts/font = ExtResource("2_fccik")
 theme_override_font_sizes/font_size = 36
 text = "5:00"
+script = ExtResource("3_bjfho")
 
 [node name="StatsContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1000453340]
 layout_mode = 2

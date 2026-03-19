@@ -46,6 +46,8 @@ var attack_stats := {
 		"attack_time":10 #unti queue free
 	}
 }
+# Add this near the top with your other variables
+var is_boss_active: bool = false
 
 # PLAYER BASE STATS 
 var max_health: int = 100
@@ -132,4 +134,7 @@ func reset_data():
 	
 	# Reset Game Scaling
 	enemy_stat_multiplier = 1.0 
+	game_time_seconds = 0.0
+	
+	is_boss_active = false
 	game_time_seconds = 0.0

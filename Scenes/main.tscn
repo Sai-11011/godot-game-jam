@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://bgea7h8e0oelp" path="res://Assets/objects/Pillar_1_Fallen.png" id="6_6iyac"]
 [ext_resource type="PackedScene" uid="uid://dcij8nfph1qn7" path="res://Scenes/light.tscn" id="10_hptm8"]
 [ext_resource type="Script" uid="uid://vs3mwal2fw8y" path="res://Scripts/world_boundaries.gd" id="11_d1ilt"]
+[ext_resource type="PackedScene" uid="uid://b4lwqpalh710x" path="res://Scenes/boss.tscn" id="12_6iyac"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fdnlq"]
 texture = ExtResource("2_ynf5e")
@@ -121,7 +122,7 @@ texture_region_size = Vector2i(37, 14)
 
 [sub_resource type="TileSet" id="TileSet_5ukr8"]
 physics_layer_0/collision_layer = 2
-physics_layer_0/collision_mask = 5
+physics_layer_0/collision_mask = 21
 sources/0 = SubResource("TileSetAtlasSource_fo5ed")
 sources/1 = SubResource("TileSetAtlasSource_k12tt")
 sources/3 = SubResource("TileSetAtlasSource_h1bgf")
@@ -183,6 +184,7 @@ position = Vector2(-714, 683)
 position = Vector2(727, 682)
 
 [node name="Player" parent="Ysort" unique_id=1455887580 instance=ExtResource("4_6bp64")]
+position = Vector2(375, 402)
 
 [node name="EnemySpawner" parent="Ysort" unique_id=1488309227 node_paths=PackedStringArray("player") instance=ExtResource("5_kry3j")]
 y_sort_enabled = true
@@ -220,3 +222,5 @@ debug_color = Color(1, 1, 1, 0.05882353)
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1641982088]
 color = Color(0.8646751, 0.86467516, 0.8646751, 1)
 metadata/_edit_lock_ = true
+
+[node name="Boss" parent="." unique_id=1719500555 instance=ExtResource("12_6iyac")]
