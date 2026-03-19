@@ -10,6 +10,7 @@ extends CharacterBody2D
 @onready var sprite := $Sprite2D
 @onready var nav_agent = $NavigationAgent2D
 @onready var enemy_bullet_scene :PackedScene = load(Global.SCENES.enemy_bullet)
+@onready var shard_scene: PackedScene = load(Global.SCENES.shards)
 
 var can_shoot: bool = true
 var shoot_cooldown: float = 1.5
@@ -112,8 +113,21 @@ func receive_knockback(force_vector: Vector2):
 
 func take_damage(damage_amount: int):
 	health -= damage_amount
+	AudioManager.play_sfx("enemy_hit")
+	var flash_tween = create_tween()
+	sprite.modulate = Color(3.0, 3.0, 3.0)
+	flash_tween.tween_property(sprite, "modulate", Color.WHITE, 0.15)
 	if health <= 0:
 		die()
 
 func die():
+	# 50% chance to drop a random shard
+	if randf() <= 0.5:
+		var shard = shard_scene.instantiate()
+		var available_colors = ["red", "blue", "green"]
+		shard.shard_type = available_colors[randi() % available_colors.size()]
+		shard.global_position = global_position
+		
+		get_tree().current_scene.call_deferred("add_child", shard)
+		
 	queue_free()

@@ -23,6 +23,7 @@ config/icon="res://icon.svg"
 
 PlayerData="*uid://bj6241x0fhpbm"
 Global="*uid://r6vd26hu8lx1"
+AudioManager="*uid://cspwwym3ntjt3"
 
 [display]
 

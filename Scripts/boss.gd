@@ -35,9 +35,9 @@ var orbit_speed: float = 1.5
 
 # Cube Data
 var active_cubes = {
-	"red": {"node": null, "hp": 550, "is_alive": true},
-	"blue": {"node": null, "hp": 550, "is_alive": true},
-	"green": {"node": null, "hp": 550, "is_alive": true}
+	"red": {"node": null, "hp": 150, "is_alive": true},
+	"blue": {"node": null, "hp": 150, "is_alive": true},
+	"green": {"node": null, "hp": 150, "is_alive": true}
 }
 
 func _ready():
@@ -119,6 +119,7 @@ func wake_up():
 	PlayerData.is_boss_active = true # Tell the game the boss is fighting!
 	queue_redraw() 
 	print("The Titan has awakened!")
+	AudioManager.play_sfx("boss_awaken")
 	
 	get_tree().call_group("Camera", "apply_shake", 30.0) 
 	
@@ -282,13 +283,14 @@ func respawn_cubes():
 	
 	core_hp_bar.value = core_health # Update core bar since he healed
 	
-		
 
-# Your player attacks should call this when hitting the Boss's main CharacterBody2D
 func take_damage(amount: int):
-	if current_state == State.VULNERABLE:
+	# NOW ALLOWS DAMAGE IF VULNERABLE *OR* STUNNED
+	if current_state == State.VULNERABLE or current_state == State.STUNNED:
+		AudioManager.play_sfx("boss_hit")
 		core_health -= amount
 		core_hp_bar.value = core_health
+		
 		# Flash core white
 		body_sprite.modulate = Color(3, 3, 3)
 		await get_tree().create_timer(0.1).timeout
@@ -297,19 +299,27 @@ func take_damage(amount: int):
 		if core_health <= 0:
 			die()
 	else:
-		# Show a blocked/shielded effect - maybe flash blue or play a "tink" sound
-		pass
+		# VISUAL FEEDBACK: Flash blue so the player knows the core is shielded!
+		body_sprite.modulate = Color(0.5, 0.5, 2.0)
+		await get_tree().create_timer(0.1).timeout
+		body_sprite.modulate = Color.WHITE
+		
 
 func die():
 	print("TITAN DEFEATED!")
+	AudioManager.play_sfx("boss_die")
 	# Stop everything, play explosion, change to victory screen
+	get_tree().change_scene_to_file("res://Scenes/win_screen.tscn")
 	queue_free()
+
+func receive_knockback(_force: Vector2):
+	pass # Cubes ignore knockback too!
 
 func perform_red_slam():
 	if not is_instance_valid(player): return
 	print("Red Slam Attack!")
 	
-	var slam_radius = 160.0
+	var slam_radius = 80.0
 	var target_pos = player.global_position
 	
 	# Save the cube's local spot in the triangle so we can put it back later
@@ -425,7 +435,7 @@ func perform_green_burst():
 		
 		bullet.global_position = eye_pos
 		bullet.scale = Vector2(1.8, 1.8) # Slightly larger than normal bullets
-		
+		bullet.modulate = Color(0.5, 2.0, 0.5)
 		var current_angle = i * angle_step
 		var direction = Vector2(cos(current_angle), sin(current_angle))
 		bullet.rotation = current_angle
@@ -437,9 +447,3 @@ func perform_green_burst():
 			
 		if "damage" in bullet:
 			bullet.damage = 15 # Lower damage, but hard to dodge
-
-func _on_area_entered(area: Area2D) -> void:
-	if area.is_in_group("Enemy"):
-		if area.has_method("take_damage"):
-			area.take_damage(PlayerData.current_damage)
-			queue_free() # Destroy the bullet

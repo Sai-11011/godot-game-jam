@@ -4,9 +4,9 @@ signal max_health_update
 
 # SHARD INVENTORY 
 var shards_collected := {
-	"red": 0,
-	"blue": 0,
-	"green": 0,
+	"red": 15,
+	"blue": 10,
+	"green": 10,
 }
 var has_top_orb := false
  
@@ -26,9 +26,9 @@ var attacks := {
 
 var attack_stats := {
 	"base":{
-		"range":130,
-		"cooldown":0.3,
-		"attack_time":0.18,#duration of attack 
+		"range":230,
+		"cooldown":0.1,
+		"attack_time":0.25,#duration of attack 
 	},
 	"high":{
 		"range":0,#this buffs all attacks for 5 seconds
@@ -72,6 +72,7 @@ func _process(delta):
 # CORE UPGRADE FUNCTION
 func collect_shard(color: String):
 	if shards_collected.has(color):
+		AudioManager.play_sfx("shard_pickup")
 		shards_collected[color] += 1
 		if color == "green":
 			attacks[color] += 3   # 3 Bullets per Green Shard

@@ -3,6 +3,10 @@
 [ext_resource type="FontFile" uid="uid://bff2euuw1dwit" path="res://Assets/fonts/PressStart2P-Regular.ttf" id="1_3uj03"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_og88e"]
+content_margin_left = 50.0
+content_margin_top = 15.0
+content_margin_right = 50.0
+content_margin_bottom = 15.0
 bg_color = Color(0.2387509, 0.2185288, 0.36093053, 1)
 border_width_left = 10
 border_width_top = 10
@@ -11,6 +15,10 @@ border_width_bottom = 10
 border_color = Color(0.4, 0.5372549, 0.5411765, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3uj03"]
+content_margin_left = 50.0
+content_margin_top = 15.0
+content_margin_right = 50.0
+content_margin_bottom = 15.0
 bg_color = Color(0.14944324, 0.13545433, 0.2352007, 1)
 border_width_left = 10
 border_width_top = 10
@@ -19,6 +27,10 @@ border_width_bottom = 10
 border_color = Color(0.22737435, 0.32430348, 0.32715678, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xl6ml"]
+content_margin_left = 50.0
+content_margin_top = 15.0
+content_margin_right = 50.0
+content_margin_bottom = 15.0
 bg_color = Color(0.30980393, 0.28627452, 0.45882353, 1)
 border_width_left = 8
 border_width_top = 8
@@ -31,6 +43,10 @@ corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_akos5"]
+content_margin_left = 50.0
+content_margin_top = 15.0
+content_margin_right = 50.0
+content_margin_bottom = 15.0
 bg_color = Color(0.43040103, 0.40360484, 0.61148375, 1)
 border_width_left = 10
 border_width_top = 10
