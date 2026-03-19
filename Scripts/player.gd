@@ -41,7 +41,7 @@ func _physics_process(delta: float) -> void:
 	if direction != Vector2.ZERO:
 		var speed = PlayerData.current_speed
 		# 4-Way Directional ANIMATION Logic
-		if abs(direction.x) > abs(direction.y):
+		if abs(direction.x) >= abs(direction.y):
 			if direction.x > 0:
 				facing_dir = "right"
 			else:
@@ -145,13 +145,23 @@ func perform_thrust_attack():
 	var attack_duration = thrust_stats["attack_time"]
 	var cooldown_time = thrust_stats["cooldown"]
 	
-	var dash_dir = get_best_thrust_direction(thrust_range)
-	if dash_dir == Vector2.ZERO:
-		if facing_dir == "right": dash_dir = Vector2.RIGHT
-		elif facing_dir == "left": dash_dir = Vector2.LEFT
-		elif facing_dir == "up": dash_dir = Vector2.UP
-		elif facing_dir == "down": dash_dir = Vector2.DOWN
+	var dash_dir = Vector2.ZERO
+	var input_dir = Input.get_vector("left", "right", "up", "down")
+	
+	if input_dir != Vector2.ZERO:
+		# 1. ESCAPE MODE: If the player is holding a direction, dash exactly that way!
+		dash_dir = input_dir.normalized()
+	else:
+		# 2. COMBAT MODE: Standing still? Auto-lock onto the best group of enemies!
+		dash_dir = get_best_thrust_direction(thrust_range)
 		
+		# 3. FALLBACK: Standing still and no enemies around? Dash the way we are facing.
+		if dash_dir == Vector2.ZERO:
+			if facing_dir == "right": dash_dir = Vector2.RIGHT
+			elif facing_dir == "left": dash_dir = Vector2.LEFT
+			elif facing_dir == "up": dash_dir = Vector2.UP
+			elif facing_dir == "down": dash_dir = Vector2.DOWN
+			
 	var target_pos = global_position + (dash_dir * thrust_range)
 	
 	# Phase through space using the Tween
@@ -234,7 +244,10 @@ func perform_bullet_attack():
 	# 2. Wait for the exact attack frame safely!
 	var target_frame = 5
 	while sprite.animation == "bullet" and sprite.frame < target_frame:
+		if not is_inside_tree(): return # <-- SAFETY CHECK
 		await get_tree().process_frame 
+		
+	if not is_inside_tree(): return # <-- SAFETY CHECK
 		
 	if sprite.animation != "bullet":
 		is_attacking = false
@@ -251,12 +264,17 @@ func perform_bullet_attack():
 	var total_frames = sprite.sprite_frames.get_frame_count("bullet")
 	if sprite.is_playing() and sprite.animation == "bullet" and sprite.frame < (total_frames - 1):
 		await sprite.animation_finished
+		
+	if not is_inside_tree(): return # <-- SAFETY CHECK
+	
 	sprite.offset = Vector2.ZERO
 	is_attacking = false
 	facing_dir = "right"
 	sprite.play("idle_" + facing_dir)
 	
 	await get_tree().create_timer(cooldown_time).timeout
+	
+	if not is_inside_tree(): return # <-- SAFETY CHECK
 	can_attack = true
 
 func perform_heavy_attack():
@@ -314,8 +332,6 @@ func get_best_thrust_direction(attack_range: float) -> Vector2:
 		for enemy in enemies_in_range:
 			var dir_to_enemy = global_position.direction_to(enemy.global_position)
 			
-			# The dot product checks if the enemy is roughly in front of this direction
-			# > 0.8 means they are inside a narrow line/cone in that direction
 			if dir.dot(dir_to_enemy) > 0.8:
 				current_hit_count += 1
 				
@@ -326,17 +342,35 @@ func get_best_thrust_direction(attack_range: float) -> Vector2:
 	return best_dir
 
 func get_closest_enemy(attack_range: float) -> Node2D:
-	var enemies = get_tree().get_nodes_in_group("Enemy")
-	var closest_enemy = null
+	# 1. Gather our priority targets
+	var boss_targets = get_tree().get_nodes_in_group("BossCube")
+	boss_targets.append_array(get_tree().get_nodes_in_group("Boss"))
+	
+	# 2. Try to target the Boss/Cubes FIRST
+	var closest_boss = find_closest_in_array(boss_targets, attack_range)
+	if closest_boss != null:
+		return closest_boss
+		
+	# 3. If no boss targets are near, target regular enemies
+	var regular_enemies = get_tree().get_nodes_in_group("Enemy")
+	return find_closest_in_array(regular_enemies, attack_range)
+
+# Helper function to prevent repeating code
+func find_closest_in_array(target_array: Array, attack_range: float) -> Node2D:
+	var closest = null
 	var shortest_distance = attack_range 
 	
-	for enemy in enemies:
-		var distance = global_position.distance_to(enemy.global_position)
+	for target in target_array:
+		# Don't target hidden cubes (dead ones)
+		if not is_instance_valid(target) or not target.visible: 
+			continue 
+			
+		var distance = global_position.distance_to(target.global_position)
 		if distance <= shortest_distance:
 			shortest_distance = distance
-			closest_enemy = enemy
+			closest = target
 			
-	return closest_enemy
+	return closest
 
 func get_best_bullet_target_pos(attack_range: float) -> Vector2:
 	var enemies = get_tree().get_nodes_in_group("Enemy")

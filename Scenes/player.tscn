@@ -304,7 +304,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"idle_up",
-"speed": 5.0
+"speed": 8.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -327,7 +327,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk_down",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -396,7 +396,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"walk_up",
-"speed": 5.0
+"speed": 10.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_x3wgy"]
@@ -452,7 +452,7 @@ drag_bottom_margin = 0.1
 [node name="PlayerAnimation" type="AnimatedSprite2D" parent="." unique_id=844829674]
 position = Vector2(1, -10)
 sprite_frames = SubResource("SpriteFrames_f1ek2")
-animation = &"hit"
+animation = &"walk_up"
 autoplay = "idle_right"
 
 [node name="Compass" type="Node2D" parent="." unique_id=1891374764]

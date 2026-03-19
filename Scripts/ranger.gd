@@ -29,7 +29,7 @@ func _ready() -> void:
 	add_to_group("Enemy")
 	add_to_group("Ranger")
 	pick_new_wander_direction()
-	Global.apply_levitation(self, 16.0, 1.0)
+	Global.apply_levitation(sprite, 16.0, 1.0)
 
 func _physics_process(delta: float) -> void:
 	if knockback_velocity != Vector2.ZERO:
@@ -52,10 +52,7 @@ func _physics_process(delta: float) -> void:
 				if can_shoot:
 					shoot_at_player(player.global_position)
 			elif distance <= vision:
-				# Player is too far (outside 150px), walk towards them
-				nav_agent.target_position = player.global_position
-				var next_path_pos = nav_agent.get_next_path_position()
-				var direction = global_position.direction_to(next_path_pos)
+				var direction = global_position.direction_to(player.global_position)
 				velocity = direction * speed
 			else:
 				# Player out of vision, wander

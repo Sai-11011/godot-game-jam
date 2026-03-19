@@ -18,13 +18,26 @@ func _on_enemy_spawn_timer_timeout():
 	if player == null:
 		return
 	var random = randf()
+	# --- BOSS PHASE SPAWN LOGIC ---
+	if PlayerData.is_boss_active:
+		var current_rangers = get_tree().get_nodes_in_group("ranger").size()
+		var current_tanks = get_tree().get_nodes_in_group("tank").size()
+		
+		# Slower respawns during boss fight to be fair to the player
+		if random < 0.4 and current_tanks < 3:
+			spawn_tank()
+		elif random < 0.8 and current_rangers < 5:
+			spawn_ranger()
+		# Slimes never spawn during the boss!
+		return 
+
+	# --- NORMAL SPAWN LOGIC ---
 	if random < 0.3:
 		spawn_tank()
 	elif random < 0.6:
 		spawn_ranger()
 	else:
 		spawn_slime()
-
 
 # 🧠 NEW HELPER FUNCTION: Finds a safe spot to spawn
 

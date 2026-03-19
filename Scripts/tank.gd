@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
-@onready var sprite := $Polygon2D # Or $Sprite2D depending on your node!
+@onready var sprite := $Sprite2D
+@onready var anim_player := $AnimationPlayer
 @onready var nav_agent = $NavigationAgent2D
 
 var player: CharacterBody2D
@@ -16,14 +17,16 @@ var knockback_velocity: Vector2 = Vector2.ZERO
 # Tank specific combat variables
 var is_attacking: bool = false
 var is_recovering: bool = false
-var slam_radius: float = 140.0 
+var slam_radius: float = 100.0 
 var current_warning_radius: float = 0.0
 var show_warning: bool = false
+
+# Direction tracking for your friend's new sprites
+var facing_dir: String = "down" 
 
 func _ready() -> void:
 	add_to_group("Enemy")
 	add_to_group("Tank")
-	# 🚨 REMOVED Global.apply_levitation! It is now grounded.
 
 func _physics_process(delta: float) -> void:
 	if knockback_velocity != Vector2.ZERO:
@@ -42,121 +45,109 @@ func _physics_process(delta: float) -> void:
 		var distance = global_position.distance_to(player.global_position)
 		
 		if distance <= 120.0:
-			# Player is close! Start the Jump Smash!
-			start_jump_attack()
+			start_slam_attack()
 		elif distance <= vision:
-			# Chase the player
 			nav_agent.target_position = player.global_position
 			var next_path_pos = nav_agent.get_next_path_position()
 			velocity = global_position.direction_to(next_path_pos) * speed
 			
-			# --- NEW: THE HEAVY DRAG EFFECT ---
+			update_facing_direction(velocity)
+			
+			# The heavy drag effect (disabled during jam if using walk animations instead)
 			var drag_time = Time.get_ticks_msec() / 250.0
-			# Rhythmically squish down and stretch forward to look like it's heaving its weight
 			sprite.scale.x = 1.0 + (sin(drag_time) * 0.06)
 			sprite.scale.y = 1.0 - (sin(drag_time) * 0.06)
-			# Tiny rotation to make it look like it's struggling
 			sprite.rotation = sin(drag_time * 0.5) * 0.03
 		else:
 			velocity = Vector2.ZERO
-			# Smoothly return to normal shape when standing still
 			sprite.scale = sprite.scale.lerp(Vector2(1.0, 1.0), 5.0 * delta)
 			sprite.rotation = lerp(sprite.rotation, 0.0, 5.0 * delta)
 
 	move_and_slide()
 
-# --- THE JUMP SMASH MECHANIC ---
+func update_facing_direction(vel: Vector2):
+	if abs(vel.x) > abs(vel.y):
+		facing_dir = "right" if vel.x > 0 else "left"
+	else:
+		facing_dir = "down" if vel.y > 0 else "up"
 
-func start_jump_attack():
+# --- THE HAND SLAM MECHANIC ---
+
+func start_slam_attack():
 	is_attacking = true
 	sprite.rotation = 0 
+	sprite.scale = Vector2(1, 1)
 	
-	# 1. THE WIND-UP 
-	var windup_tween = create_tween()
-	windup_tween.tween_property(sprite, "scale", Vector2(1.15, 0.85), 0.3)
-	windup_tween.tween_property(sprite, "modulate", Color(1.5, 0.5, 0.5), 0.3) 
-	await windup_tween.finished
+	# 1. PLAY ANIMATION (With a safe fallback for the game jam)
+	var anim_name = "slam_" + facing_dir
+	if anim_player.has_animation(anim_name):
+		anim_player.play(anim_name)
+	elif anim_player.has_animation("slam_down"):
+		anim_player.play("slam_down") # Safe fallback if friend hasn't finished sprites!
 	
-	# --- NEW: START THE GROWING TELEGRAPH ---
+	# 2. START TELEGRAPH CIRCLE
 	show_warning = true
 	current_warning_radius = 0.0
 	
-	var jump_up_time = 0.5
-	var hang_time = 0.2
-	var smash_down_time = 0.15
-	var total_air_time = jump_up_time + hang_time + smash_down_time # 0.85 seconds
+	var wind_up_time = 0.8 # Takes 0.8 seconds before the hit lands
 	
-	# This smoothly animates current_warning_radius from 0 to slam_radius
 	var circle_tween = create_tween()
-	circle_tween.tween_method(update_warning_circle, 0.0, slam_radius, total_air_time)
+	circle_tween.tween_method(update_warning_circle, 0.0, slam_radius, wind_up_time)
 	
-	# 2. THE LEAP 
-	var jump_tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	jump_tween.tween_property(sprite, "position:y", -100.0, jump_up_time)
-	jump_tween.parallel().tween_property(sprite, "scale", Vector2(1.3, 1.3), jump_up_time)
-	await jump_tween.finished
+	# 3. TRIGGER THE SLAM WITH CODE (Bypasses the AnimationPlayer track)
+	await get_tree().create_timer(wind_up_time).timeout
 	
-	# Hang in the air
-	await get_tree().create_timer(hang_time).timeout
-	
-	# 3. THE SMASH 
-	var slam_tween = create_tween().set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN)
-	slam_tween.tween_property(sprite, "position:y", 0.0, smash_down_time)
-	slam_tween.parallel().tween_property(sprite, "scale", Vector2(1.0, 1.0), smash_down_time)
-	await slam_tween.finished
-	
-	execute_slam()
+	# Only execute if we are still attacking (prevents bugs if tank dies during wind-up)
+	if is_attacking:
+		execute_slam()
 
 func execute_slam():
+	# This function should be called BY the AnimationPlayer
 	show_warning = false
 	queue_redraw() 
 	
-	sprite.modulate = Color(3.0, 3.0, 3.0) # Flash bright white
+	# Flash bright white on impact
+	var flash_tween = create_tween()
+	sprite.modulate = Color(3.0, 3.0, 3.0) 
+	flash_tween.tween_property(sprite, "modulate", Color(1.0, 1.0, 1.0), 0.3)
 	
 	if is_instance_valid(player):
 		var distance = global_position.distance_to(player.global_position)
 		
-		# 1. PROXIMITY CAMERA SHAKE
-		var max_shake_distance = 800.0 # You feel the earthquake up to 800px away
+		# Proximity Camera Shake
+		var max_shake_distance = 800.0 
 		if distance < max_shake_distance:
-			# Math: Maps distance to a multiplier between 1.0 (close) and 0.0 (far)
 			var shake_multiplier = 1.0 - (distance / max_shake_distance)
 			var dynamic_shake_strength = 35.0 * shake_multiplier 
-			
 			get_tree().call_group("Camera", "apply_shake", dynamic_shake_strength)
 		
-		# 2. DAMAGE & KNOCKBACK
+		# Damage & Knockback
 		if distance <= slam_radius:
 			if player.has_method("take_damage"):
 				player.take_damage(damage)
-				
-			# Call our brand new universal knockback! 
-			# 800.0 is the push power. Adjust as needed!
 			Global.apply_knockback(global_position, player, 800.0)
 	
-	# 4. RECOVERY
+	# Recovery phase after the slam
 	is_recovering = true
 	await get_tree().create_timer(1.2).timeout 
-	sprite.modulate = Color(1.0, 1.0, 1.0)
 	is_recovering = false
 	is_attacking = false
 
 func _draw():
 	if show_warning:
 		draw_arc(Vector2.ZERO, slam_radius, 0, TAU, 32, Color(1.0, 0.0, 0.0, 0.8), 2.0)
-		
 		draw_circle(Vector2.ZERO, current_warning_radius, Color(1.0, 0.0, 0.0, 0.4))
+
+func update_warning_circle(new_radius: float):
+	current_warning_radius = new_radius
+	queue_redraw()
 
 # --- COMBAT ---
 
 func receive_knockback(force_vector: Vector2):
-	knockback_velocity = force_vector * 0.3 # Barely moves!
+	knockback_velocity = force_vector * 0.3 
 
 func take_damage(damage_amount: int):
 	health -= damage_amount
 	if health <= 0:
 		queue_free()
-
-func update_warning_circle(new_radius: float):
-	current_warning_radius = new_radius
-	queue_redraw()

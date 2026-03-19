@@ -15,7 +15,8 @@ func _on_body_entered(body: Node2D) -> void:
 			body.take_damage(damage)
 		# Don't forget to delete the bullet after it hits!
 		queue_free()
-
+	elif body is TileMap or body is TileMapLayer:
+		queue_free()
 
 func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
 	queue_free()
