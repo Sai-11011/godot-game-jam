@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://ruqblpsfkxqt"
+path="res://.godot/imported/Slime Eating.mp3-f9487c0913c2048ad510553dccab8a95.mp3str"
+
+[deps]
+
+source_file="res://Music/Slime Eating/Slime Eating.mp3"
+dest_files=["res://.godot/imported/Slime Eating.mp3-f9487c0913c2048ad510553dccab8a95.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
