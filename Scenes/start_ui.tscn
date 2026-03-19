@@ -5,6 +5,9 @@
 [ext_resource type="Theme" uid="uid://bmun2ysgx4il8" path="res://Themes/Button.tres" id="3_avrgi"]
 [ext_resource type="FontFile" uid="uid://bff2euuw1dwit" path="res://Assets/fonts/PressStart2P-Regular.ttf" id="3_wfxj5"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wfxj5"]
+bg_color = Color(0, 0, 0, 0.7058824)
+
 [node name="StartUI" type="Control" unique_id=523426118]
 layout_mode = 3
 anchors_preset = 15
@@ -40,14 +43,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 60
-theme_override_constants/margin_top = 60
-theme_override_constants/margin_right = 60
-theme_override_constants/margin_bottom = 60
+theme_override_constants/margin_left = 180
+theme_override_constants/margin_bottom = 50
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1465611327]
 layout_mode = 2
+size_flags_vertical = 8
 theme_override_constants/separation = 60
+alignment = 2
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=117798941]
 layout_mode = 2
@@ -55,64 +58,75 @@ size_flags_vertical = 0
 theme_override_fonts/font = ExtResource("3_wfxj5")
 theme_override_font_sizes/font_size = 72
 text = "Titan’s Wake"
-horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1850743107]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1526663802]
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 0
 theme_override_constants/separation = 50
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1526663802]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_constants/separation = 50
-
-[node name="Play" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1478888576]
+[node name="Play" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer" unique_id=1478888576]
 process_mode = 3
 custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
 theme = ExtResource("3_avrgi")
 text = "Play"
 
-[node name="Control" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=3359453]
+[node name="Intro" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer" unique_id=3359453]
 custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
 theme = ExtResource("3_avrgi")
-text = "Control
+text = "Intro
 "
 
-[node name="Credits" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1280320549]
-custom_minimum_size = Vector2(0, 80)
-layout_mode = 2
-theme = ExtResource("3_avrgi")
-theme_override_font_sizes/font_size = 36
-text = "Button"
-
-[node name="Quit" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1988123475]
+[node name="Quit" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer" unique_id=1988123475]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 theme = ExtResource("3_avrgi")
 text = "Quit"
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1755838260]
+[node name="ControlsOverlay" type="Panel" parent="." unique_id=1579331619]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wfxj5")
+
+[node name="MarginContainer" type="MarginContainer" parent="ControlsOverlay" unique_id=980915515]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 150
+theme_override_constants/margin_top = 150
+theme_override_constants/margin_right = 150
+theme_override_constants/margin_bottom = 150
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ControlsOverlay/MarginContainer" unique_id=621295616]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer" unique_id=653765365]
-custom_minimum_size = Vector2(500, 300)
+[node name="RichTextLabel" type="RichTextLabel" parent="ControlsOverlay/MarginContainer/VBoxContainer" unique_id=1174707841]
 layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/normal_font = ExtResource("3_wfxj5")
+theme_override_fonts/bold_font = ExtResource("3_wfxj5")
+theme_override_fonts/bold_italics_font = ExtResource("3_wfxj5")
+theme_override_fonts/italics_font = ExtResource("3_wfxj5")
+theme_override_fonts/mono_font = ExtResource("3_wfxj5")
 bbcode_enabled = true
-text = "[center][b]HOW TO PLAY[/b][/center]
+text = "[center][b]THE TITAN AWAKENS...[/b][/center]\\n\\n[i]For eons, the ancient behemoth slumbered. Now, the purple eclipse spreads across the arena. You have exactly 5 minutes to prepare before it hunts you down.[/i]\\n\\n[b]YOUR OBJECTIVE:[/b]\\nSlay minions to gather shards. Shards permanently upgrade your stats and grant you limited uses of powerful abilities. When the Titan wakes, destroy its three orbiting cubes to expose the core!\\n\\n[center][b]CONTROLS[/b][/center]\\n[b]WASD / Arrows[/b] - Move\\n[b]J / Left Click[/b] - Base Slash\\n[b]Z[/b] - Toggle Camera Zoom\\n\\n[color=#ff3333][b][H][/b] Heavy Attack (Requires Red Shards)[/color]\\n[color=#3333ff][b][K][/b] Thrust Dash (Requires Blue Shards)[/color]\\n[color=#33ff33][b][L][/b] Bullet Attack (Requires Green Shards)[/color]"
 
-[b]WASD[/b] - Move
-[b]Left Click[/b] - Base Slash
-[b]Scroll Wheel[/b] - Zoom Camera
+[node name="BackButton" type="Button" parent="ControlsOverlay/MarginContainer/VBoxContainer" unique_id=1076469192]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 10
+theme = ExtResource("3_avrgi")
+text = "Back"
 
-[color=#ff3333][b][E] Heavy Attack[/b][/color] - 5x Damage Buff
-[color=#3333ff][b][Shift] Thrust[/b][/color] - Invincible Dash
-[color=#33ff33][b][Right Click] Bullet[/b][/color] - Ranged Attack
-
-[i]Gather shards to power your abilities. You have exactly 5 minutes before the Titan awakens...[/i]"
-
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Play" to="." method="_on_play_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/Intro" to="." method="_on_intro_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="ControlsOverlay/MarginContainer/VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]

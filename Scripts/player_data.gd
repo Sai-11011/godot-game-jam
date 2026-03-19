@@ -4,9 +4,9 @@ signal max_health_update
 
 # SHARD INVENTORY 
 var shards_collected := {
-	"red": 0,
-	"blue": 0,
-	"green": 0,
+	"red": 15,
+	"blue": 10,
+	"green": 10,
 }
 var has_top_orb := false
  
@@ -27,7 +27,7 @@ var attacks := {
 var attack_stats := {
 	"base":{
 		"range":230,
-		"cooldown":0.3,
+		"cooldown":0.1,
 		"attack_time":0.25,#duration of attack 
 	},
 	"high":{

@@ -11,7 +11,7 @@ var max_rangers = 30
 var max_tanks = 30
 
 # Create the "Donut"
-var min_spawn_radius: float = 400.0
+var min_spawn_radius: float = 500.0
 var max_spawn_radius: float = 1000.0
 
 func _on_enemy_spawn_timer_timeout():

@@ -1,5 +1,9 @@
 [gd_scene format=3 uid="uid://cvocabs0gq8mi"]
 
+[ext_resource type="Script" uid="uid://culqsre4x6162" path="res://Scripts/win_screen.gd" id="1_awi1s"]
+[ext_resource type="FontFile" uid="uid://bff2euuw1dwit" path="res://Assets/fonts/PressStart2P-Regular.ttf" id="2_bwc64"]
+[ext_resource type="Theme" uid="uid://bmun2ysgx4il8" path="res://Themes/Button.tres" id="3_85imr"]
+
 [node name="WinScreen" type="Control" unique_id=953237444]
 layout_mode = 3
 anchors_preset = 15
@@ -7,9 +11,51 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_awi1s")
 
-[node name="Label" type="Label" parent="." unique_id=140957089]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-text = "you won"
+[node name="ColorRect" type="ColorRect" parent="." unique_id=2140507660]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.011087579, 0.011087578, 0.01108758, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1916524126]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=1999046200]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer" unique_id=140957089]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_bwc64")
+theme_override_font_sizes/font_size = 64
+text = "TITAN DEFEATED"
+
+[node name="TimeLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1957929219]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/VBoxContainer" unique_id=1046466327]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer/MarginContainer" unique_id=1595837256]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 50
+
+[node name="MenuButton" type="Button" parent="CenterContainer/VBoxContainer/MarginContainer/HBoxContainer" unique_id=275191793]
+layout_mode = 2
+theme = ExtResource("3_85imr")
+text = "Menu"
+
+[node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer/MarginContainer/HBoxContainer" unique_id=724862450]
+layout_mode = 2
+theme = ExtResource("3_85imr")
+text = "Quit"

@@ -298,7 +298,7 @@ func perform_heavy_attack():
 	
 	# 1. TURN ON THE POWER UP
 	heavy_particles.emitting = true
-	PlayerData.current_damage *= 5.0 # DOUBLE DAMAGE!
+	PlayerData.current_damage *= 3.0 # DOUBLE DAMAGE!
 	sprite.modulate = Color(1.5, 0.5, 0.5) 
 	PlayerData.heavy_is_active = true
 	
@@ -466,15 +466,10 @@ func _on_thrust_hit_box_body_entered(body: Node2D) -> void:
 			body.take_damage(PlayerData.current_damage)
 
 func apply_zoom():
-	if current_zoom == 1.0:
-		spawn_radius = 500
-		current_zoom = 1.5
-	elif current_zoom == 1.5:
-		spawn_radius = 400
+	if current_zoom == 1.5:
 		current_zoom = 2
 	else :
-		spawn_radius = 800
-		current_zoom = 1
+		current_zoom = 1.5
 	camera.zoom = Vector2(current_zoom,current_zoom)
 	
 signal health_bar_update

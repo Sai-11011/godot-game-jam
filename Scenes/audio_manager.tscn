@@ -1,6 +1,54 @@
 [gd_scene format=3 uid="uid://cspwwym3ntjt3"]
 
+<<<<<<< HEAD
 [ext_resource type="Script" uid="uid://dd6iy04wvug6b" path="res://Scripts/audio_manager.gd" id="1_sm2tf"]
 
 [node name="AudioManager" type="Node" unique_id=4202032]
 script = ExtResource("1_sm2tf")
+=======
+[ext_resource type="Script" uid="uid://c37jh7no1wuuf" path="res://Scripts/audio_manager.gd" id="1_4tj6f"]
+[ext_resource type="AudioStream" uid="uid://6jr28jtopfcd" path="res://Music/Hero steps/land/Steps on land/Steps on Land.mp3" id="1_sm2tf"]
+[ext_resource type="AudioStream" uid="uid://btn1yy31qqsw" path="res://Music/Shield fire/Shield Fire.mp3" id="3_5kf6k"]
+[ext_resource type="AudioStream" uid="uid://c67dkkhl50kee" path="res://Music/Hearo get hit/hero gets hits/Hit1.mp3" id="4_5nrbi"]
+[ext_resource type="AudioStream" uid="uid://ruqblpsfkxqt" path="res://Music/Slime Eating/Slime Eating.mp3" id="4_tnn7g"]
+[ext_resource type="AudioStream" uid="uid://bnu2gys1a4o8j" path="res://Music/Shield Flying/Shield Flying.mp3" id="5_lwpe1"]
+[ext_resource type="AudioStream" uid="uid://cr6fkb4te7n7s" path="res://Music/Hearo get hit/hero gets hits/Hit2.mp3" id="5_pn88s"]
+[ext_resource type="AudioStream" uid="uid://ctf1pnh60jbm3" path="res://Music/Hearo get hit/hero gets hits/Hit3.mp3" id="6_fasow"]
+[ext_resource type="AudioStream" uid="uid://dsj3ybh2fibre" path="res://Music/sword related/Sword chargs/Sword Charge.mp3" id="6_jmilc"]
+[ext_resource type="AudioStream" uid="uid://bpla5x40ugr3w" path="res://Music/Hearo get hit/hero gets hits/Death.mp3" id="7_1bal0"]
+[ext_resource type="AudioStream" uid="uid://dajxh5flaojws" path="res://Music/Slime Moving/Slime Movin op 3.mp3" id="7_5nrbi"]
+
+[node name="audio_manager" type="Node" unique_id=989714405]
+script = ExtResource("1_4tj6f")
+
+[node name="PlayerSteps" type="AudioStreamPlayer" parent="." unique_id=321211023]
+stream = ExtResource("1_sm2tf")
+parameters/looping = true
+
+[node name="SwordCharge" type="AudioStreamPlayer" parent="." unique_id=448336763]
+stream = ExtResource("6_jmilc")
+
+[node name="Hit1" type="AudioStreamPlayer" parent="." unique_id=2037272079]
+stream = ExtResource("4_5nrbi")
+
+[node name="Hit2" type="AudioStreamPlayer" parent="." unique_id=1674184404]
+stream = ExtResource("5_pn88s")
+
+[node name="Hit3" type="AudioStreamPlayer" parent="." unique_id=1330814099]
+stream = ExtResource("6_fasow")
+
+[node name="Death" type="AudioStreamPlayer" parent="." unique_id=490807576]
+stream = ExtResource("7_1bal0")
+
+[node name="SlimeMove" type="AudioStreamPlayer" parent="." unique_id=911065820]
+stream = ExtResource("7_5nrbi")
+
+[node name="SlimeEating" type="AudioStreamPlayer" parent="." unique_id=17225649]
+stream = ExtResource("4_tnn7g")
+
+[node name="ShieldFlying" type="AudioStreamPlayer" parent="." unique_id=1648263558]
+stream = ExtResource("5_lwpe1")
+
+[node name="ShieldFire" type="AudioStreamPlayer" parent="." unique_id=1947739763]
+stream = ExtResource("3_5kf6k")
+>>>>>>> ede5de3172291b8eaa500ba112a387e461f504d2
