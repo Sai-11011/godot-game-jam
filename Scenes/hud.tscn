@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://yqhkv2dsrv7y"]
 
 [ext_resource type="Script" uid="uid://ko2ylgordrwi" path="res://Scripts/hud.gd" id="1_e0onf"]
-[ext_resource type="FontFile" uid="uid://bff2euuw1dwit" path="res://Assets/fonts/PressStart2P-Regular.ttf" id="2_fccik"]
+[ext_resource type="FontFile" uid="uid://cgo7riob5uqxg" path="res://Assets/fonts/ThaleahFat.ttf" id="2_6fbih"]
 [ext_resource type="Script" uid="uid://d12sh5lfv4hcf" path="res://Scripts/timer_label.gd" id="3_bjfho"]
+[ext_resource type="FontFile" uid="uid://dl2qnelvliach" path="res://Assets/fonts/m5x7.ttf" id="4_t1xeu"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bjfho"]
 bg_color = Color(1.1310726e-06, 0.63421637, 9.62615e-07, 1)
@@ -25,8 +26,8 @@ theme_override_constants/margin_bottom = 30
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
-theme_override_fonts/font = ExtResource("2_fccik")
-theme_override_font_sizes/font_size = 36
+theme_override_fonts/font = ExtResource("2_6fbih")
+theme_override_font_sizes/font_size = 63
 text = "5:00"
 script = ExtResource("3_bjfho")
 
@@ -39,6 +40,7 @@ theme_override_constants/separation = 30
 [node name="HealthBar" type="ProgressBar" parent="MarginContainer/StatsContainer" unique_id=2092916845]
 custom_minimum_size = Vector2(300, 30)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_t1xeu")
 theme_override_styles/fill = SubResource("StyleBoxFlat_bjfho")
 value = 100.0
 show_percentage = false
@@ -70,18 +72,21 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("2_fccik")
+theme_override_fonts/font = ExtResource("4_t1xeu")
+theme_override_font_sizes/font_size = 24
 
 [node name="ThrustCount" type="Label" parent="MarginContainer/StatsContainer/ShardCounters" unique_id=2031948140]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 1, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("2_fccik")
+theme_override_fonts/font = ExtResource("4_t1xeu")
+theme_override_font_sizes/font_size = 24
 
 [node name="BulletCount" type="Label" parent="MarginContainer/StatsContainer/ShardCounters" unique_id=901330102]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 1, 0, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 3
-theme_override_fonts/font = ExtResource("2_fccik")
+theme_override_fonts/font = ExtResource("4_t1xeu")
+theme_override_font_sizes/font_size = 24

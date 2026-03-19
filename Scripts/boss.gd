@@ -14,19 +14,23 @@ extends CharacterBody2D
 @onready var green_hp_bar = $OrbitCenter/GreenCube/HealthBar
 
 var player: CharacterBody2D
+var player_cam: Camera2D = null # Cleanly declared!
 
+@onready var hole_sprite = $HoleSprite
+@onready var sleeping_sprite = $SleepingSprite
+@onready var boss_camera = $BossCamera
 var enemy_bullet_scene: PackedScene = load(Global.SCENES.enemy_bullet)
 
 # Boss Stats
-# Chase & Detection Variables
 var is_awake: bool = false
-var detection_radius: float = 150.0 # Starts small
-var detection_growth_rate: float = 22.83 # Expands by 40px every second
-var move_speed: float = 150.0 # Exactly matches Player base speed!
-var attack_range: float = 350.0 # How close the boss gets before stopping to attack
+var detection_radius: float = 150.0 
+var detection_growth_rate: float = 22.83 
+var move_speed: float = 150.0 
+var attack_range: float = 350.0 
 var core_max_health: int = 2000
 var core_health: int = 2000
 var cube_max_health: int = 150
+var is_intro_playing: bool = false
 
 # State Tracking
 enum State { IDLE, ATTACKING, STUNNED, VULNERABLE }
@@ -48,98 +52,170 @@ func _ready():
 	
 	core_hp_bar.max_value = core_max_health
 	core_hp_bar.value = core_health
-	
 	red_hp_bar.max_value = cube_max_health
 	red_hp_bar.value = cube_max_health
-	
 	blue_hp_bar.max_value = cube_max_health
 	blue_hp_bar.value = cube_max_health
-	
 	green_hp_bar.max_value = cube_max_health
 	green_hp_bar.value = cube_max_health
 	
-	# Set up cube colors and make sure they are in groups so player attacks can hit them
 	red_cube.add_to_group("BossCube")
 	blue_cube.add_to_group("BossCube")
 	green_cube.add_to_group("BossCube")
 	
+	# Hide awake boss, show sleeping boss
+	body_sprite.hide()
+	head_sprite.hide()
+	orbit_center.hide()
+	core_hp_bar.hide()
+	sleeping_sprite.show()
+	hole_sprite.show()
+	
+	play_intro_cutscene()
+
+func play_intro_cutscene():
+	is_intro_playing = true
+	
+	await get_tree().create_timer(0.1).timeout
+	player = get_tree().get_first_node_in_group("Player")
+	
+	if is_instance_valid(player):
+		player_cam = player.get_node_or_null("Camera2D")
+		
+	if player_cam:
+		player_cam.enabled = false
+		
+	# Detach the camera so it can move independently
+	boss_camera.top_level = true 
+	boss_camera.global_position = global_position 
+	boss_camera.enabled = true
+	boss_camera.make_current()
+	boss_camera.zoom = Vector2(1.5, 1.5) 
+	
+	# Look at the sleeping Titan for a moment
+	await get_tree().create_timer(1.2).timeout
+	
+	# Smoothly pan the camera over to the Player
+	if is_instance_valid(player):
+		var pan_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		pan_tween.tween_property(boss_camera, "global_position", player.global_position, 1.5)
+		await pan_tween.finished
+	
+	# Hand control back to the player
+	if not is_awake:
+		boss_camera.enabled = false
+		if player_cam:
+			player_cam.enabled = true
+			player_cam.make_current()
+			
+	boss_camera.zoom = Vector2(1.0, 1.0) 
+	is_intro_playing = false
+
 func _physics_process(delta: float):
 	player = get_tree().get_first_node_in_group("Player")
 	
-	# --- 1. THE SLEEPING PHASE (Expanding Zone) ---
+	# --- 1. THE SLEEPING PHASE ---
 	if not is_awake:
+		if is_intro_playing: return
+		
 		detection_radius += detection_growth_rate * delta
-		queue_redraw() # Constantly update the drawn circle
+		queue_redraw() 
 		
 		if player and global_position.distance_to(player.global_position) <= detection_radius:
 			wake_up()
-		return # Stop here. Do not spin or attack while asleep!
+		return 
 
-	# --- 2. THE AWAKE PHASE (Orbit & Tracking) ---
+	# --- 2. THE AWAKE PHASE ---
 	if current_state != State.STUNNED and current_state != State.VULNERABLE:
 		orbit_center.rotation += orbit_speed * delta
 		red_cube.global_rotation = 0
 		blue_cube.global_rotation = 0
 		green_cube.global_rotation = 0
 		
-	# 2. Head Tracking Math
 	if player:
 		var angle_to_player = global_position.angle_to_point(player.global_position)
 		var angle_degrees = rad_to_deg(angle_to_player)
 		var adjusted_angle = fposmod(angle_degrees + 22.5, 360.0)
 		
 		var frame_index = int(adjusted_angle / 45.0) % 8
-		
-		# --- FIX: ADD THIS EYE OFFSET ---
-		var eye_correction = 6 # <-- Change this to 1, 2, 3, etc. until the big eye faces you!
+		var eye_correction = 6 
 		head_sprite.frame = (frame_index + eye_correction) % 8
 
-	# --- 3. MOVEMENT & TREMORS ---
-	# Only move if the boss is IDLE (not currently attacking or stunned)
+	# --- 3. MOVEMENT ---
 	if current_state == State.IDLE and is_instance_valid(player):
 		var distance = global_position.distance_to(player.global_position)
 		
 		if distance > attack_range:
-			# Chase the player!
 			var direction = global_position.direction_to(player.global_position)
 			velocity = direction * move_speed
 			move_and_slide()
-			
-			# Light camera tremors while the massive Titan walks
 			get_tree().call_group("Camera", "apply_shake", 2.5) 
 		else:
-			# In range! Stop moving so it can attack.
 			velocity = Vector2.ZERO
 	else:
-		# Stop moving if attacking, stunned, or vulnerable
 		velocity = Vector2.ZERO
 
 func wake_up():
 	is_awake = true
-	PlayerData.is_boss_active = true # Tell the game the boss is fighting!
+	PlayerData.is_boss_active = true 
 	queue_redraw() 
 	print("The Titan has awakened!")
-	AudioManager.play_sfx("boss_awaken")
+	
+	if is_instance_valid(player):
+		player_cam = player.get_node_or_null("Camera2D")
+		if player_cam:
+			player_cam.enabled = false
+			
+	boss_camera.top_level = true
+	if is_instance_valid(player):
+		boss_camera.global_position = player.global_position
+	boss_camera.enabled = true 
+	boss_camera.make_current()
+	
+	var pan_to_boss = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	pan_to_boss.tween_property(boss_camera, "global_position", global_position, 1.0)
+	await pan_to_boss.finished
 	
 	get_tree().call_group("Camera", "apply_shake", 30.0) 
 	
-	# --- CLEAR THE ARENA ---
-	for shard in get_tree().get_nodes_in_group("Shards"):
-		shard.queue_free()
-		
-	# Make sure your slimes are actually in a group called "Slime" or "slime"
+	sleeping_sprite.hide()
+	body_sprite.show()
+	head_sprite.show()
+	orbit_center.show()
+	core_hp_bar.show()
+	
+	var rise_distance = 200.0 
+	
+	body_sprite.position.y += rise_distance
+	head_sprite.position.y += rise_distance
+	orbit_center.position.y += rise_distance
+	
+	var rise_tween = create_tween().set_parallel(true).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	rise_tween.tween_property(body_sprite, "position:y", body_sprite.position.y - rise_distance, 3.0)
+	rise_tween.tween_property(head_sprite, "position:y", head_sprite.position.y - rise_distance, 3.0)
+	rise_tween.tween_property(orbit_center, "position:y", orbit_center.position.y - rise_distance, 3.0)
+	
+	await rise_tween.finished
+	await get_tree().create_timer(0.5).timeout 
+	
+	if is_instance_valid(player):
+		var pan_to_player = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		pan_to_player.tween_property(boss_camera, "global_position", player.global_position, 1.0)
+		await pan_to_player.finished
+	
+	boss_camera.enabled = false
+	if player_cam:
+		player_cam.enabled = true
+		player_cam.make_current()
+			
 	for slime in get_tree().get_nodes_in_group("slime"): 
 		slime.queue_free()
 	
 	start_boss_loop()
 
-# Draws the expanding purple detection zone so the player can see their doom approaching!
 func _draw():
 	if not is_awake:
-		# Draws a highly visible, slightly transparent purple ring
 		draw_arc(Vector2.ZERO, detection_radius, 0, TAU, 64, Color(0.6, 0.0, 0.8, 0.6), 4.0)
-
-# --- CORE COMBAT LOOP ---
 
 func start_boss_loop():
 	while core_health > 0:
@@ -148,56 +224,44 @@ func start_boss_loop():
 			continue
 			
 		if current_state == State.IDLE:
-			# Check distance BEFORE starting the attack timer!
 			var distance = global_position.distance_to(player.global_position)
 			
 			if distance <= attack_range:
-				await get_tree().create_timer(2.0).timeout # Charge up time
-				
-				# Ensure boss is still IDLE (didn't get stunned while waiting)
+				await get_tree().create_timer(2.0).timeout 
 				if current_state == State.IDLE: 
 					pick_random_attack()
 			else:
-				# Player is too far away. Wait 0.2 seconds and check distance again
 				await get_tree().create_timer(0.2).timeout
 		else:
 			await get_tree().process_frame
 
 func pick_random_attack():
-	# Only pick from cubes that are currently alive
 	var available_attacks = []
 	for color in active_cubes:
 		if active_cubes[color]["is_alive"]:
 			available_attacks.append(color)
 			
 	if available_attacks.is_empty():
-		return # All cubes dead, boss should be vulnerable
+		return 
 		
 	var chosen_attack = available_attacks.pick_random()
 	execute_attack(chosen_attack)
 
 func execute_attack(color: String):
 	current_state = State.ATTACKING
-	orbit_speed = 6.0 # Spin fast before attacking!
+	orbit_speed = 6.0 
 	
-	# Brief wind-up time
 	await get_tree().create_timer(1.0).timeout 
 	orbit_speed = 1.5
 	
 	match color:
-		"red":
-			perform_red_slam()
-		"blue":
-			perform_blue_snipe()
-		"green":
-			perform_green_burst()
+		"red": perform_red_slam()
+		"blue": perform_blue_snipe()
+		"green": perform_green_burst()
 			
-	# Boss Recovery time after attacking
 	await get_tree().create_timer(1.0).timeout 
 	if current_state == State.ATTACKING:
 		current_state = State.IDLE
-
-# --- DAMAGE HANDLING ---
 
 func damage_cube(color: String, amount: int):
 	if not active_cubes[color]["is_alive"]: return
@@ -209,15 +273,13 @@ func damage_cube(color: String, amount: int):
 		"blue": blue_hp_bar.value = active_cubes[color]["hp"]
 		"green": green_hp_bar.value = active_cubes[color]["hp"]
 	
-	# Get the Sprite directly so we don't tint the health bar!
 	var cube_node = active_cubes[color]["node"]
-	var cube_sprite = cube_node.get_node("Sprite2D") # Ensure your sprite is named Sprite2D!
+	var cube_sprite = cube_node.get_node("Sprite2D") 
 	
 	cube_sprite.modulate = Color(3, 3, 3)
 	await get_tree().create_timer(0.1).timeout
 	
 	if is_instance_valid(cube_sprite):
-		# Reset to the BRIGHT colors, not standard dark colors!
 		if color == "red": cube_sprite.modulate = Color(2.0, 0.5, 0.5)
 		elif color == "blue": cube_sprite.modulate = Color(0.5, 0.5, 2.0)
 		elif color == "green": cube_sprite.modulate = Color(0.5, 2.0, 0.5)
@@ -227,9 +289,8 @@ func damage_cube(color: String, amount: int):
 
 func kill_cube(color: String):
 	active_cubes[color]["is_alive"] = false
-	active_cubes[color]["node"].visible = false # Hide it instead of deleting it so we can respawn it
+	active_cubes[color]["node"].visible = false 
 	
-	# Brief stun for breaking a cube
 	current_state = State.STUNNED
 	print(color + " cube broken! Boss Stunned!")
 	await get_tree().create_timer(1.5).timeout
@@ -251,9 +312,8 @@ func check_all_cubes_dead():
 func trigger_vulnerable_phase():
 	current_state = State.VULNERABLE
 	orbit_speed = 0.0
-	head_sprite.modulate = Color(0.5, 0.5, 0.5) # Look weak
+	head_sprite.modulate = Color(0.5, 0.5, 0.5) 
 	
-	# Player has 8 seconds to hit the core!
 	print("CORE EXPOSED!")
 	await get_tree().create_timer(8.0).timeout
 	
@@ -264,7 +324,6 @@ func respawn_cubes():
 	print("Respawning Cubes! Core Heals!")
 	current_state = State.STUNNED
 	
-	# Boss heals a little bit if you didn't finish it
 	core_health = min(core_max_health, core_health + 200) 
 	head_sprite.modulate = Color.WHITE
 	
@@ -276,22 +335,18 @@ func respawn_cubes():
 		elif color == "blue": blue_hp_bar.value = cube_max_health
 		elif color == "green": green_hp_bar.value = cube_max_health
 		
-	orbit_speed = -5.0 # Spin backwards while reforming!
+	orbit_speed = -5.0 
 	await get_tree().create_timer(2.0).timeout
 	orbit_speed = 1.5
 	current_state = State.IDLE
 	
-	core_hp_bar.value = core_health # Update core bar since he healed
-	
+	core_hp_bar.value = core_health 
 
 func take_damage(amount: int):
-	# NOW ALLOWS DAMAGE IF VULNERABLE *OR* STUNNED
 	if current_state == State.VULNERABLE or current_state == State.STUNNED:
-		AudioManager.play_sfx("boss_hit")
 		core_health -= amount
 		core_hp_bar.value = core_health
 		
-		# Flash core white
 		body_sprite.modulate = Color(3, 3, 3)
 		await get_tree().create_timer(0.1).timeout
 		body_sprite.modulate = Color.WHITE
@@ -299,36 +354,44 @@ func take_damage(amount: int):
 		if core_health <= 0:
 			die()
 	else:
-		# VISUAL FEEDBACK: Flash blue so the player knows the core is shielded!
 		body_sprite.modulate = Color(0.5, 0.5, 2.0)
 		await get_tree().create_timer(0.1).timeout
 		body_sprite.modulate = Color.WHITE
-		
 
 func die():
 	print("TITAN DEFEATED!")
-	AudioManager.play_sfx("boss_die")
-	# Stop everything, play explosion, change to victory screen
+	
+	if is_instance_valid(player):
+		player_cam = player.get_node_or_null("Camera2D")
+		if player_cam:
+			player_cam.enabled = false
+			
+	boss_camera.top_level = true
+	if is_instance_valid(player):
+		boss_camera.global_position = player.global_position
+	boss_camera.enabled = true
+	boss_camera.make_current()
+	boss_camera.zoom = Vector2(1.5, 1.5) 
+	
+	var pan_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	pan_tween.tween_property(boss_camera, "global_position", global_position, 1.0)
+	await pan_tween.finished
+	
 	get_tree().change_scene_to_file("res://Scenes/win_screen.tscn")
 	queue_free()
 
 func receive_knockback(_force: Vector2):
-	pass # Cubes ignore knockback too!
+	pass 
 
 func perform_red_slam():
 	if not is_instance_valid(player): return
-	print("Red Slam Attack!")
 	
 	var slam_radius = 80.0
 	var target_pos = player.global_position
-	
-	# Save the cube's local spot in the triangle so we can put it back later
 	var original_local_pos = red_cube.position 
 	
-	# 1. Detach from orbit rotation so it can fly freely!
 	red_cube.top_level = true 
 	
-	# 2. Draw the Warning Circle on the ground
 	var warning_circle = Polygon2D.new()
 	warning_circle.color = Color(1.0, 0.0, 0.0, 0.3)
 	var points = PackedVector2Array()
@@ -343,17 +406,14 @@ func perform_red_slam():
 	var circle_tween = create_tween()
 	circle_tween.tween_property(warning_circle, "scale", Vector2.ONE, 0.6)
 	
-	# 3. Fly the Cube high up into the air!
 	var jump_tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	jump_tween.tween_property(red_cube, "global_position", target_pos + Vector2(0, -400), 0.6)
 	await jump_tween.finished
 	
-	# 4. Smash the Cube down onto the player!
 	var smash_tween = create_tween().set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN)
 	smash_tween.tween_property(red_cube, "global_position", target_pos, 0.15)
 	await smash_tween.finished
 	
-	# 5. Boom! Damage and Shake
 	if is_instance_valid(warning_circle):
 		warning_circle.color = Color(1.0, 0.0, 0.0, 0.8)
 	get_tree().call_group("Camera", "apply_shake", 45.0) 
@@ -370,20 +430,16 @@ func perform_red_slam():
 	if is_instance_valid(warning_circle):
 		warning_circle.queue_free()
 
-	# 6. Float the Cube back to the boss
 	var return_tween = create_tween()
-	# Calculate where its spot in the orbit currently is
 	var return_target = orbit_center.global_position + original_local_pos.rotated(orbit_center.rotation)
 	return_tween.tween_property(red_cube, "global_position", return_target, 0.4)
 	await return_tween.finished
 	
-	# 7. Re-attach it to the orbit!
 	red_cube.top_level = false
 	red_cube.position = original_local_pos
 
 func perform_blue_snipe():
 	if not is_instance_valid(player) or enemy_bullet_scene == null: return
-	print("Blue Laser Snipe!")
 	
 	var sprite = blue_cube.get_node("Sprite2D")
 	sprite.modulate = Color(3.0, 3.0, 4.0)
@@ -393,31 +449,24 @@ func perform_blue_snipe():
 	var bullet = enemy_bullet_scene.instantiate()
 	get_tree().current_scene.add_child(bullet)
 	
-	# --- SHOOT FROM THE EYES ---
-	# (Adjust the -15 if the bullets spawn too high or low on the face)
 	var eye_pos = head_sprite.global_position + Vector2(0, -15)
 	bullet.global_position = eye_pos
-	
-	# Make it MASSIVE
 	bullet.scale = Vector2(3.5, 3.5) 
 	
 	var direction = eye_pos.direction_to(player.global_position)
 	bullet.rotation = direction.angle()
 	
-	# Ensure compatibility with your bullet script variables
 	if "target_pos" in bullet:
 		bullet.target_pos = bullet.global_position + (direction * 2000.0)
 	elif "direction" in bullet:
 		bullet.direction = direction
 		
 	if "damage" in bullet:
-		bullet.damage = 25 # High damage
+		bullet.damage = 25 
 
 func perform_green_burst():
 	if enemy_bullet_scene == null: return
-	print("Green Burst Attack!")
 	
-	# Visual flair: Flash the green cube!
 	var sprite = green_cube.get_node("Sprite2D")
 	sprite.modulate = Color(3.0, 4.0, 3.0)
 	var flash_tween = create_tween()
@@ -425,8 +474,6 @@ func perform_green_burst():
 	
 	var burst_count = 8
 	var angle_step = TAU / burst_count 
-	
-	# --- SHOOT FROM THE EYES ---
 	var eye_pos = head_sprite.global_position + Vector2(0, -15)
 	
 	for i in range(burst_count):
@@ -434,8 +481,9 @@ func perform_green_burst():
 		get_tree().current_scene.add_child(bullet)
 		
 		bullet.global_position = eye_pos
-		bullet.scale = Vector2(1.8, 1.8) # Slightly larger than normal bullets
+		bullet.scale = Vector2(1.8, 1.8) 
 		bullet.modulate = Color(0.5, 2.0, 0.5)
+		
 		var current_angle = i * angle_step
 		var direction = Vector2(cos(current_angle), sin(current_angle))
 		bullet.rotation = current_angle
@@ -446,4 +494,4 @@ func perform_green_burst():
 			bullet.direction = direction
 			
 		if "damage" in bullet:
-			bullet.damage = 15 # Lower damage, but hard to dodge
+			bullet.damage = 15

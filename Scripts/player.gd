@@ -111,7 +111,7 @@ func perform_base_attack():
 	if not can_attack or slash_scene == null:
 		return 
 	can_attack = false 
-	AudioManager.play_sfx("player_slash")
+	#AudioManager.play_sfx("player_slash")
 	var slash = slash_scene.instantiate()
 	get_tree().current_scene.add_child(slash)
 	
@@ -143,7 +143,7 @@ func perform_thrust_attack():
 	can_attack = false 
 	PlayerData.attacks["blue"] -= 1
 	is_invincible = true # BECOME INVINCIBLE
-	AudioManager.play_sfx("player_thrust")
+	#AudioManager.play_sfx("player_thrust")
 	
 	var thrust_stats = PlayerData.attack_stats.thrust
 	var thrust_range = thrust_stats["range"]
@@ -237,7 +237,7 @@ func perform_bullet_attack():
 	can_attack = false 
 	PlayerData.attacks["green"] -= 1
 	is_attacking = true
-	AudioManager.play_sfx("player_shoot")
+	#AudioManager.play_sfx("player_shoot")
 	
 	var bullet_stats = PlayerData.attack_stats.bullet
 	var bullet_range = bullet_stats["range"]
@@ -478,7 +478,7 @@ func take_damage(damage: int) -> void:
 	if is_dead or is_invincible:
 		return 
 		
-	AudioManager.play_sfx("player_hurt")
+	#AudioManager.play_sfx("player_hurt")
 	PlayerData.current_health -= damage
 	health_bar_update.emit()
 	is_attacking = false 
@@ -538,3 +538,26 @@ func flash_light_color(ability_color: Color, fade_time: float):
 	# Smoothly fade back to white (or whatever your default heart color is)
 	var color_tween = create_tween()
 	color_tween.tween_property(core_light, "color", Color.WHITE, fade_time)
+
+
+func _on_hit_box_area_entered(area: Area2D) -> void:
+	# 1. COLLECTIBLES (Shards)
+	if area.is_in_group("Shards"):
+		if not area.get("is_claimed"): # Check if the shard hasn't been grabbed yet
+			area.is_claimed = true
+			
+			if area.shard_type == "main_orb":
+				PlayerData.has_top_orb = true
+				PlayerData.is_boss_active = true
+			else:
+				PlayerData.collect_shard(area.shard_type)
+				PlayerData.apply_stats(area.shard_type)
+				
+			area.queue_free()
+
+	# 2. ENEMY ATTACKS (Bullets)
+	# (Make sure your enemy bullet scenes are added to a group called "EnemyBullet")
+	elif area.is_in_group("EnemyBullet"): 
+		if "damage" in area:
+			take_damage(area.damage)
+			area.queue_free() # Destroy the bullet on impact

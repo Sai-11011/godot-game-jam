@@ -1,6 +1,6 @@
 extends Control 
 
-var main_game_scene: PackedScene = load("res://Scenes/main.tscn") 
+var main_game_scene: PackedScene = load(Global.SCENES.main) 
 
 # Drag your new ControlsOverlay panel here!
 @onready var controls_overlay = $ControlsOverlay 
@@ -20,9 +20,6 @@ func _on_play_pressed() -> void:
 func _on_back_button_pressed() -> void:
 	# Hide the controls page and go back to the menu!
 	controls_overlay.hide()
-
-func _on_quit_pressed() -> void:
-	get_tree().quit()
 
 func _on_intro_pressed() -> void:
 	controls_overlay.show()

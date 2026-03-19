@@ -14,7 +14,6 @@ func _ready():
 	elif shard_type == "green":
 		visual_rect.color = Color.GREEN
 	elif shard_type == "main_orb":
-		# Make the main orb look special! Pure white and double the size!
 		visual_rect.color = Color.WHITE 
 		scale = Vector2(2.0, 2.0)
 		

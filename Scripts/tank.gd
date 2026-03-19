@@ -154,7 +154,7 @@ func receive_knockback(force_vector: Vector2):
 
 func take_damage(damage_amount: int):
 	health -= damage_amount
-	AudioManager.play_sfx("enemy_hit")
+	#AudioManager.play_sfx("enemy_hit")
 	var flash_tween = create_tween()
 	sprite.modulate = Color(3.0, 3.0, 3.0)
 	flash_tween.tween_property(sprite, "modulate", Color.WHITE, 0.15)
@@ -169,6 +169,7 @@ func die():
 		var orb = shard_scene.instantiate()
 		orb.shard_type = "main_orb" # We will code this into the shard script next!
 		orb.global_position = global_position
+		
 		get_tree().current_scene.call_deferred("add_child", orb)
 		
 	# 2. Otherwise, drop a normal shard (This will be 100% of the time if they already have the orb)
@@ -177,6 +178,7 @@ func die():
 		var available_colors = ["red", "blue", "green"]
 		shard.shard_type = available_colors[randi() % available_colors.size()]
 		shard.global_position = global_position
+		shard.scale = Vector2(0.5, 0.5)
 		get_tree().current_scene.call_deferred("add_child", shard)
 		
 	queue_free()

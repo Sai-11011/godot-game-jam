@@ -436,7 +436,7 @@ y_sort_enabled = true
 position = Vector2(1, -2)
 polygon = PackedVector2Array(-2, -2, -7, 3, -1, 7, 5, 2)
 
-[node name="Camera2D" type="Camera2D" parent="." unique_id=1616223039]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1616223039 groups=["Camera"]]
 zoom = Vector2(2, 2)
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
@@ -474,7 +474,7 @@ polygon = PackedVector2Array(44, -3, 46, 0, 44, 3, 55, 0)
 
 [node name="ThrustHitbox" type="Area2D" parent="." unique_id=2076225368]
 position = Vector2(-1, -10)
-collision_layer = 8
+collision_layer = 9
 collision_mask = 4
 monitoring = false
 
@@ -499,6 +499,7 @@ texture = ExtResource("8_8erm5")
 collision_mask = 52
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="HitBox" unique_id=1649666134]
-polygon = PackedVector2Array(-4, -21, -6, -13, -5, 1, 5, 1, 5, -14, 1, -27)
+polygon = PackedVector2Array(-4, -21, -4, -13, -2, 5, 5, 4, 3, -14, 3, -20)
 
 [connection signal="body_entered" from="ThrustHitbox" to="." method="_on_thrust_hit_box_body_entered"]
+[connection signal="area_entered" from="HitBox" to="." method="_on_hit_box_area_entered"]
