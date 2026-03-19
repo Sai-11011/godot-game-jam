@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bs6kcurb4niw3"]
 
 [ext_resource type="Script" uid="uid://ce2m8a16rybwk" path="res://Scripts/tank.gd" id="1_0ys04"]
-[ext_resource type="Texture2D" uid="uid://bdqqp8u7phynf" path="res://Assets/Enemies/Head-statue_Down_Attack-Sheet8.png" id="2_r30pj"]
+[ext_resource type="Texture2D" uid="uid://cvmf5vsniku36" path="res://Assets/Enemies/Head-statue_Down_Attack-Sheet8.png" id="2_r30pj"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_r30pj"]
 radius = 18.027756

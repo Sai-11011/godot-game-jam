@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://d2hjnmw6yepcr"]
 
-[ext_resource type="FontFile" uid="uid://bff2euuw1dwit" path="res://Assets/fonts/PressStart2P-Regular.ttf" id="1_8fo1c"]
 [ext_resource type="Script" uid="uid://cl42tna6037kx" path="res://Scripts/game_over.gd" id="1_ek8ke"]
 [ext_resource type="Theme" uid="uid://bmun2ysgx4il8" path="res://Themes/Button.tres" id="2_ek8ke"]
+[ext_resource type="FontFile" uid="uid://cgo7riob5uqxg" path="res://Assets/fonts/ThaleahFat.ttf" id="2_eoghk"]
 
 [node name="GameOver" type="Control" unique_id=2035159009]
 process_mode = 3
@@ -36,8 +36,8 @@ offset_right = 44.5
 offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_fonts/font = ExtResource("1_8fo1c")
-theme_override_font_sizes/font_size = 36
+theme_override_fonts/font = ExtResource("2_eoghk")
+theme_override_font_sizes/font_size = 56
 text = "yOUR dEAD"
 
 [node name="Button" type="Button" parent="." unique_id=638702589]

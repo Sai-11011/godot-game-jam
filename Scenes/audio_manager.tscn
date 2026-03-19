@@ -1,12 +1,6 @@
 [gd_scene format=3 uid="uid://cspwwym3ntjt3"]
 
-<<<<<<< HEAD
-[ext_resource type="Script" uid="uid://dd6iy04wvug6b" path="res://Scripts/audio_manager.gd" id="1_sm2tf"]
-
-[node name="AudioManager" type="Node" unique_id=4202032]
-script = ExtResource("1_sm2tf")
-=======
-[ext_resource type="Script" uid="uid://c37jh7no1wuuf" path="res://Scripts/audio_manager.gd" id="1_4tj6f"]
+[ext_resource type="Script" path="res://Scripts/audio_manager.gd" id="1_4tj6f"]
 [ext_resource type="AudioStream" uid="uid://6jr28jtopfcd" path="res://Music/Hero steps/land/Steps on land/Steps on Land.mp3" id="1_sm2tf"]
 [ext_resource type="AudioStream" uid="uid://btn1yy31qqsw" path="res://Music/Shield fire/Shield Fire.mp3" id="3_5kf6k"]
 [ext_resource type="AudioStream" uid="uid://c67dkkhl50kee" path="res://Music/Hearo get hit/hero gets hits/Hit1.mp3" id="4_5nrbi"]
@@ -51,4 +45,3 @@ stream = ExtResource("5_lwpe1")
 
 [node name="ShieldFire" type="AudioStreamPlayer" parent="." unique_id=1947739763]
 stream = ExtResource("3_5kf6k")
->>>>>>> ede5de3172291b8eaa500ba112a387e461f504d2
