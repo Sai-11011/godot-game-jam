@@ -26,9 +26,9 @@ var attacks := {
 
 var attack_stats := {
 	"base":{
-		"range":130,
+		"range":230,
 		"cooldown":0.3,
-		"attack_time":0.18,#duration of attack 
+		"attack_time":0.25,#duration of attack 
 	},
 	"high":{
 		"range":0,#this buffs all attacks for 5 seconds
@@ -72,6 +72,7 @@ func _process(delta):
 # CORE UPGRADE FUNCTION
 func collect_shard(color: String):
 	if shards_collected.has(color):
+		AudioManager.play_sfx("shard_pickup")
 		shards_collected[color] += 1
 		if color == "green":
 			attacks[color] += 3   # 3 Bullets per Green Shard

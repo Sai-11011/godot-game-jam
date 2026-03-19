@@ -5,7 +5,7 @@ extends CharacterBody2D
 @onready var nav_agent = $NavigationAgent2D
 
 var player: CharacterBody2D
-
+@onready var shard_scene: PackedScene = load(Global.SCENES.shards)
 var stats : Dictionary = Global.enemies_data.tank 
 var health : int = stats.base_health
 var speed : int = stats.speed
@@ -78,31 +78,36 @@ func start_slam_attack():
 	sprite.rotation = 0 
 	sprite.scale = Vector2(1, 1)
 	
-	# 1. PLAY ANIMATION (With a safe fallback for the game jam)
+	var wind_up_time = 1.5 # Your new 1.5 second delay!
+	
+	# 1. PLAY ANIMATION AND SYNC THE SPEED
 	var anim_name = "slam_" + facing_dir
+	if not anim_player.has_animation(anim_name):
+		anim_name = "slam_down" 
+		
 	if anim_player.has_animation(anim_name):
+		# Calculate exactly how much to slow down the animation so it takes 1.5 seconds
+		var original_length = anim_player.get_animation(anim_name).length
+		anim_player.speed_scale = original_length / wind_up_time
 		anim_player.play(anim_name)
-	elif anim_player.has_animation("slam_down"):
-		anim_player.play("slam_down") # Safe fallback if friend hasn't finished sprites!
 	
 	# 2. START TELEGRAPH CIRCLE
 	show_warning = true
 	current_warning_radius = 0.0
 	
-	var wind_up_time = 0.8 # Takes 0.8 seconds before the hit lands
-	
 	var circle_tween = create_tween()
 	circle_tween.tween_method(update_warning_circle, 0.0, slam_radius, wind_up_time)
 	
-	# 3. TRIGGER THE SLAM WITH CODE (Bypasses the AnimationPlayer track)
+	# 3. TRIGGER THE SLAM WITH CODE
 	await get_tree().create_timer(wind_up_time).timeout
 	
-	# Only execute if we are still attacking (prevents bugs if tank dies during wind-up)
 	if is_attacking:
 		execute_slam()
 
 func execute_slam():
-	# This function should be called BY the AnimationPlayer
+	# Reset the animation speed back to normal for walking!
+	anim_player.speed_scale = 1.0 
+	
 	show_warning = false
 	queue_redraw() 
 	
@@ -149,5 +154,29 @@ func receive_knockback(force_vector: Vector2):
 
 func take_damage(damage_amount: int):
 	health -= damage_amount
+	AudioManager.play_sfx("enemy_hit")
+	var flash_tween = create_tween()
+	sprite.modulate = Color(3.0, 3.0, 3.0)
+	flash_tween.tween_property(sprite, "modulate", Color.WHITE, 0.15)
 	if health <= 0:
-		queue_free()
+		die()
+
+func die():
+	var random_roll = randf()
+	
+	# 1. Check for the 5% Rare Orb Drop (ONLY if we don't have it yet!)
+	if not PlayerData.has_top_orb and random_roll <= 0.05:
+		var orb = shard_scene.instantiate()
+		orb.shard_type = "main_orb" # We will code this into the shard script next!
+		orb.global_position = global_position
+		get_tree().current_scene.call_deferred("add_child", orb)
+		
+	# 2. Otherwise, drop a normal shard (This will be 100% of the time if they already have the orb)
+	else:
+		var shard = shard_scene.instantiate()
+		var available_colors = ["red", "blue", "green"]
+		shard.shard_type = available_colors[randi() % available_colors.size()]
+		shard.global_position = global_position
+		get_tree().current_scene.call_deferred("add_child", shard)
+		
+	queue_free()

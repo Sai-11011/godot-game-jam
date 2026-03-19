@@ -8,6 +8,7 @@ extends CharacterBody2D
 @onready var thrust_hitbox = $ThrustHitbox
 @onready var heavy_particles =  $HeavyBuffParticles
 @onready var camera = $Camera2D
+@onready var core_light = $PointLight2D
 
 #STATS
 var attack_stats: Dictionary = PlayerData.attack_stats
@@ -28,6 +29,9 @@ var knockback_velocity: Vector2 = Vector2.ZERO
 var slash_scene: PackedScene = load(Global.SCENES.slash)
 var bullet_scene: PackedScene = load(Global.SCENES.bullet)
 var game_over_scene : PackedScene = load(Global.SCENES.game_over)
+
+func _ready():
+	start_heart_pulse()
 
 func _physics_process(delta: float) -> void:
 	# MOVEMENT LOGIC
@@ -107,7 +111,7 @@ func perform_base_attack():
 	if not can_attack or slash_scene == null:
 		return 
 	can_attack = false 
-	
+	AudioManager.play_sfx("player_slash")
 	var slash = slash_scene.instantiate()
 	get_tree().current_scene.add_child(slash)
 	
@@ -139,6 +143,7 @@ func perform_thrust_attack():
 	can_attack = false 
 	PlayerData.attacks["blue"] -= 1
 	is_invincible = true # BECOME INVINCIBLE
+	AudioManager.play_sfx("player_thrust")
 	
 	var thrust_stats = PlayerData.attack_stats.thrust
 	var thrust_range = thrust_stats["range"]
@@ -163,6 +168,8 @@ func perform_thrust_attack():
 			elif facing_dir == "down": dash_dir = Vector2.DOWN
 			
 	var target_pos = global_position + (dash_dir * thrust_range)
+	
+	flash_light_color(Color(0.5, 0.5, 2.0), attack_duration)
 	
 	# Phase through space using the Tween
 	var tween = create_tween()
@@ -230,6 +237,7 @@ func perform_bullet_attack():
 	can_attack = false 
 	PlayerData.attacks["green"] -= 1
 	is_attacking = true
+	AudioManager.play_sfx("player_shoot")
 	
 	var bullet_stats = PlayerData.attack_stats.bullet
 	var bullet_range = bullet_stats["range"]
@@ -260,6 +268,7 @@ func perform_bullet_attack():
 	bullet.global_position = global_position + spawn_offset
 	bullet.target_pos = target_pos 
 	get_tree().current_scene.add_child(bullet)
+	flash_light_color(Color(0.5, 2.0, 0.5), 0.4)
 	
 	var total_frames = sprite.sprite_frames.get_frame_count("bullet")
 	if sprite.is_playing() and sprite.animation == "bullet" and sprite.frame < (total_frames - 1):
@@ -292,6 +301,8 @@ func perform_heavy_attack():
 	PlayerData.current_damage *= 5.0 # DOUBLE DAMAGE!
 	sprite.modulate = Color(1.5, 0.5, 0.5) 
 	PlayerData.heavy_is_active = true
+	
+	flash_light_color(Color(2.0, 0.5, 0.5), buff_duration)
 	
 	# 2. WAIT FOR BUFF TO END (You can still use other attacks during this time!)
 	await get_tree().create_timer(buff_duration).timeout
@@ -472,6 +483,7 @@ func take_damage(damage: int) -> void:
 	if is_dead or is_invincible:
 		return 
 		
+	AudioManager.play_sfx("player_hurt")
 	PlayerData.current_health -= damage
 	health_bar_update.emit()
 	is_attacking = false 
@@ -507,3 +519,27 @@ func die():
 		set_physics_process(false)
 		can_attack = false
 		get_tree().change_scene_to_packed(game_over_scene)
+
+func start_heart_pulse():
+	# Create a tween that loops forever with a smooth sine wave transition
+	var tween = create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	
+	var pulse_time = 0.6 # Seconds it takes for one half of the heartbeat
+	
+	# 1. Breathe IN (Gets brighter and larger)
+	tween.tween_property(core_light, "energy", 1.5, pulse_time)
+	tween.parallel().tween_property(core_light, "texture_scale", 1.2, pulse_time)
+	
+	# 2. Breathe OUT (Gets dimmer and smaller)
+	tween.tween_property(core_light, "energy", 0.8, pulse_time)
+	tween.parallel().tween_property(core_light, "texture_scale", 0.8, pulse_time)
+
+func flash_light_color(ability_color: Color, fade_time: float):
+	if not is_instance_valid(core_light): return
+	
+	# Instantly snap to the new bright color
+	core_light.color = ability_color
+	
+	# Smoothly fade back to white (or whatever your default heart color is)
+	var color_tween = create_tween()
+	color_tween.tween_property(core_light, "color", Color.WHITE, fade_time)

@@ -3,7 +3,7 @@ extends Node2D
 @export var shard_scene: PackedScene = load(Global.SCENES.shards)
 
 # Limit memory usage
-var max_shards_on_map: int = 50 
+var max_shards_on_map: int = 8
 
 var min_spawn_radius: float = 600.0 
 var max_spawn_radius: float = 1000.0

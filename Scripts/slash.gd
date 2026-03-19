@@ -1,6 +1,6 @@
 extends Area2D
 
-var speed: float = 600.0
+var speed: float = 800.0
 
 func _physics_process(delta: float):
 	var forward_direction = Vector2.RIGHT.rotated(rotation)

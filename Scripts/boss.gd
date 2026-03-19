@@ -119,6 +119,7 @@ func wake_up():
 	PlayerData.is_boss_active = true # Tell the game the boss is fighting!
 	queue_redraw() 
 	print("The Titan has awakened!")
+	AudioManager.play_sfx("boss_awaken")
 	
 	get_tree().call_group("Camera", "apply_shake", 30.0) 
 	
@@ -287,6 +288,7 @@ func respawn_cubes():
 # Your player attacks should call this when hitting the Boss's main CharacterBody2D
 func take_damage(amount: int):
 	if current_state == State.VULNERABLE:
+		AudioManager.play_sfx("boss_hit")
 		core_health -= amount
 		core_hp_bar.value = core_health
 		# Flash core white
@@ -302,14 +304,16 @@ func take_damage(amount: int):
 
 func die():
 	print("TITAN DEFEATED!")
+	AudioManager.play_sfx("boss_die")
 	# Stop everything, play explosion, change to victory screen
+	get_tree().change_scene_to_file("res://Scenes/win_screen.tscn")
 	queue_free()
 
 func perform_red_slam():
 	if not is_instance_valid(player): return
 	print("Red Slam Attack!")
 	
-	var slam_radius = 160.0
+	var slam_radius = 80.0
 	var target_pos = player.global_position
 	
 	# Save the cube's local spot in the triangle so we can put it back later

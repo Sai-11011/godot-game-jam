@@ -118,6 +118,14 @@ func eat(target_shard: Node2D):
 
 func take_damage(damage_amount: float):
 	health -= damage_amount
+	AudioManager.play_sfx("enemy_hit")
+	var flash_tween = create_tween()
+	anim.modulate = Color(3.0, 3.0, 3.0)
+	var orig_color = Color.WHITE
+	if slime_color == "red": orig_color = Color.LIGHT_SALMON
+	elif slime_color == "blue": orig_color = Color.LIGHT_BLUE
+	elif slime_color == "green": orig_color = Color.LIGHT_GREEN
+	flash_tween.tween_property(anim, "modulate", orig_color, 0.15)
 	if health <= 0:
 		die()
 

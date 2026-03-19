@@ -5,19 +5,6 @@
 [ext_resource type="Theme" uid="uid://bmun2ysgx4il8" path="res://Themes/Button.tres" id="3_avrgi"]
 [ext_resource type="FontFile" uid="uid://bff2euuw1dwit" path="res://Assets/fonts/PressStart2P-Regular.ttf" id="3_wfxj5"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wfxj5"]
-draw_center = false
-border_width_left = 30
-border_width_top = 30
-border_width_right = 30
-border_width_bottom = 30
-border_color = Color(0, 0, 0, 1)
-border_blend = true
-corner_radius_top_left = 15
-corner_radius_top_right = 15
-corner_radius_bottom_right = 15
-corner_radius_bottom_left = 15
-
 [node name="StartUI" type="Control" unique_id=523426118]
 layout_mode = 3
 anchors_preset = 15
@@ -88,13 +75,14 @@ layout_mode = 2
 theme = ExtResource("3_avrgi")
 text = "Play"
 
-[node name="Button2" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=3359453]
+[node name="Control" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=3359453]
 custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
 theme = ExtResource("3_avrgi")
-text = "Button"
+text = "Control
+"
 
-[node name="Button3" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1280320549]
+[node name="Credits" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1280320549]
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 theme = ExtResource("3_avrgi")
@@ -107,12 +95,24 @@ layout_mode = 2
 theme = ExtResource("3_avrgi")
 text = "Quit"
 
-[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=2104311988]
-process_mode = 3
-custom_minimum_size = Vector2(500, 0)
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1755838260]
 layout_mode = 2
-size_flags_horizontal = 10
-theme_override_styles/panel = SubResource("StyleBoxFlat_wfxj5")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/HBoxContainer/PanelContainer" unique_id=653765365]
+custom_minimum_size = Vector2(500, 300)
+layout_mode = 2
+bbcode_enabled = true
+text = "[center][b]HOW TO PLAY[/b][/center]
+
+[b]WASD[/b] - Move
+[b]Left Click[/b] - Base Slash
+[b]Scroll Wheel[/b] - Zoom Camera
+
+[color=#ff3333][b][E] Heavy Attack[/b][/color] - 5x Damage Buff
+[color=#3333ff][b][Shift] Thrust[/b][/color] - Invincible Dash
+[color=#33ff33][b][Right Click] Bullet[/b][/color] - Ranged Attack
+
+[i]Gather shards to power your abilities. You have exactly 5 minutes before the Titan awakens...[/i]"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
