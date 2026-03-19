@@ -10,8 +10,8 @@ A fast-paced arena survival game where the player, as the **Relic Warrior**, mus
 ### **The Setting: The Shattered Sanctum**
 * **Description:** A massive floating platform suspended in a cosmic void or high above the clouds. This ancient sanctuary was built to imprison a slumbering Titan. The arena is littered with monolithic ruins, broken magical altars, and deep fissures emitting mystical light.
 * **Visual Style:** **Dark Fantasy** meets **Ancient Monumentalism**. 
-    * *Phase 1 Color Palette:* Cold slate grays and dim lighting.
-    * *Progression:* As the Resonance grows, the atmosphere shifts to high-tension vibrant violets or pulsating golden ambers.
+	* *Phase 1 Color Palette:* Cold slate grays and dim lighting.
+	* *Progression:* As the Resonance grows, the atmosphere shifts to high-tension vibrant violets or pulsating golden ambers.
 
 ### **The Boss: The Dormant Titan**
 * **Identity:** A mountain-sized ancient entity anchored at the center of the arena, encased in stone and celestial chains.
