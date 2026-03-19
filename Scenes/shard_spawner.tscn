@@ -8,3 +8,5 @@ script = ExtResource("1_wird5")
 [node name="SpawnTimer" type="Timer" parent="." unique_id=484002595]
 wait_time = 4.0
 autostart = true
+
+[connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]
