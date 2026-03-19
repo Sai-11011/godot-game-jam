@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://byajufw8s7whe"
+path="res://.godot/imported/Steps on stone.mp3-32793bdc41b52d87f5604a985247f860.mp3str"
+
+[deps]
+
+source_file="res://Music/Hero steps/Stone/Steps on Stone/Steps on stone.mp3"
+dest_files=["res://.godot/imported/Steps on stone.mp3-32793bdc41b52d87f5604a985247f860.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

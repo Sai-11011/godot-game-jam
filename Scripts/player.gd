@@ -10,7 +10,7 @@ extends CharacterBody2D
 @onready var camera = $Camera2D
 
 #STATS
-var attack_stats := PlayerData.attack_stats
+var attack_stats: Dictionary = PlayerData.attack_stats
 var acceleration = 800
 var friction = 1000
 var can_attack: bool = true 

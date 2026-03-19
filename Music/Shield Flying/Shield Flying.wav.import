@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cnkc8wm1w1u3m"
+path="res://.godot/imported/Shield Flying.wav-5f6873ac748a7e59b6913253fa3e78a8.sample"
+
+[deps]
+
+source_file="res://Music/Shield Flying/Shield Flying.wav"
+dest_files=["res://.godot/imported/Shield Flying.wav-5f6873ac748a7e59b6913253fa3e78a8.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

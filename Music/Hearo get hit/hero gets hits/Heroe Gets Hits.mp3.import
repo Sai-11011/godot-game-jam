@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://qo75tj4rwnno"
+path="res://.godot/imported/Heroe Gets Hits.mp3-fd0465b10dad11d73f876d28a7a9e5d8.mp3str"
+
+[deps]
+
+source_file="res://Music/Hearo get hit/hero gets hits/Heroe Gets Hits.mp3"
+dest_files=["res://.godot/imported/Heroe Gets Hits.mp3-fd0465b10dad11d73f876d28a7a9e5d8.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
