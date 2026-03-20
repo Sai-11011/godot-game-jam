@@ -1,8 +1,80 @@
 [gd_scene format=3 uid="uid://d2hjnmw6yepcr"]
 
 [ext_resource type="Script" uid="uid://cl42tna6037kx" path="res://Scripts/game_over.gd" id="1_ek8ke"]
+[ext_resource type="Texture2D" uid="uid://b24ic54lsor1d" path="res://Assets/Big art/Exposition-Sheet9.png" id="2_14u15"]
 [ext_resource type="Theme" uid="uid://bmun2ysgx4il8" path="res://Themes/Button.tres" id="2_ek8ke"]
 [ext_resource type="FontFile" uid="uid://cgo7riob5uqxg" path="res://Assets/fonts/ThaleahFat.ttf" id="2_eoghk"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q7rna"]
+atlas = ExtResource("2_14u15")
+region = Rect2(0, 0, 144, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mdgfu"]
+atlas = ExtResource("2_14u15")
+region = Rect2(144, 0, 144, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hiuel"]
+atlas = ExtResource("2_14u15")
+region = Rect2(288, 0, 144, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wybsh"]
+atlas = ExtResource("2_14u15")
+region = Rect2(432, 0, 144, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kggp6"]
+atlas = ExtResource("2_14u15")
+region = Rect2(576, 0, 144, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pfjh2"]
+atlas = ExtResource("2_14u15")
+region = Rect2(720, 0, 144, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v1hre"]
+atlas = ExtResource("2_14u15")
+region = Rect2(864, 0, 144, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_udece"]
+atlas = ExtResource("2_14u15")
+region = Rect2(1008, 0, 144, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bbntq"]
+atlas = ExtResource("2_14u15")
+region = Rect2(1152, 0, 144, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_j3ryr"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q7rna")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mdgfu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hiuel")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wybsh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kggp6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pfjh2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v1hre")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_udece")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bbntq")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
 
 [node name="GameOver" type="Control" unique_id=2035159009]
 process_mode = 3
@@ -14,46 +86,60 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ek8ke")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=670813742]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=487402573]
+position = Vector2(639.99994, 360)
+scale = Vector2(8.888888, 7.5)
+sprite_frames = SubResource("SpriteFrames_j3ryr")
+autoplay = "default"
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=419332948]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 1)
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 150
+theme_override_constants/margin_right = 150
+theme_override_constants/margin_bottom = 150
 
-[node name="Label" type="Label" parent="ColorRect" unique_id=1250272851]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -44.5
-offset_top = -11.5
-offset_right = 44.5
-offset_bottom = 11.5
-grow_horizontal = 2
-grow_vertical = 2
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=951754261]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1250272851]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 theme_override_fonts/font = ExtResource("2_eoghk")
-theme_override_font_sizes/font_size = 56
-text = "yOUR dEAD"
+theme_override_font_sizes/font_size = 100
+text = "You Died"
 
-[node name="Button" type="Button" parent="." unique_id=638702589]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -935.0
-offset_top = -285.0
-offset_right = -307.0
-offset_bottom = -233.0
-grow_horizontal = 0
-grow_vertical = 0
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1448779640]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "The stone endures."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1045741829]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 50
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=638702589]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme = ExtResource("2_ek8ke")
-text = "bUtToN tO rEsPAWN"
+text = "Restart"
 
-[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[node name="Menu" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=144508420]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("2_ek8ke")
+text = "Menu"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Button" to="." method="_on_button_pressed"]

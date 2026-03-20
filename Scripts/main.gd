@@ -7,6 +7,7 @@ var player_scene: PackedScene = load(Global.SCENES.player)
 @onready var ysort_node = $Ysort 
 
 func _ready() -> void:
+	AudioManager.switch_bgm_phase(2)
 	spawn_player()
 
 func spawn_player():

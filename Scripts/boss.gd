@@ -168,6 +168,7 @@ func play_intro_cutscene():
 
 func wake_up():
 	is_waking_up = true # 1. LOCK THE BOSS!
+	AudioManager.switch_bgm_phase(3)
 	if is_instance_valid(player):
 		player.is_invincible = true # God Mode: Engaged
 	is_awake = true
@@ -267,6 +268,7 @@ func pick_random_attack():
 	execute_attack(chosen_attack)
 
 func execute_attack(color: String):
+	AudioManager.switch_bgm_phase(4)
 	current_state = State.ATTACKING
 	orbit_speed = 6.0 
 	
