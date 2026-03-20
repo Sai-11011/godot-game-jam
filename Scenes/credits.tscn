@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://cb5j1spgtmpf4"]
+[gd_scene format=3 uid="uid://b27w0j41si1s0"]
 
 [ext_resource type="Script" uid="uid://f6aerjcywq01" path="res://Scripts/credits.gd" id="1_ccovl"]
 [ext_resource type="FontFile" uid="uid://dl2qnelvliach" path="res://Assets/fonts/m5x7.ttf" id="2_1bamb"]
@@ -17,7 +17,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ccovl")
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 3
 script = ExtResource("1_ccovl")
-credits_time = 50.0
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=2062004972]
 layout_mode = 2
@@ -30,41 +29,68 @@ theme_override_fonts/normal_font = ExtResource("2_1bamb")
 theme_override_fonts/bold_font = ExtResource("3_xelri")
 bbcode_enabled = true
 text = "[center]
-[b][u]CREDITS[/u][/b]
+[font_size=48][b][color=#ffd700]CREDITS[/color][/b][/font_size]
 
+[font_size=20][i]A Game by the 2026 Development Team[/i][/font_size]
 
-[b][u]Development Team[/u][/b]  
+---
 
+[font_size=32][b][color=#a3a3a3]ENGINEERING[/color][/b][/font_size]
 
-[b]Narrative Designer Lead:[/b] SteezyGlock
+[b]Lead Programmer[/b]
+Sai
 
-[b]Narrative Designer:[/b] Daniel_Linosa_03, SteezyGlock
+[b]Systems & Gameplay Programming[/b]
+Clover Lamparouge
+Maxx
+Sai
 
-[b]Game Designer:[/b] Constantinus
+---
 
-[b]Lead Programmer:[/b] Sai
+[font_size=32][b][color=#a3a3a3]CREATIVE DIRECTION[/color][/b][/font_size]
 
-[b]Programming Team:[/b]
-- Sai
-- Clover Lamparouge
-- Maxx  
+[b]Lead Narrative Designer[/b]
+SteezyGlock
 
-[b]Artist:[/b] LazyStone
-[b]Animator:[/b] LazyStone
+[b]Narrative Design Team[/b]
+Daniel_Linosa_03
+SteezyGlock
 
-[b][u]Music and Sounds[/u][/b]  
-[b]Sound Designer:[/b] Richo Maya 
-[b]Music Composer:[/b] Richo Maya 
+[b]Game Designer[/b]
+Constantinus
 
-[b][u]Testers[/u][/b]
-- Vamsi
-- Maxx
+---
 
+[font_size=32][b][color=#a3a3a3]ART & VISUALS[/color][/b][/font_size]
 
+[b]Lead Artist & Animator[/b]
+LazyStone
 
-[b][u]Final Message[/u][/b]  
-[i]Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.[/i]  
+---
 
-[b]Thank you for playing our game![/b]
+[font_size=32][b][color=#a3a3a3]AUDIO DESIGN[/color][/b][/font_size]
+
+[b]Music Composer & Sound Lead[/b]
+Richo Maya
+
+---
+
+[font_size=32][b][color=#a3a3a3]QUALITY ASSURANCE[/color][/b][/font_size]
+
+[b]Technical Testing[/b]
+Vamsi
+Maxx
+
+---
+
+[font_size=36][b][color=#ffd700]A FINAL MESSAGE[/color][/b][/font_size]
+
+[font_size=22][i]You have done what many thought impossible. The Titan lies in ruin, its core shattered, and the balance of the shards has finally been restored. 
+
+This project began as a singular vision: to create a combat experience that felt heavy, punishing, and ultimately rewarding. To the player: thank you for your persistence. Every \"Game Over\" screen you faced and every retry you attempted was the reason we spent countless hours refining the AI, the sounds, and the pulse of the Titan's heart.
+
+We hope the thrill of the victory stays with you as long as the echoes of the battle. Your support means everything to our team, and we cannot wait to show you what we build next.[/i][/font_size]
+
+[font_size=38][b]Thank you for playing![/b][/font_size]
 [/center]"
 fit_content = true

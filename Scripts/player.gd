@@ -498,7 +498,7 @@ func apply_zoom():
 
 
 func take_damage(damage: int) -> void:
-	if is_dead or is_invincible:
+	if is_dead or is_invincible or not PlayerData.is_game_started:
 		return 
 		
 	PlayerData.current_health -= damage

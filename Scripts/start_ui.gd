@@ -1,6 +1,7 @@
 extends Control 
 
 var main_game_scene: PackedScene = load(Global.SCENES.main) 
+var credits_scene: PackedScene = load(Global.SCENES.credits) 
 
 # Drag your new ControlsOverlay panel here!
 @onready var controls_overlay = $ControlsOverlay 
@@ -23,3 +24,7 @@ func _on_back_button_pressed() -> void:
 
 func _on_intro_pressed() -> void:
 	controls_overlay.show()
+
+
+func _on_credits_pressed() -> void:
+	get_tree().change_scene_to_packed(credits_scene)

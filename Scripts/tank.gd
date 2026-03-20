@@ -148,7 +148,7 @@ func execute_slam():
 		var max_shake_distance = 800.0 
 		if distance < max_shake_distance:
 			var shake_multiplier = 1.0 - (distance / max_shake_distance)
-			var dynamic_shake_strength = 35.0 * shake_multiplier 
+			var dynamic_shake_strength = 15.0 * shake_multiplier 
 			get_tree().call_group("Camera", "apply_shake", dynamic_shake_strength)
 		
 		# Damage & Knockback
