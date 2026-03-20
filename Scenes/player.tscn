@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://du0iod16fn48v" path="res://Assets/MC/Cyborg_Run_Down_Sheet6.png" id="5_tx1dd"]
 [ext_resource type="Texture2D" uid="uid://bs3ftumr6ygm8" path="res://Assets/textures/light.svg" id="8_8erm5"]
 [ext_resource type="Texture2D" uid="uid://bmlo1vs5i2gt5" path="res://Assets/MC/Cyborg_Run_Up_Sheet6.png" id="8_gymyn"]
+[ext_resource type="AudioStream" uid="uid://6jr28jtopfcd" path="res://Music/Hero steps/land/Steps on land/Steps on Land.mp3" id="12_pu2lt"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wohnl"]
 atlas = ExtResource("2_3smsa")
@@ -500,6 +501,10 @@ collision_mask = 116
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="HitBox" unique_id=1649666134]
 polygon = PackedVector2Array(-4, -21, -4, -13, -2, 5, 5, 4, 3, -14, 3, -20)
+
+[node name="PlayerSteps" type="AudioStreamPlayer2D" parent="." unique_id=1546954484]
+stream = ExtResource("12_pu2lt")
+parameters/looping = true
 
 [connection signal="body_entered" from="ThrustHitbox" to="." method="_on_thrust_hit_box_body_entered"]
 [connection signal="area_entered" from="HitBox" to="." method="_on_hit_box_area_entered"]

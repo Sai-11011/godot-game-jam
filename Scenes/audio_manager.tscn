@@ -19,29 +19,29 @@ script = ExtResource("1_4tj6f")
 stream = ExtResource("1_sm2tf")
 parameters/looping = true
 
-[node name="SwordCharge" type="AudioStreamPlayer" parent="." unique_id=448336763]
+[node name="SwordCharge" type="AudioStreamPlayer2D" parent="." unique_id=964436262]
 stream = ExtResource("6_jmilc")
 
-[node name="Hit1" type="AudioStreamPlayer" parent="." unique_id=2037272079]
+[node name="Hit1" type="AudioStreamPlayer2D" parent="." unique_id=1329915458]
 stream = ExtResource("4_5nrbi")
 
-[node name="Hit2" type="AudioStreamPlayer" parent="." unique_id=1674184404]
+[node name="Hit2" type="AudioStreamPlayer2D" parent="." unique_id=1812788803]
 stream = ExtResource("5_pn88s")
 
-[node name="Hit3" type="AudioStreamPlayer" parent="." unique_id=1330814099]
+[node name="Hit3" type="AudioStreamPlayer2D" parent="." unique_id=1605506667]
 stream = ExtResource("6_fasow")
 
-[node name="Death" type="AudioStreamPlayer" parent="." unique_id=490807576]
+[node name="Death" type="AudioStreamPlayer2D" parent="." unique_id=1313276372]
 stream = ExtResource("7_1bal0")
 
-[node name="SlimeMove" type="AudioStreamPlayer" parent="." unique_id=911065820]
+[node name="SlimeMove" type="AudioStreamPlayer2D" parent="." unique_id=681955218]
 stream = ExtResource("7_5nrbi")
 
-[node name="SlimeEating" type="AudioStreamPlayer" parent="." unique_id=17225649]
+[node name="SlimeEating" type="AudioStreamPlayer2D" parent="." unique_id=517424016]
 stream = ExtResource("4_tnn7g")
 
-[node name="ShieldFlying" type="AudioStreamPlayer" parent="." unique_id=1648263558]
+[node name="ShieldFlying" type="AudioStreamPlayer2D" parent="." unique_id=611599340]
 stream = ExtResource("5_lwpe1")
 
-[node name="ShieldFire" type="AudioStreamPlayer" parent="." unique_id=1947739763]
+[node name="ShieldFire" type="AudioStreamPlayer2D" parent="." unique_id=1442807405]
 stream = ExtResource("3_5kf6k")

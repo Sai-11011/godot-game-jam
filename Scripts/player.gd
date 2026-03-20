@@ -9,6 +9,7 @@ extends CharacterBody2D
 @onready var heavy_particles =  $HeavyBuffParticles
 @onready var camera = $Camera2D
 @onready var core_light = $PointLight2D
+@onready var steps = $PlayerSteps
 
 #STATS
 var attack_stats: Dictionary = PlayerData.attack_stats
@@ -58,10 +59,16 @@ func _physics_process(delta: float) -> void:
 		if not is_attacking and sprite.animation != "hit":
 			sprite.play("walk_" + facing_dir)
 		velocity = velocity.move_toward(direction * speed, acceleration * delta)
+		
+		if not steps.playing:
+			steps.play()
+		
 	else:
 		if not is_attacking and not is_hit:
 			sprite.play("idle_" + facing_dir)
 		velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
+		if steps.playing:
+			steps.stop()
 		
 	if facing_dir == "left" and is_hit:
 		sprite.scale.x = -1

@@ -15,57 +15,61 @@ func randomize_pitch(audio_node: Node, min_pitch := 0.9, max_pitch := 1.1):
 	if "pitch_scale" in audio_node:
 		audio_node.pitch_scale = randf_range(min_pitch, max_pitch)
 
-func player_steps():
-	if can_play("player_steps", 0.35): # Only let footsteps trigger every 0.35 seconds 
-		randomize_pitch($PlayerSteps, 0.85, 1.15)
-		$PlayerSteps.play()
+# 🔊 Função base reutilizável (ESSENCIAL)
+func play_at(stream: AudioStream, pos: Vector2, pitch_min := 1.0, pitch_max := 1.0):
+	var player = AudioStreamPlayer2D.new()
+	player.stream = stream
+	player.position = pos
 
-func sword_charge():
+	if pitch_min != pitch_max:
+		player.pitch_scale = randf_range(pitch_min, pitch_max)
+
+	get_tree().current_scene.add_child(player)
+	player.play()
+	player.finished.connect(player.queue_free)
+
+
+
+func sword_charge(pos: Vector2):
 	if can_play("sword_charge", 0.5):
-		$SwordCharge.play()
+		play_at($SwordCharge.stream, pos)
 
-func hit1():
-	randomize_pitch($Hit1, 0.85, 1.15)
-	$Hit1.play()
+func hit1(pos: Vector2):
+	play_at($Hit1.stream, pos, 0.85, 1.15)
 
-func hit2():
-	randomize_pitch($Hit2, 0.85, 1.15)
-	$Hit2.play()
+func hit2(pos: Vector2):
+	play_at($Hit2.stream, pos, 0.85, 1.15)
 
-func hit3():
-	randomize_pitch($Hit3, 0.85, 1.15)
-	$Hit3.play()
+func hit3(pos: Vector2):
+	play_at($Hit3.stream, pos, 0.85, 1.15)
 
-func death():
+func death(pos: Vector2):
 	if can_play("death", 0.5):
-		$Death.play()
+		play_at($Death.stream, pos)
 
-func slime_move():
+func slime_move(pos: Vector2):
 	# Only allow a globally shared slime movement sound every 0.6 seconds
-	# This stops 10 slimes from breaking your eardrums 
 	if can_play("slime_move", 0.6):
-		randomize_pitch($SlimeMove, 0.8, 1.2)
-		$SlimeMove.play()
+		play_at($SlimeMove.stream, pos, 0.8, 1.2)
 
-func slime_eating():
+func slime_eating(pos: Vector2):
 	if can_play("slime_eating", 0.5):
-		randomize_pitch($SlimeEating, 0.9, 1.1)
-		$SlimeEating.play()
+		play_at($SlimeEating.stream, pos, 0.9, 1.1)
 
-func shield_flying():
+func shield_flying(pos: Vector2):
 	if can_play("shield_flying", 0.5):
-		$ShieldFlying.play()
+		play_at($ShieldFlying.stream, pos)
 
-func shield_fire():
+func shield_fire(pos: Vector2):
 	if can_play("shield_fire", 0.2):
-		randomize_pitch($ShieldFire, 0.9, 1.1)
-		$ShieldFire.play()
+		play_at($ShieldFire.stream, pos, 0.9, 1.1)
 
-func play_random_hit():
-	# If your thrust/slash hits 5 enemies instantly,
-	# this forces it to only play ONE punchy hit sound rather than 5 distorted layered sounds
+func play_random_hit(pos: Vector2):
 	if can_play("hit_global", 0.15):
 		var r = randi() % 3
-		if r == 0: hit1()
-		elif r == 1: hit2()
-		else: hit3()
+		if r == 0:
+			hit1(pos)
+		elif r == 1:
+			hit2(pos)
+		else:
+			hit3(pos)
