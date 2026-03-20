@@ -13,7 +13,8 @@ const SCENES := {
 	"ranger":"uid://drgiul5p1eh42",
 	"enemy_bullet":"uid://bf41tpk8csayd",
 	"game_over":"uid://d2hjnmw6yepcr",
-	"tank":"uid://bs6kcurb4niw3"
+	"tank":"uid://bs6kcurb4niw3",
+	"win":"uid://cvocabs0gq8mi"
 }
 
 # ENEMY DATA 

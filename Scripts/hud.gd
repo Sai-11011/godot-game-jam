@@ -22,6 +22,7 @@ func _ready() -> void:
 	#health_bar.value = PlayerData.current_health
 
 func _process(_delta):
+	if not PlayerData.get("is_game_started"): return
 	heavy_count.text = "Heavy: " + str(PlayerData.attacks["red"])
 	thrust_count.text = "Thrust: " + str(PlayerData.attacks["blue"])
 	bullet_count.text = "Bullet: " + str(PlayerData.attacks["green"])

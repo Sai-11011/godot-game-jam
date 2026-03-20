@@ -1,10 +1,11 @@
 [gd_scene format=3 uid="uid://c2ibw0tgue5r6"]
 
 [ext_resource type="Script" uid="uid://bc0e7kgfunkwe" path="res://Scripts/shards.gd" id="1_fi12b"]
+[ext_resource type="Texture2D" uid="uid://erw6fso80wek" path="res://Assets/objects/Red_Crystal.png" id="2_dbenr"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_a10an"]
-radius = 12.0
-height = 26.0
+radius = 8.0
+height = 18.0
 
 [node name="Shards" type="Area2D" unique_id=939801697]
 z_index = 5
@@ -12,12 +13,10 @@ collision_layer = 32
 script = ExtResource("1_fi12b")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=624276824]
-position = Vector2(0, -14)
 shape = SubResource("CapsuleShape2D_a10an")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=2137795420]
-offset_right = 20.0
-offset_bottom = 20.0
-rotation = 3.9269907
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1400611108]
+scale = Vector2(2, 2)
+texture = ExtResource("2_dbenr")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

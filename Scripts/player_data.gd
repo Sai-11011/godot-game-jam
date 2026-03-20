@@ -1,6 +1,7 @@
 extends Node
 
 signal max_health_update
+var is_game_started := false
 
 # SHARD INVENTORY 
 var shards_collected := {
@@ -27,7 +28,7 @@ var attacks := {
 var attack_stats := {
 	"base":{
 		"range":230,
-		"cooldown":0.1,
+		"cooldown":0.2,
 		"attack_time":0.25,#duration of attack 
 	},
 	"high":{
@@ -67,6 +68,8 @@ var enemy_stat_multiplier: float = 1.0
 var game_time_seconds: float = 0.0
 
 func _process(delta):
+	if not is_game_started: 
+		return
 	game_time_seconds += delta
 
 # CORE UPGRADE FUNCTION
@@ -138,4 +141,6 @@ func reset_data():
 	game_time_seconds = 0.0
 	
 	is_boss_active = false
-	game_time_seconds = 0.0
+	
+	# --- ADD THIS TO PREVENT TIMER BUGS ON RESTART! ---
+	is_game_started = false

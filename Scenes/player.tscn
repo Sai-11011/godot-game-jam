@@ -496,7 +496,7 @@ color = Color(1, 1, 1, 0.5882353)
 texture = ExtResource("8_8erm5")
 
 [node name="HitBox" type="Area2D" parent="." unique_id=1483307326]
-collision_mask = 52
+collision_mask = 116
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="HitBox" unique_id=1649666134]
 polygon = PackedVector2Array(-4, -21, -4, -13, -2, 5, 5, 4, 3, -14, 3, -20)
