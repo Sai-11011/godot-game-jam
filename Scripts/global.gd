@@ -2,7 +2,7 @@ extends Node
 
 # SCENES IDS
 const SCENES := {
-	"player":"uid://chny23dbskf7g",
+	"player":"uid://casb6ahlpll03",
 	"start_ui":"uid://bw1j84xhoel56",
 	"main":"uid://vw6xnynjt3vm",
 	"shards":"uid://c2ibw0tgue5r6",
