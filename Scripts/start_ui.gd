@@ -5,11 +5,12 @@ var credits_scene: PackedScene = load(Global.SCENES.credits)
 
 # Drag your new ControlsOverlay panel here!
 @onready var controls_overlay = $ControlsOverlay 
-@onready var info_panel = $ControlsOverlay/MarginContainer/VBoxContainer/RichTextLabel
+@onready var info_panel = $ControlsOverlay/MarginContainer/RichTextLabel
 
 func _ready():
 	# Ensure the overlay is hidden when the game starts
 	controls_overlay.hide()
+	AudioManager.start_bgm()
 
 func _on_play_pressed() -> void:
 	if Global.has_method("reset_data"): 

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://322wcwcvwoya"
+path="res://.godot/imported/Layered Combat Music 4.wav-d2833bfd721a425c07a56a2e5ee336ac.sample"
+
+[deps]
+
+source_file="res://Music/Layered Combas Music 3and4/Layered Combat Music 4.wav"
+dest_files=["res://.godot/imported/Layered Combat Music 4.wav-d2833bfd721a425c07a56a2e5ee336ac.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=2
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

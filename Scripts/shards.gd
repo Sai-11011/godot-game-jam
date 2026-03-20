@@ -7,6 +7,7 @@ extends Area2D
 var red_tex = load("uid://erw6fso80wek")
 var green_tex = load("uid://8rdtmqddhjge")
 var blue_tex = load("uid://dw7nc86tymwy6")
+var primal_tex = load("uid://b2fxhwvvcvday")
 
 var is_claimed: bool = false 
 
@@ -21,11 +22,8 @@ func _ready():
 	elif shard_type == "green":
 		sprite.texture = green_tex
 	elif shard_type == "main_orb":
-		# Since we don't have a main orb sprite, we will use blue as a base 
-		# and blow out the modulate to make it a glowing white super-orb!
-		sprite.texture = blue_tex
-		sprite.modulate = Color(3.0, 3.0, 3.0) 
-		scale = Vector2(3.0, 3.0)
+		sprite.texture = primal_tex
+		scale = Vector2(1.0,1.0)
 		
 	Global.apply_levitation(self, 12.0, 1.0)
 

@@ -5,12 +5,12 @@ var main_menu_scene: String = Global.SCENES.start_ui # Update this path if neede
 
 func _ready():
 	# Format the final time perfectly
+	AudioManager.switch_bgm_phase(2)
 	var time_in_seconds = PlayerData.game_time_seconds
 	var minutes = int(time_in_seconds / 60.0)
 	var seconds = int(time_in_seconds) % 60
 	
-	time_label.text = "Final Time: " + str(minutes) + ":" + str(seconds).pad_zeros(2)
-
+	time_label.text = "It took you " + str(minutes) + ":" + str(seconds).pad_zeros(2)+"… but it was only a matter of time."
 func _on_menu_button_pressed() -> void:
 	if Global.has_method("reset_data"): 
 		PlayerData.reset_data()

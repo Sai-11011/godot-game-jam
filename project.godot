@@ -17,7 +17,10 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 config/name="TitansWake"
 run/main_scene="uid://bw1j84xhoel56"
 config/features=PackedStringArray("4.6", "Forward Plus")
-config/icon="res://icon.svg"
+boot_splash/bg_color=Color(0.09019608, 0.07058824, 0.09019608, 1)
+boot_splash/image="uid://v0grca2paub6"
+config/icon="uid://55yfh6ar214o"
+config/windows_native_icon="res://Icon.ico"
 
 [autoload]
 

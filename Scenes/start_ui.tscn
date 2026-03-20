@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://bhwqypk7n8utc" path="res://Scripts/start_ui.gd" id="1_8k21b"]
 [ext_resource type="Texture2D" uid="uid://b24ic54lsor1d" path="res://Assets/Big art/Exposition-Sheet9.png" id="2_wfxj5"]
 [ext_resource type="Theme" uid="uid://bmun2ysgx4il8" path="res://Themes/Button.tres" id="3_avrgi"]
-[ext_resource type="FontFile" uid="uid://cgo7riob5uqxg" path="res://Assets/fonts/ThaleahFat.ttf" id="4_q7rna"]
 [ext_resource type="FontFile" uid="uid://dl2qnelvliach" path="res://Assets/fonts/m5x7.ttf" id="5_mdgfu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_q7rna"]
@@ -140,8 +139,7 @@ text = "Credits"
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
-theme_override_fonts/font = ExtResource("4_q7rna")
-theme_override_font_sizes/font_size = 150
+theme_override_font_sizes/font_size = 180
 text = "Titan’s Wake"
 horizontal_alignment = 2
 
@@ -162,16 +160,12 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 150
-theme_override_constants/margin_top = 150
-theme_override_constants/margin_right = 150
-theme_override_constants/margin_bottom = 150
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ControlsOverlay/MarginContainer" unique_id=621295616]
-layout_mode = 2
-alignment = 1
-
-[node name="RichTextLabel" type="RichTextLabel" parent="ControlsOverlay/MarginContainer/VBoxContainer" unique_id=1174707841]
+[node name="RichTextLabel" type="RichTextLabel" parent="ControlsOverlay/MarginContainer" unique_id=1174707841]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_fonts/normal_font = ExtResource("5_mdgfu")
@@ -185,24 +179,31 @@ theme_override_font_sizes/bold_italics_font_size = 24
 theme_override_font_sizes/italics_font_size = 24
 theme_override_font_sizes/mono_font_size = 24
 bbcode_enabled = true
-text = "[center][b]THE TITAN AWAKENS...[/b][/center]
+text = "[center][color=#c285ff]✦ THE TITAN AWAKENS ✦[/color][/center]
 
-[i]For eons, the ancient behemoth slumbered. Now, the purple eclipse spreads across the arena. You have exactly 5 minutes to prepare before it hunts you down.[/i]
+[center][color=#a3a3a3]\"For ages, the Titan lay dormant beneath the ruins.
+Now, the purple eclipse spreads... it senses you.
+You have to prepare for what comes next.
 
-[b]YOUR OBJECTIVE:[/b]
-Slay minions to gather shards. Shards permanently upgrade your stats and grant you limited uses of powerful abilities. When the Titan wakes, destroy its three orbiting cubes to expose the core!
+Gather shards to grow stronger.
+But as you rise, so does the Titan.
+When it awakens, there will be no escape.\"[/color][/center]
 
-[center][b]CONTROLS[/b][/center]
-[b]WASD / Arrows[/b] - Move
-[b]J / Left Click[/b] - Base Slash
-[b]Z[/b] - Toggle Camera Zoom
-[color=#ff3333][b][H][/b] Heavy Attack (Requires Red Shards)[/color]
-[color=#3333ff][b][K][/b] Thrust Dash (Requires Blue Shards)[/color]
-[color=#33ff33][b][L][/b] Bullet Attack (Requires Green Shards)[/color]"
+[center][color=#ff0000]♦[/color][color=#00ff00] ♦ [/color][color=#0000ff]♦[/color][/center]
 
-[node name="BackButton" type="Button" parent="ControlsOverlay/MarginContainer/VBoxContainer" unique_id=1076469192]
+[center][color=#ffffff][b]YOUR OBJECTIVE[/b][/color]
+[color=#dddddd]Slay minions and harvest shards to upgrade stats.
+Survive the Fight, then [color=#ff5555]destroy the Titan's
+three orbiting cubes[/color] to expose its core![/color][/center]
+"
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackButton" type="Button" parent="ControlsOverlay/MarginContainer" unique_id=1076469192]
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 0
 size_flags_vertical = 10
 theme = ExtResource("3_avrgi")
 text = "Back"
@@ -210,4 +211,4 @@ text = "Back"
 [connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/Play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/Intro" to="." method="_on_intro_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/Credits" to="." method="_on_credits_pressed"]
-[connection signal="pressed" from="ControlsOverlay/MarginContainer/VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="ControlsOverlay/MarginContainer/BackButton" to="." method="_on_back_button_pressed"]

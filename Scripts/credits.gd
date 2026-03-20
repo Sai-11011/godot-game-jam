@@ -2,10 +2,12 @@ extends ScrollContainer
 
 @onready var text_node = $MarginContainer/RichTextLabel
 @onready var margin : MarginContainer = $MarginContainer
-
+var main_menu_scene: PackedScene = load(Global.SCENES.start_ui)
 # Use pixels per second for more natural control
 @export_range(10, 500, 5) var scroll_speed : float = 100.0 
 @export_range(0, 10000, 0.1) var margin_extra : float = 100.0
+
+var scroll_tween: Tween # <-- ADDED: Class variable to track the tween
 
 func _ready() -> void:
 	# 1. Setup Text Styling
@@ -37,13 +39,27 @@ func _ready() -> void:
 	var scroll_duration = total_scroll_dist / scroll_speed
 	
 	# 5. Execute Tween
-	var tween = create_tween()
-	tween.tween_property(
+	scroll_tween = create_tween() # <-- CHANGED: Using the class variable
+	scroll_tween.tween_property(
 		self, 
 		"scroll_vertical", 
 		total_scroll_dist, 
 		scroll_duration
 	).set_trans(Tween.TRANS_LINEAR)
 	
-	# Optional: Emit a signal or change scene when finished
-	tween.finished.connect(func(): print("Credits finished!"))
+	# <-- CHANGED: Connect to a dedicated finish function
+	scroll_tween.finished.connect(finish_credits) 
+
+# --- NEW: SKIP LOGIC ---
+
+func _unhandled_input(event: InputEvent) -> void:
+	# Check for "attack" or standard UI skip inputs like Escape, Space, or Enter
+	if event.is_action_pressed("attack") or event.is_action_pressed("ui_cancel") or event.is_action_pressed("ui_accept"):
+		if scroll_tween and scroll_tween.is_running():
+			scroll_tween.kill() # Stop the scrolling immediately
+		finish_credits()
+
+func finish_credits() -> void:
+	print("Credits finished or skipped!")
+	
+	get_tree().change_scene_to_packed(main_menu_scene)
