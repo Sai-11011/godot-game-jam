@@ -16,7 +16,6 @@ script = ExtResource("1_fi12b")
 shape = SubResource("CapsuleShape2D_a10an")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1400611108]
-scale = Vector2(2, 2)
 texture = ExtResource("2_dbenr")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

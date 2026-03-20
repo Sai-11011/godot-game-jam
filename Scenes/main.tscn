@@ -170,7 +170,6 @@ position = Vector2(1, 66)
 texture = ExtResource("5_wsu2k")
 
 [node name="ShardSpawner" parent="." unique_id=1764429282 instance=ExtResource("1_jjvhh")]
-scale = Vector2(0.5, 0.5)
 
 [node name="Ysort" type="Node2D" parent="." unique_id=1429676817 groups=["bake_me"]]
 y_sort_enabled = true
@@ -195,9 +194,8 @@ position = Vector2(-714, 683)
 [node name="light4" parent="Ysort/objects/Lights" unique_id=396430421 instance=ExtResource("10_hptm8")]
 position = Vector2(727, 682)
 
-[node name="EnemySpawner" parent="Ysort" unique_id=1488309227 node_paths=PackedStringArray("player") instance=ExtResource("5_kry3j")]
+[node name="EnemySpawner" parent="Ysort" unique_id=1488309227 instance=ExtResource("5_kry3j")]
 y_sort_enabled = true
-player = NodePath("")
 
 [node name="WorldBounds" type="StaticBody2D" parent="." unique_id=2145810108]
 collision_layer = 2

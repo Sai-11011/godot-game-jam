@@ -3,7 +3,7 @@ extends StaticBody2D
 var player: CharacterBody2D 
 
 # Arena Size Settings
-@export var inner_radius: float = 1200.0 
+@export var inner_radius: float = 6999 
 @export var ring_thickness: float = 1000.0 
 @export var resolution: int = 64 
 
@@ -43,11 +43,16 @@ func generate_indestructible_arena() -> void:
 	border_line.points = line_points
 
 func _process(delta: float) -> void:
+	# --- NEW: Find the player dynamically if they just spawned! ---
+	if player == null:
+		player = get_tree().get_first_node_in_group("Player")
+		
 	# If we are currently flashing from a dash impact, ignore normal walking fades!
 	if not is_instance_valid(player) or is_flashing: 
 		return
 
-	var distance_to_center = player.global_position.distance_to(global_position)
+	# Assuming your boundary is at (0,0) with the rest of the map
+	var distance_to_center = player.global_position.distance_to(Vector2.ZERO)
 	var distance_to_wall = abs(inner_radius - distance_to_center)
 
 	# --- HOLOGRAPHIC FADE ---

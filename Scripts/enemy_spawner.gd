@@ -72,37 +72,56 @@ func spawn_slime():
 	add_child(new_slime)
 
 func get_valid_spawn_position() -> Vector2:
-	# 1. FIND THE DANGER CENTER
-	var boss = get_tree().get_first_node_in_group("Boss")
-	var danger_center = Vector2.ZERO
-	if is_instance_valid(boss):
-		danger_center = boss.global_position
-		
-	# 2. Get the exact arrow pointing AWAY from the danger!
-	var direction_away = danger_center.direction_to(player.global_position)
-	if direction_away == Vector2.ZERO:
-		direction_away = Vector2.RIGHT # Fallback if exactly on top of 0,0
+	var max_attempts = 15 
+	var space_state = get_world_2d().direct_space_state
+	var query = PhysicsPointQueryParameters2D.new()
+	query.collision_mask = 1 
 	
-	# 3. CALCULATE THE CAMERA BOUNDS
+	# Calculate the camera bounds for the SLEEPING phase
 	var transform_inv = get_canvas_transform().affine_inverse()
 	var viewport_rect = get_viewport_rect()
 	var top_left = transform_inv * viewport_rect.position
 	var bottom_right = transform_inv * (viewport_rect.position + viewport_rect.size)
 	var camera_rect = Rect2(top_left, bottom_right - top_left).grow(150.0)
 	
-	# 4. LOOP TO FIND A SPOT
-	var max_attempts = 15 
 	for i in range(max_attempts):
-		# Rotate the "away" arrow slightly to create a cone
-		var random_angle = randf_range(-PI/3, PI/3)
-		var spawn_dir = direction_away.rotated(random_angle)
+		var target_pos = Vector2.ZERO
 		
-		var random_distance = randf_range(min_spawn_radius, max_spawn_radius)
-		var target_pos = player.global_position + (spawn_dir * random_distance)
-		
-		# Only accept the spot if it's safely off-screen
-		if not camera_rect.has_point(target_pos):
-			return target_pos # We found a safe spot!
+		if PlayerData.is_boss_active:
+			# --- BOSS AWAKE: Tight Ring & IGNORE Camera Check ---
+			var random_angle = randf_range(0.0, TAU)
+			var boss_phase_distance = randf_range(400.0, 600.0) # Much closer to the player!
+			target_pos = player.global_position + (Vector2.RIGHT.rotated(random_angle) * boss_phase_distance)
 			
-	# FALLBACK: If the loop fails, force them 1200 pixels straight away from the boss
-	return player.global_position + (direction_away * 1200.0)
+			# Just make sure it's not inside a wall
+			query.position = target_pos
+			var hits = space_state.intersect_point(query)
+			if hits.is_empty():
+				return target_pos 
+				
+		else:
+			# --- BOSS SLEEPING: Run away from 0,0 & USE Camera Check ---
+			var direction_away = Vector2.ZERO.direction_to(player.global_position)
+			if direction_away == Vector2.ZERO:
+				direction_away = Vector2.RIGHT
+			
+			var random_angle = randf_range(-PI/3, PI/3)
+			var random_distance = randf_range(min_spawn_radius, max_spawn_radius)
+			var spawn_dir = direction_away.rotated(random_angle)
+			target_pos = player.global_position + (spawn_dir * random_distance)
+			
+			# Ensure it is safely off-screen so they don't pop in visually
+			if not camera_rect.has_point(target_pos):
+				query.position = target_pos
+				var hits = space_state.intersect_point(query)
+				if hits.is_empty():
+					return target_pos
+					
+	# Emergency Fallbacks if completely trapped
+	if PlayerData.is_boss_active:
+		return player.global_position + (Vector2.RIGHT.rotated(randf_range(0, TAU)) * 500.0)
+	else:
+		var direction_away = Vector2.ZERO.direction_to(player.global_position)
+		if direction_away == Vector2.ZERO:
+			direction_away = Vector2.RIGHT
+		return player.global_position + (direction_away * 1200.0)
