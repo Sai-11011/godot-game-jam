@@ -28,7 +28,7 @@ var attacks := {
 var attack_stats := {
 	"base":{
 		"range":230,
-		"cooldown":0.2,
+		"cooldown":0.25,
 		"attack_time":0.25,#duration of attack 
 	},
 	"high":{
@@ -133,7 +133,7 @@ func reset_data():
 	
 	# Reset Inventory
 	shards_collected = {"red": 0, "blue": 0, "green": 0}
-	attacks = {"red": 0, "blue": 10, "green": 100}
+	attacks = {"red": 0, "blue": 0, "green": 0}
 	has_top_orb = false
 	
 	# Reset Game Scaling
