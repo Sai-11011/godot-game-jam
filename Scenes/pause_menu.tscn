@@ -4,6 +4,13 @@
 [ext_resource type="FontFile" uid="uid://cgo7riob5uqxg" path="res://Assets/fonts/ThaleahFat.ttf" id="2_bpi0q"]
 [ext_resource type="Theme" uid="uid://bmun2ysgx4il8" path="res://Themes/Button.tres" id="3_vmyb1"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1och7"]
+bg_color = Color(0.24477637, 0.2447764, 0.24477637, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
 [node name="PauseMenu" type="CanvasLayer" unique_id=1377678887]
 process_mode = 3
 script = ExtResource("1_1och7")
@@ -37,25 +44,62 @@ theme_override_font_sizes/font_size = 190
 text = "PAUSED"
 horizontal_alignment = 1
 
-[node name="ResumeButton" type="Button" parent="VBoxContainer" unique_id=608501807]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1187354737]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" unique_id=48869134]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="ResumeButton" type="Button" parent="VBoxContainer/HBoxContainer/VBoxContainer" unique_id=608501807]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme = ExtResource("3_vmyb1")
 text = "Resume"
 
-[node name="RestartButton" type="Button" parent="VBoxContainer" unique_id=41297369]
+[node name="RestartButton" type="Button" parent="VBoxContainer/HBoxContainer/VBoxContainer" unique_id=41297369]
 layout_mode = 2
 size_flags_horizontal = 4
 theme = ExtResource("3_vmyb1")
 text = "Restart"
 
-[node name="BackButton" type="Button" parent="VBoxContainer" unique_id=1597708207]
+[node name="BackButton" type="Button" parent="VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1597708207]
 layout_mode = 2
 size_flags_horizontal = 4
 theme = ExtResource("3_vmyb1")
 text = "Back"
 
-[connection signal="pressed" from="VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/RestartButton" to="." method="_on_restart_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
+[node name="Panel" type="Panel" parent="VBoxContainer/HBoxContainer" unique_id=1482012312]
+custom_minimum_size = Vector2(390, 390)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1och7")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer/Panel" unique_id=2002438933]
+layout_mode = 1
+offset_right = 300.0
+offset_bottom = 300.0
+scale = Vector2(1.3, 1.3)
+bbcode_enabled = true
+text = "[center]
+[font_size=32][b][color=#ffd700]— BATTLE CONTROLS —[/color][/b][/font_size]
+
+[table=2]
+[cell][color=#a3a3a3]MOVEMENT[/color][/cell] [cell][b]WASD / ARROW KEYS[/b][/cell]
+[cell][color=#a3a3a3]BASE ATTACK[/color][/cell] [cell][b]LEFT CLICK / J[/b][/cell]
+[cell][color=#a3a3a3]THRUST DASH[/color][/cell] [cell][b] K[/b][/cell]
+[cell][color=#a3a3a3]BULLET SHOT[/color][/cell] [cell][b] L[/b][/cell]
+[cell][color=#a3a3a3]HEAVY BUFF[/color][/cell] [cell][b]H[/b][/cell]
+[cell][color=#a3a3a3]ZOOM VIEW[/color][/cell] [cell][b] Z[/b][/cell]
+[cell][color=#a3a3a3]PAUSE GAME[/color][/cell] [cell][b]ESC [/b][/cell]
+[/table]
+[/center]
+"
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/VBoxContainer/RestartButton" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
