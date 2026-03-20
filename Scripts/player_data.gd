@@ -28,7 +28,7 @@ var attacks := {
 var attack_stats := {
 	"base":{
 		"range":230,
-		"cooldown":0.2,
+		"cooldown":0.25,
 		"attack_time":0.25,#duration of attack 
 	},
 	"high":{

@@ -4,6 +4,7 @@ extends CharacterBody2D
 @onready var head_sprite = $HeadSprite
 @onready var orbit_center = $OrbitCenter
 @onready var core_hp_bar = $HealthBar
+@onready var death_sprite = $DeathSprite
 
 # Cubes
 @onready var red_cube = $OrbitCenter/RedCube
@@ -30,6 +31,7 @@ var core_health: int = 3000
 var cube_max_health: int = 450
 var is_intro_playing: bool = false
 var is_waking_up: bool = false
+var is_dying: bool = false
 
 # State Tracking
 enum State { IDLE, ATTACKING, STUNNED, VULNERABLE }
@@ -387,8 +389,16 @@ func take_damage(amount: int):
 		body_sprite.modulate = Color.WHITE
 
 func die():
+	if is_dying: return # If already dead, ignore any extra hits!
+	is_dying = true
 	print("TITAN DEFEATED!")
+	current_state = State.STUNNED # Stop the boss from attacking
 	
+	# 1. Instantly hide the cubes and health bar
+	orbit_center.hide() 
+	core_hp_bar.hide()
+	
+	# 2. Pan the camera to the Boss
 	if is_instance_valid(player):
 		player_cam = player.get_node_or_null("Camera2D")
 		if player_cam:
@@ -404,6 +414,24 @@ func die():
 	var pan_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	pan_tween.tween_property(boss_camera, "global_position", global_position, 1.0)
 	await pan_tween.finished
+	
+	# 3. Dramatic pause before crumbling...
+	await get_tree().create_timer(0.5).timeout
+	
+	# 4. Swap to the Death Sprite and play the animation!
+	body_sprite.hide()
+	head_sprite.hide()
+	death_sprite.show()
+	death_sprite.play("death")
+	
+	# 5. Massive screen shake as it falls apart
+	get_tree().call_group("Camera", "apply_shake", 40.0) 
+	
+	# 6. Wait for the crumble animation to completely finish
+	await death_sprite.animation_finished
+	
+	# 7. One last pause to look at the rubble before showing the Win Screen
+	await get_tree().create_timer(1.5).timeout
 	
 	get_tree().change_scene_to_packed(win_scene)
 	queue_free()
