@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://ck7hj4pmqsgb7" path="res://Scripts/cubes.gd" id="5_q76ad"]
 [ext_resource type="Texture2D" uid="uid://dtsxnsr83sphy" path="res://Assets/Enemies/Boss/Boss_Block.png" id="6_nuv35"]
 [ext_resource type="Texture2D" uid="uid://bj5e8c2i2lnhd" path="res://Assets/Enemies/Boss/Boss_Sleeping.png" id="8_odcco"]
+[ext_resource type="Texture2D" uid="uid://b21tfwq8ri6yv" path="res://Assets/Enemies/Boss/Boss_Death-Sheet8.png" id="8_yq25j"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lel8w"]
 radius = 36.0
@@ -17,6 +18,70 @@ radius = 22.022715
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mh6p8"]
 bg_color = Color(1, 0, 0, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_odcco"]
+atlas = ExtResource("8_yq25j")
+region = Rect2(0, 0, 162, 204)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q76ad"]
+atlas = ExtResource("8_yq25j")
+region = Rect2(162, 0, 162, 204)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nuv35"]
+atlas = ExtResource("8_yq25j")
+region = Rect2(324, 0, 162, 204)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lel8w"]
+atlas = ExtResource("8_yq25j")
+region = Rect2(486, 0, 162, 204)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6xjeg"]
+atlas = ExtResource("8_yq25j")
+region = Rect2(648, 0, 162, 204)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r0blv"]
+atlas = ExtResource("8_yq25j")
+region = Rect2(810, 0, 162, 204)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_42olf"]
+atlas = ExtResource("8_yq25j")
+region = Rect2(972, 0, 162, 204)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hbq6j"]
+atlas = ExtResource("8_yq25j")
+region = Rect2(1134, 0, 162, 204)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ursto"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_odcco")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q76ad")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nuv35")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lel8w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6xjeg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r0blv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_42olf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hbq6j")
+}],
+"loop": false,
+"name": &"death",
+"speed": 8.0
+}]
 
 [node name="Boss" type="CharacterBody2D" unique_id=1719500555 groups=["Enemy"]]
 y_sort_enabled = true
@@ -154,3 +219,9 @@ value = 3000.0
 [node name="BossCamera" type="Camera2D" parent="." unique_id=108528805 groups=["Camera"]]
 position_smoothing_enabled = true
 rotation_smoothing_enabled = true
+
+[node name="DeathSprite" type="AnimatedSprite2D" parent="." unique_id=9011471]
+visible = false
+z_index = 5
+sprite_frames = SubResource("SpriteFrames_ursto")
+animation = &"death"
