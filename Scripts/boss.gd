@@ -114,7 +114,7 @@ func _physics_process(delta: float):
 			var direction = global_position.direction_to(player.global_position)
 			velocity = direction * move_speed
 			move_and_slide()
-			get_tree().call_group("Camera", "apply_shake", 2.5) 
+			get_tree().call_group("Camera", "apply_shake", 0) 
 			AudioManager.play_boss_movement(global_position)
 		else:
 			velocity = Vector2.ZERO
@@ -123,7 +123,8 @@ func _physics_process(delta: float):
 
 func play_intro_cutscene():
 	is_intro_playing = true
-	
+	if is_instance_valid(player):
+		player.is_invincible = true # Protect the player during intro
 	await get_tree().create_timer(0.1).timeout
 	player = get_tree().get_first_node_in_group("Player")
 	
@@ -162,9 +163,13 @@ func play_intro_cutscene():
 	boss_camera.zoom = Vector2(1.0, 1.0) 
 	is_intro_playing = false
 	PlayerData.is_game_started = true
+	if is_instance_valid(player):
+		player.is_invincible = false # Restore damage once control is back
 
 func wake_up():
 	is_waking_up = true # 1. LOCK THE BOSS!
+	if is_instance_valid(player):
+		player.is_invincible = true # God Mode: Engaged
 	is_awake = true
 	PlayerData.is_boss_active = true 
 	queue_redraw() 
@@ -178,7 +183,7 @@ func wake_up():
 	core_hp_bar.show()
 	
 	# 2. AWAKENING FLASH EFFECT & SHAKE (Happens immediately!)
-	get_tree().call_group("Camera", "apply_shake", 30.0) 
+	get_tree().call_group("Camera", "apply_shake", 10.0) 
 	body_sprite.modulate = Color(3.0, 3.0, 3.0)
 	head_sprite.modulate = Color(3.0, 3.0, 3.0)
 	
@@ -224,6 +229,8 @@ func wake_up():
 	
 	is_waking_up = false # 2. UNLOCK THE BOSS!
 	start_boss_loop()
+	if is_instance_valid(player):
+		player.is_invincible = false # God Mode: Disengaged
 
 func _draw():
 	if not is_awake:

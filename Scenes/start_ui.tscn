@@ -103,19 +103,19 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 100
-theme_override_constants/margin_top = 150
+theme_override_constants/margin_top = 100
 theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 50
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1465611327]
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_constants/separation = 190
+theme_override_constants/separation = 30
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1526663802]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_constants/separation = 50
+theme_override_constants/separation = 30
 
 [node name="Play" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer" unique_id=1478888576]
 process_mode = 3
@@ -131,10 +131,15 @@ theme = ExtResource("3_avrgi")
 text = "Intro
 "
 
+[node name="Credits" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer" unique_id=1960489570]
+layout_mode = 2
+theme = ExtResource("3_avrgi")
+text = "Credits"
+
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=117798941]
 layout_mode = 2
 size_flags_horizontal = 8
-size_flags_vertical = 3
+size_flags_vertical = 0
 theme_override_fonts/font = ExtResource("4_q7rna")
 theme_override_font_sizes/font_size = 150
 text = "Titan’s Wake"
@@ -204,4 +209,5 @@ text = "Back"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/Play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/Intro" to="." method="_on_intro_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/Credits" to="." method="_on_credits_pressed"]
 [connection signal="pressed" from="ControlsOverlay/MarginContainer/VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
