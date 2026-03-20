@@ -42,6 +42,10 @@ bake_me=""
 Tank=""
 Camera=""
 
+[gui]
+
+theme/custom_font="uid://dl2qnelvliach"
+
 [input]
 
 up={

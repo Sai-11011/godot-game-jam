@@ -191,7 +191,7 @@ func perform_thrust_attack():
 		spawn_ghost_trail()
 		await get_tree().create_timer(0.03).timeout
 		
-	# --- NEW COLLISION PROPEL LOGIC ---
+	# --- NEW COLLISION PROPEL LOGIC (WALLS) ---
 	if is_inside_tree():
 		# test_move checks if our current position is overlapping a solid physics body
 		var is_stuck = test_move(global_transform, Vector2.ZERO)
@@ -226,6 +226,19 @@ func perform_thrust_attack():
 						break
 
 	is_invincible = false # REMOVE INVINCIBILITY
+	
+	# --- NEW: ANTI-STUCK SYSTEM (ENEMIES) ---
+	# Since we ignored knockback while invincible, check if we accidentally parked inside an Enemy!
+	for enemy in get_tree().get_nodes_in_group("Enemy"):
+		# 70.0 pixels is large enough to cover the Tank's thick body
+		if is_instance_valid(enemy) and global_position.distance_to(enemy.global_position) < 70.0:
+			var push_dir = enemy.global_position.direction_to(global_position)
+			if push_dir == Vector2.ZERO: 
+				push_dir = Vector2.RIGHT
+				
+			# Apply a massive, instant knockback velocity to forcefully slide out of the enemy!
+			knockback_velocity = push_dir * 1500.0 
+			break # We only need to pop out once, so stop checking other enemies
 	
 	await get_tree().create_timer(cooldown_time).timeout
 	can_attack = true

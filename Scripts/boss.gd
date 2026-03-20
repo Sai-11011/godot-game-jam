@@ -14,23 +14,22 @@ extends CharacterBody2D
 @onready var green_hp_bar = $OrbitCenter/GreenCube/HealthBar
 
 var player: CharacterBody2D
-var player_cam: Camera2D = null # Cleanly declared!
-
-@onready var hole_sprite = $HoleSprite
+var player_cam: Camera2D = null # Cleanly decla
 @onready var sleeping_sprite = $SleepingSprite
 @onready var boss_camera = $BossCamera
 var enemy_bullet_scene: PackedScene = load(Global.SCENES.enemy_bullet)
-
+var win_scene = load(Global.SCENES.win)
 # Boss Stats
 var is_awake: bool = false
 var detection_radius: float = 150.0 
 var detection_growth_rate: float = 22.83 
 var move_speed: float = 150.0 
 var attack_range: float = 350.0 
-var core_max_health: int = 2000
-var core_health: int = 2000
-var cube_max_health: int = 150
+var core_max_health: int = 3000
+var core_health: int = 3000
+var cube_max_health: int = 450
 var is_intro_playing: bool = false
+var is_waking_up: bool = false
 
 # State Tracking
 enum State { IDLE, ATTACKING, STUNNED, VULNERABLE }
@@ -69,49 +68,13 @@ func _ready():
 	orbit_center.hide()
 	core_hp_bar.hide()
 	sleeping_sprite.show()
-	hole_sprite.show()
 	
 	play_intro_cutscene()
 
-func play_intro_cutscene():
-	is_intro_playing = true
-	
-	await get_tree().create_timer(0.1).timeout
-	player = get_tree().get_first_node_in_group("Player")
-	
-	if is_instance_valid(player):
-		player_cam = player.get_node_or_null("Camera2D")
-		
-	if player_cam:
-		player_cam.enabled = false
-		
-	# Detach the camera so it can move independently
-	boss_camera.top_level = true 
-	boss_camera.global_position = global_position 
-	boss_camera.enabled = true
-	boss_camera.make_current()
-	boss_camera.zoom = Vector2(1.5, 1.5) 
-	
-	# Look at the sleeping Titan for a moment
-	await get_tree().create_timer(1.2).timeout
-	
-	# Smoothly pan the camera over to the Player
-	if is_instance_valid(player):
-		var pan_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		pan_tween.tween_property(boss_camera, "global_position", player.global_position, 1.5)
-		await pan_tween.finished
-	
-	# Hand control back to the player
-	if not is_awake:
-		boss_camera.enabled = false
-		if player_cam:
-			player_cam.enabled = true
-			player_cam.make_current()
-			
-	boss_camera.zoom = Vector2(1.0, 1.0) 
-	is_intro_playing = false
-
 func _physics_process(delta: float):
+	if is_intro_playing or is_waking_up: 
+		return
+		
 	player = get_tree().get_first_node_in_group("Player")
 	
 	# --- 1. THE SLEEPING PHASE ---
@@ -155,12 +118,75 @@ func _physics_process(delta: float):
 	else:
 		velocity = Vector2.ZERO
 
+func play_intro_cutscene():
+	is_intro_playing = true
+	
+	await get_tree().create_timer(0.1).timeout
+	player = get_tree().get_first_node_in_group("Player")
+	
+	if is_instance_valid(player):
+		player_cam = player.get_node_or_null("Camera2D")
+		
+	if player_cam:
+		player_cam.enabled = false
+		
+	# FIX: Keep top_level FALSE at first so it is FORCED to stay perfectly on the boss!
+	boss_camera.top_level = false 
+	boss_camera.position = Vector2.ZERO # Center it exactly on the boss node
+	boss_camera.enabled = true
+	boss_camera.make_current()
+	boss_camera.zoom = Vector2(1.5, 1.5) 
+	
+	# Look at the sleeping Titan for a moment
+	await get_tree().create_timer(1.2).timeout
+	
+	# NOW detach the camera so it can smoothly pan over to the Player
+	boss_camera.top_level = true 
+	boss_camera.global_position = self.global_position 
+	
+	if is_instance_valid(player):
+		var pan_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		pan_tween.tween_property(boss_camera, "global_position", player.global_position, 1.5)
+		await pan_tween.finished
+	
+	# Hand control back to the player
+	if not is_awake:
+		boss_camera.enabled = false
+		if player_cam:
+			player_cam.enabled = true
+			player_cam.make_current()
+			
+	boss_camera.zoom = Vector2(1.0, 1.0) 
+	is_intro_playing = false
+	PlayerData.is_game_started = true
+
 func wake_up():
+	is_waking_up = true # 1. LOCK THE BOSS!
 	is_awake = true
 	PlayerData.is_boss_active = true 
 	queue_redraw() 
 	print("The Titan has awakened!")
 	
+	# 1. HIDE SLEEPING, INSTANTLY SHOW BOSS
+	sleeping_sprite.hide()
+	body_sprite.show()
+	head_sprite.show()
+	orbit_center.show()
+	core_hp_bar.show()
+	
+	# 2. AWAKENING FLASH EFFECT & SHAKE (Happens immediately!)
+	get_tree().call_group("Camera", "apply_shake", 30.0) 
+	body_sprite.modulate = Color(3.0, 3.0, 3.0)
+	head_sprite.modulate = Color(3.0, 3.0, 3.0)
+	
+	var flash_tween = create_tween().set_parallel(true)
+	flash_tween.tween_property(body_sprite, "modulate", Color.WHITE, 0.6)
+	flash_tween.tween_property(head_sprite, "modulate", Color.WHITE, 0.6)
+	
+	# Wait for the flash to finish before moving the camera!
+	await flash_tween.finished
+	
+	# 3. NOW PAN THE CAMERA TO THE BOSS
 	if is_instance_valid(player):
 		player_cam = player.get_node_or_null("Camera2D")
 		if player_cam:
@@ -173,31 +199,13 @@ func wake_up():
 	boss_camera.make_current()
 	
 	var pan_to_boss = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	pan_to_boss.tween_property(boss_camera, "global_position", global_position, 1.0)
+	pan_to_boss.tween_property(boss_camera, "global_position", self.global_position, 1.0)
 	await pan_to_boss.finished
 	
-	get_tree().call_group("Camera", "apply_shake", 30.0) 
+	# Dramatic pause to look at the fully awakened boss
+	await get_tree().create_timer(0.6).timeout 
 	
-	sleeping_sprite.hide()
-	body_sprite.show()
-	head_sprite.show()
-	orbit_center.show()
-	core_hp_bar.show()
-	
-	var rise_distance = 200.0 
-	
-	body_sprite.position.y += rise_distance
-	head_sprite.position.y += rise_distance
-	orbit_center.position.y += rise_distance
-	
-	var rise_tween = create_tween().set_parallel(true).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
-	rise_tween.tween_property(body_sprite, "position:y", body_sprite.position.y - rise_distance, 3.0)
-	rise_tween.tween_property(head_sprite, "position:y", head_sprite.position.y - rise_distance, 3.0)
-	rise_tween.tween_property(orbit_center, "position:y", orbit_center.position.y - rise_distance, 3.0)
-	
-	await rise_tween.finished
-	await get_tree().create_timer(0.5).timeout 
-	
+	# 4. PAN BACK TO THE PLAYER
 	if is_instance_valid(player):
 		var pan_to_player = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 		pan_to_player.tween_property(boss_camera, "global_position", player.global_position, 1.0)
@@ -211,6 +219,7 @@ func wake_up():
 	for slime in get_tree().get_nodes_in_group("slime"): 
 		slime.queue_free()
 	
+	is_waking_up = false # 2. UNLOCK THE BOSS!
 	start_boss_loop()
 
 func _draw():
@@ -266,15 +275,26 @@ func execute_attack(color: String):
 func damage_cube(color: String, amount: int):
 	if not active_cubes[color]["is_alive"]: return
 	
+	var cube_node = active_cubes[color]["node"]
+	var cube_sprite = cube_node.get_node("Sprite2D") 
+	
+	# --- NEW: ARMOR THRESHOLD CHECK ---
+	if amount < 25:
+		# Flash grey to show the attack bounced off
+		cube_sprite.modulate = Color(0.5, 0.5, 0.5)
+		await get_tree().create_timer(0.1).timeout
+		if is_instance_valid(cube_sprite):
+			if color == "red": cube_sprite.modulate = Color(2.0, 0.5, 0.5)
+			elif color == "blue": cube_sprite.modulate = Color(0.5, 0.5, 2.0)
+			elif color == "green": cube_sprite.modulate = Color(0.5, 2.0, 0.5)
+		return # Stop the function here, take 0 damage!
+	
 	active_cubes[color]["hp"] -= amount
 	
 	match color:
 		"red": red_hp_bar.value = active_cubes[color]["hp"]
 		"blue": blue_hp_bar.value = active_cubes[color]["hp"]
 		"green": green_hp_bar.value = active_cubes[color]["hp"]
-	
-	var cube_node = active_cubes[color]["node"]
-	var cube_sprite = cube_node.get_node("Sprite2D") 
 	
 	cube_sprite.modulate = Color(3, 3, 3)
 	await get_tree().create_timer(0.1).timeout
@@ -343,6 +363,14 @@ func respawn_cubes():
 	core_hp_bar.value = core_health 
 
 func take_damage(amount: int):
+	# --- NEW: ARMOR THRESHOLD CHECK ---
+	if amount < 25:
+		# Flash blue so the player knows the core is too tough
+		body_sprite.modulate = Color(0.5, 0.5, 2.0)
+		await get_tree().create_timer(0.1).timeout
+		body_sprite.modulate = Color.WHITE
+		return # Stop the function here, take 0 damage!
+
 	if current_state == State.VULNERABLE or current_state == State.STUNNED:
 		core_health -= amount
 		core_hp_bar.value = core_health
@@ -377,7 +405,7 @@ func die():
 	pan_tween.tween_property(boss_camera, "global_position", global_position, 1.0)
 	await pan_tween.finished
 	
-	get_tree().change_scene_to_file("res://Scenes/win_screen.tscn")
+	get_tree().change_scene_to_packed(win_scene)
 	queue_free()
 
 func receive_knockback(_force: Vector2):

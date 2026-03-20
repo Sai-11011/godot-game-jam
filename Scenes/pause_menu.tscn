@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://0m3rfo57mgrb"]
+
+[ext_resource type="Script" uid="uid://bhgri8wy67ax7" path="res://Scripts/pause_menu.gd" id="1_1och7"]
+[ext_resource type="FontFile" uid="uid://cgo7riob5uqxg" path="res://Assets/fonts/ThaleahFat.ttf" id="2_bpi0q"]
+[ext_resource type="Theme" uid="uid://bmun2ysgx4il8" path="res://Themes/Button.tres" id="3_vmyb1"]
+
+[node name="PauseMenu" type="CanvasLayer" unique_id=1377678887]
+process_mode = 3
+script = ExtResource("1_1och7")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1151668644]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5882353)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1374029165]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 30
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=1957415991]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_bpi0q")
+theme_override_font_sizes/font_size = 190
+text = "PAUSED"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="VBoxContainer" unique_id=608501807]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("3_vmyb1")
+text = "Resume"
+
+[node name="RestartButton" type="Button" parent="VBoxContainer" unique_id=41297369]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("3_vmyb1")
+text = "Restart"
+
+[node name="BackButton" type="Button" parent="VBoxContainer" unique_id=1597708207]
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("3_vmyb1")
+text = "Back"
+
+[connection signal="pressed" from="VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/RestartButton" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]

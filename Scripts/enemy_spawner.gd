@@ -4,7 +4,7 @@ extends Node2D
 @onready var ranger_scene: PackedScene = load(Global.SCENES.ranger)
 @onready var tank_scene: PackedScene = load(Global.SCENES.tank) 
 
-@export var player: CharacterBody2D 
+var player: CharacterBody2D 
 
 var max_slimes = 40
 var max_rangers = 30
@@ -15,6 +15,8 @@ var min_spawn_radius: float = 500.0
 var max_spawn_radius: float = 1000.0
 
 func _on_enemy_spawn_timer_timeout():
+	if player == null:
+		player = get_tree().get_first_node_in_group("Player")
 	if player == null:
 		return
 	var random = randf()
@@ -39,15 +41,13 @@ func _on_enemy_spawn_timer_timeout():
 	else:
 		spawn_slime()
 
-# 🧠 NEW HELPER FUNCTION: Finds a safe spot to spawn
-
 func spawn_ranger():
 	var current_enemies = get_tree().get_nodes_in_group("Ranger").size()
 	if current_enemies >= max_rangers:
 		return
 		
 	var new_ranger = ranger_scene.instantiate()
-	new_ranger.global_position = get_valid_spawn_position() # Use the helper function!
+	new_ranger.global_position = get_valid_spawn_position() 
 	add_child(new_ranger)
 
 func spawn_tank():
@@ -56,7 +56,7 @@ func spawn_tank():
 		return
 		
 	var new_tank = tank_scene.instantiate()
-	new_tank.global_position = get_valid_spawn_position() # Use the helper function!
+	new_tank.global_position = get_valid_spawn_position() 
 	add_child(new_tank)
 
 func spawn_slime():
@@ -68,31 +68,60 @@ func spawn_slime():
 	var available_colors = ["red", "blue", "green"]
 	new_slime.slime_color = available_colors[randi() % available_colors.size()]
 	
-	new_slime.global_position = get_valid_spawn_position() # Use the helper function!
+	new_slime.global_position = get_valid_spawn_position() 
 	add_child(new_slime)
 
 func get_valid_spawn_position() -> Vector2:
-	var max_attempts = 15 # Don't get stuck in an infinite loop!
+	var max_attempts = 15 
 	var space_state = get_world_2d().direct_space_state
 	var query = PhysicsPointQueryParameters2D.new()
-	
-	# We want to check Layer 1 (where your pillars and arena walls are)
 	query.collision_mask = 1 
 	
+	# Calculate the camera bounds for the SLEEPING phase
+	var transform_inv = get_canvas_transform().affine_inverse()
+	var viewport_rect = get_viewport_rect()
+	var top_left = transform_inv * viewport_rect.position
+	var bottom_right = transform_inv * (viewport_rect.position + viewport_rect.size)
+	var camera_rect = Rect2(top_left, bottom_right - top_left).grow(150.0)
+	
 	for i in range(max_attempts):
-		# 1. Pick a random coordinate
-		var random_angle = randf_range(0.0, TAU) 
-		var random_distance = randf_range(min_spawn_radius, max_spawn_radius)
-		var spawn_offset = Vector2.RIGHT.rotated(random_angle) * random_distance
-		var target_pos = player.global_position + spawn_offset
+		var target_pos = Vector2.ZERO
 		
-		# 2. Ping the physics engine at this exact coordinate
-		query.position = target_pos
-		var hits = space_state.intersect_point(query)
-		
-		# 3. If 'hits' is empty, there is no wall here! Safe to spawn!
-		if hits.is_empty():
-			return target_pos
+		if PlayerData.is_boss_active:
+			# --- BOSS AWAKE: Tight Ring & IGNORE Camera Check ---
+			var random_angle = randf_range(0.0, TAU)
+			var boss_phase_distance = randf_range(400.0, 600.0) # Much closer to the player!
+			target_pos = player.global_position + (Vector2.RIGHT.rotated(random_angle) * boss_phase_distance)
 			
-	# Fallback: If it's too crowded and we fail 15 times, just spawn at the player's feet
-	return player.global_position
+			# Just make sure it's not inside a wall
+			query.position = target_pos
+			var hits = space_state.intersect_point(query)
+			if hits.is_empty():
+				return target_pos 
+				
+		else:
+			# --- BOSS SLEEPING: Run away from 0,0 & USE Camera Check ---
+			var direction_away = Vector2.ZERO.direction_to(player.global_position)
+			if direction_away == Vector2.ZERO:
+				direction_away = Vector2.RIGHT
+			
+			var random_angle = randf_range(-PI/3, PI/3)
+			var random_distance = randf_range(min_spawn_radius, max_spawn_radius)
+			var spawn_dir = direction_away.rotated(random_angle)
+			target_pos = player.global_position + (spawn_dir * random_distance)
+			
+			# Ensure it is safely off-screen so they don't pop in visually
+			if not camera_rect.has_point(target_pos):
+				query.position = target_pos
+				var hits = space_state.intersect_point(query)
+				if hits.is_empty():
+					return target_pos
+					
+	# Emergency Fallbacks if completely trapped
+	if PlayerData.is_boss_active:
+		return player.global_position + (Vector2.RIGHT.rotated(randf_range(0, TAU)) * 500.0)
+	else:
+		var direction_away = Vector2.ZERO.direction_to(player.global_position)
+		if direction_away == Vector2.ZERO:
+			direction_away = Vector2.RIGHT
+		return player.global_position + (direction_away * 1200.0)

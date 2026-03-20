@@ -6,7 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://du1j3x7n2cu0u" path="res://Assets/Enemies/Boss/Boss-head-angles-Sheet8.png" id="4_odcco"]
 [ext_resource type="Script" uid="uid://ck7hj4pmqsgb7" path="res://Scripts/cubes.gd" id="5_q76ad"]
 [ext_resource type="Texture2D" uid="uid://dtsxnsr83sphy" path="res://Assets/Enemies/Boss/Boss_Block.png" id="6_nuv35"]
-[ext_resource type="Texture2D" uid="uid://dr6gvwiighumh" path="res://Assets/Enemies/Boss/Boss_Ground-hole.png" id="7_yq25j"]
 [ext_resource type="Texture2D" uid="uid://bj5e8c2i2lnhd" path="res://Assets/Enemies/Boss/Boss_Sleeping.png" id="8_odcco"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lel8w"]
@@ -25,10 +24,6 @@ collision_layer = 4
 collision_mask = 11
 script = ExtResource("1_mh6p8")
 
-[node name="HoleSprite" type="Sprite2D" parent="." unique_id=1178615469]
-position = Vector2(1, 66)
-texture = ExtResource("7_yq25j")
-
 [node name="SleepingSprite" type="Sprite2D" parent="." unique_id=2099241538]
 z_index = 1
 position = Vector2(1, 37)
@@ -38,6 +33,7 @@ texture = ExtResource("8_odcco")
 shape = SubResource("CapsuleShape2D_lel8w")
 
 [node name="BodySprite" type="Sprite2D" parent="." unique_id=1845467871]
+visible = false
 z_index = 1
 y_sort_enabled = true
 position = Vector2(0, 27)
@@ -50,6 +46,7 @@ scale = Vector2(0.25, 0.25)
 texture = ExtResource("3_yq25j")
 
 [node name="HeadSprite" type="Sprite2D" parent="." unique_id=2005139916]
+visible = false
 z_index = 1
 y_sort_enabled = true
 position = Vector2(-2, -63)
@@ -57,6 +54,7 @@ texture = ExtResource("4_odcco")
 hframes = 8
 
 [node name="OrbitCenter" type="Node2D" parent="." unique_id=204339233]
+visible = false
 z_index = 1
 y_sort_enabled = true
 
@@ -83,9 +81,9 @@ offset_right = 40.0
 offset_bottom = -30.0
 theme_override_font_sizes/font_size = 5
 theme_override_styles/fill = SubResource("StyleBoxFlat_mh6p8")
-max_value = 150.0
+max_value = 450.0
 step = 1.0
-value = 150.0
+value = 450.0
 
 [node name="RedCube" type="Area2D" parent="OrbitCenter" unique_id=463477966 groups=["Enemy"]]
 y_sort_enabled = true
@@ -110,9 +108,9 @@ offset_right = 40.0
 offset_bottom = -30.0
 theme_override_font_sizes/font_size = 5
 theme_override_styles/fill = SubResource("StyleBoxFlat_mh6p8")
-max_value = 150.0
+max_value = 450.0
 step = 1.0
-value = 150.0
+value = 450.0
 
 [node name="BlueCube" type="Area2D" parent="OrbitCenter" unique_id=2049640550 groups=["Enemy"]]
 y_sort_enabled = true
@@ -137,9 +135,9 @@ offset_right = 40.0
 offset_bottom = -30.0
 theme_override_font_sizes/font_size = 5
 theme_override_styles/fill = SubResource("StyleBoxFlat_mh6p8")
-max_value = 150.0
+max_value = 450.0
 step = 1.0
-value = 150.0
+value = 450.0
 
 [node name="HealthBar" type="ProgressBar" parent="." unique_id=1705086609]
 custom_minimum_size = Vector2(150, 10)
@@ -149,9 +147,9 @@ offset_right = 79.0
 offset_bottom = -127.0
 theme_override_font_sizes/font_size = 10
 theme_override_styles/fill = SubResource("StyleBoxFlat_mh6p8")
-max_value = 2000.0
+max_value = 3000.0
 step = 1.0
-value = 2000.0
+value = 3000.0
 
 [node name="BossCamera" type="Camera2D" parent="." unique_id=108528805 groups=["Camera"]]
 position_smoothing_enabled = true

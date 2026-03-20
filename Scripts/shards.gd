@@ -1,21 +1,31 @@
 extends Area2D
 
 @export var shard_type: String
-@onready var visual_rect = $ColorRect
+@onready var sprite = $Sprite2D # Now pointing to the Sprite2D!
+
+# Preload your friend's textures
+var red_tex = load("uid://erw6fso80wek")
+var green_tex = load("uid://8rdtmqddhjge")
+var blue_tex = load("uid://dw7nc86tymwy6")
 
 var is_claimed: bool = false 
 
 func _ready():
 	add_to_group("Shards")
+	
+	# Assign the correct sprite
 	if shard_type == "red":
-		visual_rect.color = Color.RED
+		sprite.texture = red_tex
 	elif shard_type == "blue":
-		visual_rect.color = Color.BLUE
+		sprite.texture = blue_tex
 	elif shard_type == "green":
-		visual_rect.color = Color.GREEN
+		sprite.texture = green_tex
 	elif shard_type == "main_orb":
-		visual_rect.color = Color.WHITE 
-		scale = Vector2(2.0, 2.0)
+		# Since we don't have a main orb sprite, we will use blue as a base 
+		# and blow out the modulate to make it a glowing white super-orb!
+		sprite.texture = blue_tex
+		sprite.modulate = Color(3.0, 3.0, 3.0) 
+		scale = Vector2(3.0, 3.0)
 		
 	Global.apply_levitation(self, 12.0, 1.0)
 
