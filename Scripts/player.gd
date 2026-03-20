@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+signal health_bar_update
+
 #NODE
 @onready var red_pointer = $Compass/Red
 @onready var blue_pointer = $Compass/Blue
@@ -9,7 +11,6 @@ extends CharacterBody2D
 @onready var heavy_particles =  $HeavyBuffParticles
 @onready var camera = $Camera2D
 @onready var core_light = $PointLight2D
-@onready var steps = $PlayerSteps
 
 #STATS
 var attack_stats: Dictionary = PlayerData.attack_stats
@@ -60,15 +61,13 @@ func _physics_process(delta: float) -> void:
 			sprite.play("walk_" + facing_dir)
 		velocity = velocity.move_toward(direction * speed, acceleration * delta)
 		
-		if not steps.playing:
-			steps.play()
+		AudioManager.play_player_steps(global_position)
 		
 	else:
 		if not is_attacking and not is_hit:
 			sprite.play("idle_" + facing_dir)
+			
 		velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
-		if steps.playing:
-			steps.stop()
 		
 	if facing_dir == "left" and is_hit:
 		sprite.scale.x = -1
@@ -265,6 +264,7 @@ func perform_bullet_attack():
 	var target_pos = get_best_bullet_target_pos(bullet_range)
 	
 	# 1. Shift the offset to fix the art, then play!
+	AudioManager.play_player_green_charge()
 	sprite.offset = Vector2(0, -16) 
 	sprite.play("bullet")
 	sprite.frame = 0
@@ -487,19 +487,22 @@ func _on_thrust_hit_box_body_entered(body: Node2D) -> void:
 
 func apply_zoom():
 	if current_zoom == 1.5:
-		current_zoom = 2
+		current_zoom = 2.0
+	elif current_zoom == 2.0 :
+		current_zoom = 1.0
 	else :
 		current_zoom = 1.5
-	camera.zoom = Vector2(current_zoom,current_zoom)
-	
-signal health_bar_update
+		
+	# Instead of snapping instantly, tell our new Juicy Camera to glide there over 0.4 seconds!
+	camera.smooth_zoom(Vector2(current_zoom, current_zoom), 0.4)
+
 
 func take_damage(damage: int) -> void:
 	if is_dead or is_invincible:
 		return 
 		
-	#AudioManager.play_sfx("player_hurt")
 	PlayerData.current_health -= damage
+	AudioManager.play_player_hit(global_position)
 	health_bar_update.emit()
 	is_attacking = false 
 	
@@ -530,6 +533,7 @@ func flash_red():
 	sprite.modulate = Color(1, 1, 1)
 
 func die():
+	AudioManager.play_player_death()
 	if get_tree() != null: 
 		set_physics_process(false)
 		can_attack = false
@@ -563,18 +567,20 @@ func flash_light_color(ability_color: Color, fade_time: float):
 func _on_hit_box_area_entered(area: Area2D) -> void:
 	# 1. COLLECTIBLES (Shards)
 	if area.is_in_group("Shards"):
-		if not area.get("is_claimed"): # Check if the shard hasn't been grabbed yet
+		if not area.get("is_claimed"): 
 			area.is_claimed = true
 			
 			if area.shard_type == "main_orb":
 				PlayerData.has_top_orb = true
 				PlayerData.is_boss_active = true
+				# Add the collect_shard call here so it triggers the Full Heal!
+				get_tree().call_group("HUD", "show_primal_choice")
+				PlayerData.collect_shard("main_orb") 
 			else:
 				PlayerData.collect_shard(area.shard_type)
-				PlayerData.apply_stats(area.shard_type)
 				
 			area.queue_free()
-
+			
 	# 2. ENEMY ATTACKS (Bullets)
 	# (Make sure your enemy bullet scenes are added to a group called "EnemyBullet")
 	elif area.is_in_group("EnemyBullet"): 

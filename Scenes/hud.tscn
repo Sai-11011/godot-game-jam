@@ -4,6 +4,7 @@
 [ext_resource type="FontFile" uid="uid://cgo7riob5uqxg" path="res://Assets/fonts/ThaleahFat.ttf" id="2_6fbih"]
 [ext_resource type="Script" uid="uid://d12sh5lfv4hcf" path="res://Scripts/timer_label.gd" id="3_bjfho"]
 [ext_resource type="FontFile" uid="uid://dl2qnelvliach" path="res://Assets/fonts/m5x7.ttf" id="4_t1xeu"]
+[ext_resource type="Theme" uid="uid://bmun2ysgx4il8" path="res://Themes/Button.tres" id="5_t1xeu"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bjfho"]
 bg_color = Color(1.1310726e-06, 0.63421637, 9.62615e-07, 1)
@@ -73,3 +74,63 @@ theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("4_t1xeu")
 theme_override_font_sizes/font_size = 36
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer" unique_id=1004321730]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="PlayerStats" type="RichTextLabel" parent="MarginContainer/PanelContainer" unique_id=226500255]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_font_sizes/normal_font_size = 24
+theme_override_font_sizes/bold_font_size = 24
+theme_override_font_sizes/bold_italics_font_size = 24
+theme_override_font_sizes/italics_font_size = 24
+theme_override_font_sizes/mono_font_size = 24
+bbcode_enabled = true
+scroll_active = false
+tab_size = 15
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PrimalChoiceUI" type="ColorRect" parent="." unique_id=641596426]
+process_mode = 3
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0.23529412)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PrimalChoiceUI" unique_id=1967372763]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -419.0
+offset_top = -72.0
+offset_right = 419.0
+offset_bottom = 72.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("5_t1xeu")
+theme_override_constants/separation = 50
+
+[node name="RedButton" type="Button" parent="PrimalChoiceUI/VBoxContainer" unique_id=2142562970]
+layout_mode = 2
+theme = ExtResource("5_t1xeu")
+text = "Awaken Red Energy"
+
+[node name="BlueButton" type="Button" parent="PrimalChoiceUI/VBoxContainer" unique_id=1981764494]
+layout_mode = 2
+text = "Awaken Blue Energy"
+
+[node name="GreenButton" type="Button" parent="PrimalChoiceUI/VBoxContainer" unique_id=960367051]
+layout_mode = 2
+text = "Awaken Green Energy"

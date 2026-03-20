@@ -12,6 +12,10 @@ var speed : int = stats.speed
 var damage : int = stats.damage
 var vision : int = stats.vision
 
+@onready var tex_right: Texture2D = load("uid://cprepsf4t1dko")
+@onready var tex_up: Texture2D = load("uid://dowjuw1khe8p8")
+@onready var tex_down: Texture2D = load("uid://bhohx7ne4mntw")
+
 var knockback_velocity: Vector2 = Vector2.ZERO
 
 # Tank specific combat variables
@@ -71,24 +75,51 @@ func update_facing_direction(vel: Vector2):
 	else:
 		facing_dir = "down" if vel.y > 0 else "up"
 
-# --- THE HAND SLAM MECHANIC ---
+	# Apply the correct static image while walking
+	if not is_attacking and not is_recovering:
+		sprite.hframes = 1 # Treat it as a single image!
+		
+		if facing_dir == "right":
+			sprite.texture = tex_right
+			sprite.flip_h = false
+		elif facing_dir == "left":
+			sprite.texture = tex_right # Reuse the right image
+			sprite.flip_h = true       # But flip it horizontally!
+		elif facing_dir == "up":
+			sprite.texture = tex_up
+			sprite.flip_h = false
+		elif facing_dir == "down":
+			sprite.texture = tex_down
+			sprite.flip_h = false
 
+# --- THE HAND SLAM MECHANIC ---
 func start_slam_attack():
 	is_attacking = true
 	sprite.rotation = 0 
 	sprite.scale = Vector2(1, 1)
+	sprite.hframes = 8
 	
-	var wind_up_time = 1.5 # Your new 1.5 second delay!
+	var wind_up_time = 1.5 
 	
-	# 1. PLAY ANIMATION AND SYNC THE SPEED
-	var anim_name = "slam_" + facing_dir
-	if not anim_player.has_animation(anim_name):
-		anim_name = "slam_down" 
+	# --- THIS WILL AUTOMATICALLY MATCH YOUR ANIMATION NAMES ---
+	var anim_name = "slam_" + facing_dir 
+	
+	# Flip the sprite if attacking left!
+	if facing_dir == "left":
+		sprite.flip_h = true
+	else:
+		sprite.flip_h = false
 		
+	# Fallback just in case a name is misspelled
+	if not anim_player.has_animation(anim_name):
+		anim_name = "slam_down"
+		sprite.flip_h = false
+		
+	# 1. PLAY ANIMATION AND SYNC THE SPEED
 	if anim_player.has_animation(anim_name):
-		# Calculate exactly how much to slow down the animation so it takes 1.5 seconds
 		var original_length = anim_player.get_animation(anim_name).length
-		anim_player.speed_scale = original_length / wind_up_time
+		if original_length > 0:
+			anim_player.speed_scale = original_length / wind_up_time
 		anim_player.play(anim_name)
 	
 	# 2. START TELEGRAPH CIRCLE
@@ -97,12 +128,6 @@ func start_slam_attack():
 	
 	var circle_tween = create_tween()
 	circle_tween.tween_method(update_warning_circle, 0.0, slam_radius, wind_up_time)
-	
-	# 3. TRIGGER THE SLAM WITH CODE
-	await get_tree().create_timer(wind_up_time).timeout
-	
-	if is_attacking:
-		execute_slam()
 
 func execute_slam():
 	# Reset the animation speed back to normal for walking!
@@ -154,7 +179,7 @@ func receive_knockback(force_vector: Vector2):
 
 func take_damage(damage_amount: int):
 	health -= damage_amount
-	#AudioManager.play_sfx("enemy_hit")
+	AudioManager.play_tank_hit(global_position)
 	var flash_tween = create_tween()
 	sprite.modulate = Color(3.0, 3.0, 3.0)
 	flash_tween.tween_property(sprite, "modulate", Color.WHITE, 0.15)
@@ -178,7 +203,7 @@ func die():
 		var available_colors = ["red", "blue", "green"]
 		shard.shard_type = available_colors[randi() % available_colors.size()]
 		shard.global_position = global_position
-		shard.scale = Vector2(0.5, 0.5)
+		shard.scale = Vector2(1, 1)
 		get_tree().current_scene.call_deferred("add_child", shard)
 		
 	queue_free()

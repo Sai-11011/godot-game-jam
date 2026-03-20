@@ -73,40 +73,59 @@ func _process(delta):
 	game_time_seconds += delta
 
 # CORE UPGRADE FUNCTION
+# CORE UPGRADE FUNCTION
 func collect_shard(color: String):
+	# 1. NEW: Check if it's the Primal Heart first!
+	# (Make sure "main_orb" matches whatever string your shard script sends!)
+	if color == "main_orb" or color == "top_orb": 
+		has_top_orb = true
+		apply_stats(color) # Force stats to recalculate and heal immediately!
+		return
+		
+	# 2. Normal Shard Logic
 	if shards_collected.has(color):
 		#AudioManager.play_sfx("shard_pickup")
 		shards_collected[color] += 1
 		if color == "green":
 			attacks[color] += 3   # 3 Bullets per Green Shard
 		else:
-			attacks[color]+= 1 # 1 Attack use increasc for other Shards
+			attacks[color] += 1   # 1 Attack use increase for other Shards
 		
 		apply_stats(color)
 
 func apply_stats(color_collected=""):
-	# Red Shard -> +5% Base Attack Damage per shard
+	# 1. Base Max Health from Green Shards
+	max_health = 100 + (shards_collected["green"] * 15)
+	
+	# 2. Dynamic Caps & Primal Heart Multipliers
+	var current_speed_cap = MAX_SPEED_BONUS # Normally 1.0 (+100%)
+	
+	if has_top_orb:
+		is_prime_heart_active = true
+		current_speed_cap = 1.5 # Increases the blue shard limit to +150%
+		max_health = int(max_health * 1.50)
+		
+	# 3. Apply Damage and Speed with the new dynamic cap
 	var red_bonus = shards_collected["red"] * 0.05
 	current_damage = base_damage * (1.0 + red_bonus)
 	
-	# Blue Shard -> +10% Movement Speed (Capped at +100%)
-	var blue_bonus = min(shards_collected["blue"] * 0.1, MAX_SPEED_BONUS)
+	var blue_bonus = min(shards_collected["blue"] * 0.1, current_speed_cap)
 	current_speed = base_speed * (1.0 + blue_bonus)
-	# Green Shard -> +15 Max Health	
-	max_health = 100 + (shards_collected["green"] * 15)
 	
-	# Top Orb -> +50% to all stats
-	if has_top_orb :
-		is_prime_heart_active = true
+	# 4. Primal Heart extra base multipliers
+	if has_top_orb:
 		current_damage *= 1.50
 		current_speed *= 1.50
-		max_health = int(max_health * 1.50)
-	
-	if color_collected == "green":
-		current_health += int(max_health * 0.15)
-	current_health = min(current_health,max_health)
+		
+	# 5. HEALING LOGIC
+	if color_collected == "main_orb" or color_collected == "top_orb":
+		current_health = max_health # FULL HEAL when collecting Primal Heart!
+	elif color_collected == "green":
+		current_health += int(max_health * 0.15) # Normal 15% heal
+		
+	current_health = min(current_health, max_health)
 	max_health_update.emit()
-
+	
 # ENEMY SCALING FUNCTION 
 func increase_enemy_difficulty():
 	enemy_stat_multiplier += 0.05
