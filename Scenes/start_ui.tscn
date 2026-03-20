@@ -128,7 +128,8 @@ text = "Play"
 custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
 theme = ExtResource("3_avrgi")
-text = "Intro
+text = "Tutorial
+
 "
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=117798941]
