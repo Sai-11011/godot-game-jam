@@ -73,7 +73,7 @@ func _physics_process(delta):
 				if velocity.y > 0: facing_dir = "down"
 				else: facing_dir = "up"
 			anim.play("move_" + facing_dir)
-			AudioManager.slime_move(global_position)
+			AudioManager.play_slime_movement(global_position)
 		else:
 			anim.pause()
 			
@@ -114,7 +114,7 @@ func eat(target_shard: Node2D):
 	
 	if is_instance_valid(target_shard):
 		current_shard.queue_free()
-		AudioManager.slime_eating(global_position)
+		AudioManager.play_slime_eating(global_position)
 
 	is_eating = false
 	current_shard = null

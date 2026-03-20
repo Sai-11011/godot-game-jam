@@ -2,46 +2,73 @@
 
 [ext_resource type="Script" path="res://Scripts/audio_manager.gd" id="1_4tj6f"]
 [ext_resource type="AudioStream" uid="uid://6jr28jtopfcd" path="res://Music/Hero steps/land/Steps on land/Steps on Land.mp3" id="1_sm2tf"]
-[ext_resource type="AudioStream" uid="uid://btn1yy31qqsw" path="res://Music/Shield fire/Shield Fire.mp3" id="3_5kf6k"]
 [ext_resource type="AudioStream" uid="uid://c67dkkhl50kee" path="res://Music/Hearo get hit/hero gets hits/Hit1.mp3" id="4_5nrbi"]
 [ext_resource type="AudioStream" uid="uid://ruqblpsfkxqt" path="res://Music/Slime Eating/Slime Eating.mp3" id="4_tnn7g"]
-[ext_resource type="AudioStream" uid="uid://bnu2gys1a4o8j" path="res://Music/Shield Flying/Shield Flying.mp3" id="5_lwpe1"]
+[ext_resource type="AudioStream" uid="uid://crhg2bj8oolrp" path="res://Music/sword related/Sword chargs/Sword Charge.wav" id="4_vhwx7"]
 [ext_resource type="AudioStream" uid="uid://cr6fkb4te7n7s" path="res://Music/Hearo get hit/hero gets hits/Hit2.mp3" id="5_pn88s"]
+[ext_resource type="AudioStream" uid="uid://bov5iqdvesk6j" path="res://Music/Boss hits op2.wav" id="6_bkjj7"]
 [ext_resource type="AudioStream" uid="uid://ctf1pnh60jbm3" path="res://Music/Hearo get hit/hero gets hits/Hit3.mp3" id="6_fasow"]
-[ext_resource type="AudioStream" uid="uid://dsj3ybh2fibre" path="res://Music/sword related/Sword chargs/Sword Charge.mp3" id="6_jmilc"]
 [ext_resource type="AudioStream" uid="uid://bpla5x40ugr3w" path="res://Music/Hearo get hit/hero gets hits/Death.mp3" id="7_1bal0"]
 [ext_resource type="AudioStream" uid="uid://dajxh5flaojws" path="res://Music/Slime Moving/Slime Movin op 3.mp3" id="7_5nrbi"]
+[ext_resource type="AudioStream" uid="uid://dajxpq6rpoj67" path="res://Music/Boss laser/Boss Laser.wav" id="7_dv115"]
+[ext_resource type="AudioStream" uid="uid://cdrt7afuurf5y" path="res://Music/Boss flying/Boss Flying.wav" id="8_tesok"]
+[ext_resource type="AudioStream" uid="uid://cvji4ntefvmuf" path="res://Music/boss hits/Tower Hits.mp3" id="9_s7ae5"]
+[ext_resource type="AudioStream" uid="uid://cnkc8wm1w1u3m" path="res://Music/Shield Flying/Shield Flying.wav" id="10_w4e61"]
+[ext_resource type="AudioStream" uid="uid://dystjsgci3x4b" path="res://Music/Shield fire/Shield Fire.wav" id="11_uebr4"]
 
 [node name="audio_manager" type="Node" unique_id=989714405]
 script = ExtResource("1_4tj6f")
 
-[node name="PlayerSteps" type="AudioStreamPlayer" parent="." unique_id=321211023]
+[node name="Player" type="Node" parent="." unique_id=967242055]
+
+[node name="PlayerSteps" type="AudioStreamPlayer" parent="Player" unique_id=321211023]
 stream = ExtResource("1_sm2tf")
 parameters/looping = true
 
-[node name="SwordCharge" type="AudioStreamPlayer2D" parent="." unique_id=964436262]
-stream = ExtResource("6_jmilc")
-
-[node name="Hit1" type="AudioStreamPlayer2D" parent="." unique_id=1329915458]
+[node name="PlayerGetsHit" type="AudioStreamPlayer2D" parent="Player" unique_id=1329915458]
 stream = ExtResource("4_5nrbi")
 
-[node name="Hit2" type="AudioStreamPlayer2D" parent="." unique_id=1812788803]
-stream = ExtResource("5_pn88s")
+[node name="BulletCharge" type="AudioStreamPlayer2D" parent="Player" unique_id=1908952735]
+stream = ExtResource("4_vhwx7")
 
-[node name="Hit3" type="AudioStreamPlayer2D" parent="." unique_id=1605506667]
-stream = ExtResource("6_fasow")
-
-[node name="Death" type="AudioStreamPlayer2D" parent="." unique_id=1313276372]
+[node name="Death" type="AudioStreamPlayer2D" parent="Player" unique_id=1313276372]
 stream = ExtResource("7_1bal0")
 
-[node name="SlimeMove" type="AudioStreamPlayer2D" parent="." unique_id=681955218]
+[node name="Boss" type="Node" parent="." unique_id=1514237022]
+
+[node name="BossRedCubeAttack" type="AudioStreamPlayer2D" parent="Boss" unique_id=1574241725]
+stream = ExtResource("6_bkjj7")
+
+[node name="BossBlueBulletAttack" type="AudioStreamPlayer2D" parent="Boss" unique_id=747025821]
+stream = ExtResource("7_dv115")
+
+[node name="BossMovement" type="AudioStreamPlayer2D" parent="Boss" unique_id=338207773]
+stream = ExtResource("8_tesok")
+
+[node name="BossGetsHitts" type="AudioStreamPlayer2D" parent="Boss" unique_id=681056973]
+stream = ExtResource("9_s7ae5")
+
+[node name="Ranger" type="Node" parent="." unique_id=2116509661]
+
+[node name="RangerMovement" type="AudioStreamPlayer2D" parent="Ranger" unique_id=611599340]
+stream = ExtResource("10_w4e61")
+
+[node name="RangerFire" type="AudioStreamPlayer2D" parent="Ranger" unique_id=1442807405]
+stream = ExtResource("11_uebr4")
+
+[node name="Hit2" type="AudioStreamPlayer2D" parent="Ranger" unique_id=1812788803]
+stream = ExtResource("5_pn88s")
+
+[node name="Tank" type="Node" parent="." unique_id=1296660020]
+
+[node name="TankGetHit" type="AudioStreamPlayer2D" parent="Tank" unique_id=1605506667]
+stream = ExtResource("6_fasow")
+
+[node name="Slime" type="Node" parent="." unique_id=1300798584]
+
+[node name="SlimeMove" type="AudioStreamPlayer2D" parent="Slime" unique_id=681955218]
 stream = ExtResource("7_5nrbi")
 
-[node name="SlimeEating" type="AudioStreamPlayer2D" parent="." unique_id=517424016]
+[node name="SlimeEating" type="AudioStreamPlayer2D" parent="Slime" unique_id=517424016]
 stream = ExtResource("4_tnn7g")
-
-[node name="ShieldFlying" type="AudioStreamPlayer2D" parent="." unique_id=611599340]
-stream = ExtResource("5_lwpe1")
-
-[node name="ShieldFire" type="AudioStreamPlayer2D" parent="." unique_id=1442807405]
-stream = ExtResource("3_5kf6k")
+volume_db = -4.665

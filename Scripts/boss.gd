@@ -115,6 +115,7 @@ func _physics_process(delta: float):
 			velocity = direction * move_speed
 			move_and_slide()
 			get_tree().call_group("Camera", "apply_shake", 2.5) 
+			AudioManager.play_boss_movement(global_position)
 		else:
 			velocity = Vector2.ZERO
 	else:
@@ -292,6 +293,7 @@ func damage_cube(color: String, amount: int):
 		return # Stop the function here, take 0 damage!
 	
 	active_cubes[color]["hp"] -= amount
+	AudioManager.play_boss_hit(global_position)
 	
 	match color:
 		"red": red_hp_bar.value = active_cubes[color]["hp"]
@@ -375,6 +377,7 @@ func take_damage(amount: int):
 
 	if current_state == State.VULNERABLE or current_state == State.STUNNED:
 		core_health -= amount
+		AudioManager.play_boss_hit(global_position)
 		core_hp_bar.value = core_health
 		
 		body_sprite.modulate = Color(3, 3, 3)
@@ -473,6 +476,7 @@ func perform_red_slam():
 	if is_instance_valid(warning_circle):
 		warning_circle.color = Color(1.0, 0.0, 0.0, 0.8)
 	get_tree().call_group("Camera", "apply_shake", 45.0) 
+	AudioManager.play_boss_red_attack(target_pos)
 	
 	if is_instance_valid(player):
 		var distance = target_pos.distance_to(player.global_position)
@@ -504,7 +508,7 @@ func perform_blue_snipe():
 	
 	var bullet = enemy_bullet_scene.instantiate()
 	get_tree().current_scene.add_child(bullet)
-	
+	AudioManager.play_boss_blue_attack(global_position)
 	var eye_pos = head_sprite.global_position + Vector2(0, -15)
 	bullet.global_position = eye_pos
 	bullet.scale = Vector2(3.5, 3.5) 
@@ -535,7 +539,7 @@ func perform_green_burst():
 	for i in range(burst_count):
 		var bullet = enemy_bullet_scene.instantiate()
 		get_tree().current_scene.add_child(bullet)
-		
+		AudioManager.play_boss_blue_attack(global_position)
 		bullet.global_position = eye_pos
 		bullet.scale = Vector2(1.8, 1.8) 
 		bullet.modulate = Color(0.5, 2.0, 0.5)

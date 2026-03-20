@@ -38,6 +38,7 @@ func _physics_process(delta: float) -> void:
 		knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, 3000 * delta)
 	elif is_attacking :
 		velocity = Vector2.ZERO
+		
 	else:
 		player = get_tree().get_first_node_in_group("Player")
 		if player:
@@ -62,6 +63,7 @@ func _physics_process(delta: float) -> void:
 					pick_new_wander_direction()
 				velocity = wander_direction * (speed * 0.5)
 		if velocity != Vector2.ZERO:
+			AudioManager.play_ranger_movement(global_position)
 			if abs(velocity.x) > abs(velocity.y):
 				if velocity.x > 0: facing_dir = "right"
 				else: facing_dir = "left"
@@ -95,7 +97,8 @@ func shoot_at_player(target_pos: Vector2):
 	sprite.texture = sprites[facing_dir]
 	
 	var bullet = enemy_bullet_scene.instantiate()
-	get_parent().add_child(bullet) # ADD IT FIRST!
+	get_parent().add_child(bullet) 
+	AudioManager.play_ranger_fire(global_position)
 	if facing_dir == "up":
 		bullet.z_index = z_index - 1
 	# THEN do all the position and rotation math
@@ -113,7 +116,7 @@ func receive_knockback(force_vector: Vector2):
 
 func take_damage(damage_amount: int):
 	health -= damage_amount
-	#AudioManager.play_sfx("enemy_hit")
+	AudioManager.play_ranger_hit(global_position)
 	var flash_tween = create_tween()
 	sprite.modulate = Color(3.0, 3.0, 3.0)
 	flash_tween.tween_property(sprite, "modulate", Color.WHITE, 0.15)
@@ -127,7 +130,7 @@ func die():
 		var available_colors = ["red", "blue", "green"]
 		shard.shard_type = available_colors[randi() % available_colors.size()]
 		shard.global_position = global_position
-		shard.scale = Vector2(0.5, 0.5)
+		shard.scale = Vector2(1,1)
 		get_tree().current_scene.call_deferred("add_child", shard)
 		
 	queue_free()
