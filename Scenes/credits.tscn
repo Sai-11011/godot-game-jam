@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://cb5j1spgtmpf4"]
+
+[ext_resource type="Script" uid="uid://f6aerjcywq01" path="res://Scripts/credits.gd" id="1_ccovl"]
+[ext_resource type="FontFile" uid="uid://dl2qnelvliach" path="res://Assets/fonts/m5x7.ttf" id="2_1bamb"]
+[ext_resource type="FontFile" uid="uid://cgo7riob5uqxg" path="res://Assets/fonts/ThaleahFat.ttf" id="3_xelri"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ccovl"]
+bg_color = Color(0, 0, 0, 0.91764706)
+
+[node name="credits" type="ScrollContainer" unique_id=1346424736]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ccovl")
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 3
+script = ExtResource("1_ccovl")
+credits_time = 50.0
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=2062004972]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer" unique_id=1165530076]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_1bamb")
+theme_override_fonts/bold_font = ExtResource("3_xelri")
+bbcode_enabled = true
+text = "[center]
+[b][u]CREDITS[/u][/b]
+
+
+[b][u]Development Team[/u][/b]  
+
+
+[b]Narrative Designer Lead:[/b] SteezyGlock
+
+[b]Narrative Designer:[/b] Daniel_Linosa_03, SteezyGlock
+
+[b]Game Designer:[/b] Constantinus
+
+[b]Lead Programmer:[/b] Sai
+
+[b]Programming Team:[/b]
+- Sai
+- Clover Lamparouge
+- Maxx  
+
+[b]Artist:[/b] LazyStone
+[b]Animator:[/b] LazyStone
+
+[b][u]Music and Sounds[/u][/b]  
+[b]Sound Designer:[/b] Richo Maya 
+[b]Music Composer:[/b] Richo Maya 
+
+[b][u]Testers[/u][/b]
+- Vamsi
+- Maxx
+
+
+
+[b][u]Final Message[/u][/b]  
+[i]Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.[/i]  
+
+[b]Thank you for playing our game![/b]
+[/center]"
+fit_content = true
