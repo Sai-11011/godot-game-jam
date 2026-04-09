@@ -15,15 +15,52 @@ extends CharacterBody2D
 @onready var green_hp_bar = $OrbitCenter/GreenCube/HealthBar
 
 var player: CharacterBody2D
-var player_cam: Camera2D = null # Cleanly decla
+var player_cam: Camera2D = null
 @onready var sleeping_sprite = $SleepingSprite
-@onready var boss_camera = $BossCamera
+@onready var boss_camera = $BossPCam
 var enemy_bullet_scene: PackedScene = load(Global.SCENES.enemy_bullet)
 var win_scene = load(Global.SCENES.win)
+
+# State Chart nodes
+@onready var state_chart = $StateChart
+@onready var awaking_state = $StateChart/Root/Waking
+@onready var idle_state = $StateChart/Root/Idle
+@onready var attacking_state = $StateChart/Root/Attacking
+@onready var stunned_state = $StateChart/Root/Stunned
+@onready var vulnerable_state = $StateChart/Root/Vulnerable
+
+# Awaking Sequence Variables
+var boss_shake_intensity: float = 10.0
+var flash_brightness: float = 3.0
+var flash_duration: float = 0.6
+var cam_priority_high: int = 20
+var cam_priority_low: int = 0
+var cam_look_duration: float = 1.6
+var cam_return_duration: float = 1.0
+
+# --- Tuning & Effects ---
+var armor_threshold: int = 25
+var stun_duration: float = 1.5
+var vulnerable_duration: float = 8.0
+var bounce_flash_time: float = 0.1
+
+var color_armor_cube: Color = Color(0.5, 0.5, 0.5) # Grey
+var color_armor_core: Color = Color(0.5, 0.5, 2.0) # Blue-ish
+var color_vulnerable: Color = Color(0.3, 0.3, 0.3) # Dimmed
+
+
+
+# State Logic Variables
+var idle_timer: float = 0.0
+var time_between_attacks: float = 2.0
+
+# Manual states for Stunned / Vulnerable (not yet migrated to State Chart)
+var manual_state: String = "active"  # "active", "stunned", "vulnerable"
+
 # Boss Stats
 var is_awake: bool = false
 var detection_radius: float = 150.0 
-var detection_growth_rate: float = 22.83 
+var detection_growth_rate: float = 50 
 var move_speed: float = 150.0 
 var attack_range: float = 350.0 
 var core_max_health: int = 3000
@@ -33,10 +70,8 @@ var is_intro_playing: bool = false
 var is_waking_up: bool = false
 var is_dying: bool = false
 
-# State Tracking
-enum State { IDLE, ATTACKING, STUNNED, VULNERABLE }
-var current_state = State.IDLE
 var orbit_speed: float = 1.5
+var force_skip: bool = false
 
 # Cube Data
 var active_cubes = {
@@ -46,6 +81,7 @@ var active_cubes = {
 }
 
 func _ready():
+	Engine.time_scale = 1.0
 	add_to_group("Boss")
 	active_cubes["red"]["node"] = red_cube
 	active_cubes["blue"]["node"] = blue_cube
@@ -71,15 +107,30 @@ func _ready():
 	core_hp_bar.hide()
 	sleeping_sprite.show()
 	
+	# Connect State Chart signals
+	awaking_state.state_entered.connect(_on_awaking_state_entered)
+	idle_state.state_processing.connect(_on_idle_state_processing)
+	attacking_state.state_entered.connect(_on_attacking_state_entered)
+	stunned_state.state_entered.connect(_on_stunned_state_entered)
+	vulnerable_state.state_entered.connect(_on_vulnerable_state_entered)
+	
 	play_intro_cutscene()
 
 func _physics_process(delta: float):
+	# Spin cubes unless stunned or vulnerable
+	if manual_state != "stunned" and manual_state != "vulnerable":
+		orbit_center.rotation += orbit_speed * delta
+		red_cube.global_rotation = 0
+		blue_cube.global_rotation = 0
+		green_cube.global_rotation = 0
+
+	# Stop AI logic during cutscenes
 	if is_intro_playing or is_waking_up: 
 		return
 		
 	player = get_tree().get_first_node_in_group("Player")
 	
-	# --- 1. THE SLEEPING PHASE ---
+	# --- SLEEPING PHASE ---
 	if not is_awake:
 		if is_intro_playing: return
 		
@@ -87,16 +138,11 @@ func _physics_process(delta: float):
 		queue_redraw() 
 		
 		if player and global_position.distance_to(player.global_position) <= detection_radius:
-			wake_up()
+			is_awake = true
+			state_chart.send_event("player_detected")
 		return 
 
-	# --- 2. THE AWAKE PHASE ---
-	if current_state != State.STUNNED and current_state != State.VULNERABLE:
-		orbit_center.rotation += orbit_speed * delta
-		red_cube.global_rotation = 0
-		blue_cube.global_rotation = 0
-		green_cube.global_rotation = 0
-		
+	# --- AWAKE PHASE - Head tracking ---
 	if player:
 		var angle_to_player = global_position.angle_to_point(player.global_position)
 		var angle_degrees = rad_to_deg(angle_to_player)
@@ -106,8 +152,10 @@ func _physics_process(delta: float):
 		var eye_correction = 6 
 		head_sprite.frame = (frame_index + eye_correction) % 8
 
-	# --- 3. MOVEMENT ---
-	if current_state == State.IDLE and is_instance_valid(player):
+	# --- MOVEMENT (only if not stunned/vulnerable and we are in "active" manual state) ---
+	# The State Chart handles Idle/Attacking, but movement should only happen when not stunned/vulnerable.
+	# We'll use manual_state to block movement during those phases.
+	if manual_state == "active" and is_instance_valid(player):
 		var distance = global_position.distance_to(player.global_position)
 		
 		if distance > attack_range:
@@ -123,166 +171,194 @@ func _physics_process(delta: float):
 
 func play_intro_cutscene():
 	is_intro_playing = true
-	if is_instance_valid(player):
-		player.is_invincible = true # Protect the player during intro
-	await get_tree().create_timer(0.1).timeout
-	player = get_tree().get_first_node_in_group("Player")
 	
 	if is_instance_valid(player):
-		player_cam = player.get_node_or_null("Camera2D")
+		player.is_invincible = true 
 		
-	if player_cam:
-		player_cam.enabled = false
-		
-	# FIX: Keep top_level FALSE at first so it is FORCED to stay perfectly on the boss!
-	boss_camera.top_level = false 
-	boss_camera.position = Vector2.ZERO # Center it exactly on the boss node
-	boss_camera.enabled = true
-	boss_camera.make_current()
-	boss_camera.zoom = Vector2(1.5, 1.5) 
+	boss_camera.priority = 0 
 	
-	# Look at the sleeping Titan for a moment
+	# 1. IMPACT (Looking at the Player)
+	await get_tree().create_timer(0.2).timeout
+	get_tree().call_group("Camera", "apply_shake", 30.0) 
 	await get_tree().create_timer(1.2).timeout
 	
-	# NOW detach the camera so it can smoothly pan over to the Player
-	boss_camera.top_level = true 
-	boss_camera.global_position = self.global_position 
+	get_tree().paused = true 
+	var dialogue_resource = load(Global.titan_lore)
+	var balloon_scene = load(Global.SCENES.balloon) 
+	var balloon = balloon_scene.instantiate()
+	get_tree().current_scene.add_child(balloon)
+	balloon.start(dialogue_resource, "impact_sequence")
+	await DialogueManager.dialogue_ended
+	get_tree().paused = false 
 	
-	if is_instance_valid(player):
-		var pan_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		pan_tween.tween_property(boss_camera, "global_position", player.global_position, 1.5)
-		await pan_tween.finished
+	# 2. PAN TO BOSS
+	boss_camera.priority = 20
+	await get_tree().create_timer(1.5).timeout
 	
-	# Hand control back to the player
-	if not is_awake:
-		boss_camera.enabled = false
-		if player_cam:
-			player_cam.enabled = true
-			player_cam.make_current()
-			
-	boss_camera.zoom = Vector2(1.0, 1.0) 
+	get_tree().paused = true 
+	var balloon_two = balloon_scene.instantiate()
+	get_tree().current_scene.add_child(balloon_two)
+	balloon_two.start(dialogue_resource, "scan_sequence")
+	await DialogueManager.dialogue_ended
+	get_tree().paused = false 
+	
+	# 3. PAN BACK TO PLAYER
+	boss_camera.priority = 0
+	await get_tree().create_timer(1.5).timeout
+	
 	is_intro_playing = false
 	PlayerData.is_game_started = true
 	if is_instance_valid(player):
-		player.is_invincible = false # Restore damage once control is back
+		player.is_invincible = false
 
-func wake_up():
-	is_waking_up = true # 1. LOCK THE BOSS!
-	AudioManager.switch_bgm_phase(3)
-	if is_instance_valid(player):
-		player.is_invincible = true # God Mode: Engaged
-	is_awake = true
-	PlayerData.is_boss_active = true 
-	queue_redraw() 
-	print("The Titan has awakened!")
+# STATES FUNCTIONS
+
+func _on_awaking_state_entered():
+	force_skip = false 
+	# Make the boss immune to pause
+	process_mode = Node.PROCESS_MODE_ALWAYS 
+	get_tree().paused = true 
 	
-	# 1. HIDE SLEEPING, INSTANTLY SHOW BOSS
+	is_waking_up = true 
+	AudioManager.switch_bgm_phase(3)
+	
+	# Instant Visual Setup
 	sleeping_sprite.hide()
 	body_sprite.show()
 	head_sprite.show()
 	orbit_center.show()
 	core_hp_bar.show()
 	
-	# 2. AWAKENING FLASH EFFECT & SHAKE (Happens immediately!)
-	get_tree().call_group("Camera", "apply_shake", 10.0) 
-	body_sprite.modulate = Color(3.0, 3.0, 3.0)
-	head_sprite.modulate = Color(3.0, 3.0, 3.0)
+	# Roar Shake
+	get_tree().call_group("Camera", "apply_shake", boss_shake_intensity) 
 	
-	var flash_tween = create_tween().set_parallel(true)
-	flash_tween.tween_property(body_sprite, "modulate", Color.WHITE, 0.6)
-	flash_tween.tween_property(head_sprite, "modulate", Color.WHITE, 0.6)
+	# --- 1. SHOW WAKE UP DIALOGUE ---
+	var dialogue_resource = load(Global.titan_lore)
+	var balloon_scene = load(Global.SCENES.balloon) 
+	var balloon = balloon_scene.instantiate()
+	get_tree().current_scene.add_child(balloon)
+	balloon.start(dialogue_resource, "wake_up_sequence")
 	
-	# Wait for the flash to finish before moving the camera!
-	await flash_tween.finished
+	# Dialogue Manager is pause-aware by default, so we just wait
+	await DialogueManager.dialogue_ended
 	
-	# 3. NOW PAN THE CAMERA TO THE BOSS
-	if is_instance_valid(player):
-		player_cam = player.get_node_or_null("Camera2D")
-		if player_cam:
-			player_cam.enabled = false
-			
-	boss_camera.top_level = true
-	if is_instance_valid(player):
-		boss_camera.global_position = player.global_position
-	boss_camera.enabled = true 
-	boss_camera.make_current()
+	if force_skip:
+		finish_wake_up()
+		return
+
+	# --- 2. CAMERA PAN TO BOSS ---
+	boss_camera.priority = cam_priority_high
 	
-	var pan_to_boss = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	pan_to_boss.tween_property(boss_camera, "global_position", self.global_position, 1.0)
-	await pan_to_boss.finished
+	await get_tree().create_timer(cam_look_duration, true).timeout 
 	
-	# Dramatic pause to look at the fully awakened boss
-	await get_tree().create_timer(0.6).timeout 
+	if force_skip: 
+		finish_wake_up()
+		return
+		
+	# --- 3. CAMERA RETURN TO PLAYER ---
+	boss_camera.priority = cam_priority_low
 	
-	# 4. PAN BACK TO THE PLAYER
-	if is_instance_valid(player):
-		var pan_to_player = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		pan_to_player.tween_property(boss_camera, "global_position", player.global_position, 1.0)
-		await pan_to_player.finished
+	await get_tree().create_timer(cam_return_duration, true).timeout
 	
-	boss_camera.enabled = false
-	if player_cam:
-		player_cam.enabled = true
-		player_cam.make_current()
-			
+	finish_wake_up()
+
+func finish_wake_up():
+	# Clean up logic
+	get_tree().paused = false 
+	process_mode = Node.PROCESS_MODE_INHERIT
+	is_waking_up = false 
+	
 	for slime in get_tree().get_nodes_in_group("slime"): 
 		slime.queue_free()
-	
-	is_waking_up = false # 2. UNLOCK THE BOSS!
-	start_boss_loop()
-	if is_instance_valid(player):
-		player.is_invincible = false # God Mode: Disengaged
-
-func _draw():
-	if not is_awake:
-		draw_arc(Vector2.ZERO, detection_radius, 0, TAU, 64, Color(0.6, 0.0, 0.8, 0.6), 4.0)
-
-func start_boss_loop():
-	while core_health > 0:
-		if current_state == State.VULNERABLE or not is_instance_valid(player):
-			await get_tree().create_timer(1.0).timeout 
-			continue
-			
-		if current_state == State.IDLE:
-			var distance = global_position.distance_to(player.global_position)
-			
-			if distance <= attack_range:
-				await get_tree().create_timer(2.0).timeout 
-				if current_state == State.IDLE: 
-					pick_random_attack()
-			else:
-				await get_tree().create_timer(0.2).timeout
-		else:
-			await get_tree().process_frame
-
-func pick_random_attack():
-	var available_attacks = []
-	for color in active_cubes:
-		if active_cubes[color]["is_alive"]:
-			available_attacks.append(color)
-			
-	if available_attacks.is_empty():
-		return 
 		
-	var chosen_attack = available_attacks.pick_random()
-	execute_attack(chosen_attack)
+	# This event will now fire because the StateChart node is set to 'Always'
+	state_chart.send_event("wake_finished")
 
-func execute_attack(color: String):
+func _on_idle_state_processing(delta: float):
+	if not is_instance_valid(player): return
+	
+	var distance = global_position.distance_to(player.global_position)
+	
+	if distance <= attack_range:
+		idle_timer += delta
+		if idle_timer >= time_between_attacks:
+			idle_timer = 0.0
+			state_chart.send_event("choose_attack")
+	else:
+		idle_timer = 0.0
+
+func _on_attacking_state_entered():
 	AudioManager.switch_bgm_phase(4)
-	current_state = State.ATTACKING
 	orbit_speed = 6.0 
 	
 	await get_tree().create_timer(1.0).timeout 
 	orbit_speed = 1.5
 	
-	match color:
-		"red": perform_red_slam()
-		"blue": perform_blue_snipe()
-		"green": perform_green_burst()
+	var available_attacks = []
+	for color in active_cubes:
+		if active_cubes[color]["is_alive"]:
+			available_attacks.append(color)
+			
+	if not available_attacks.is_empty():
+		var chosen_attack = available_attacks.pick_random()
+		match chosen_attack:
+			"red": await perform_red_slam()
+			"blue": perform_blue_snipe()
+			"green": perform_green_burst()
 			
 	await get_tree().create_timer(1.0).timeout 
-	if current_state == State.ATTACKING:
-		current_state = State.IDLE
+	state_chart.send_event("attack_finished")
+
+func _on_stunned_state_entered():
+	manual_state = "stunned"
+	velocity = Vector2.ZERO # Stop moving instantly
+	
+	# Wait for the duration, then recover
+	await get_tree().create_timer(stun_duration).timeout
+	
+	# Check if we should go to Vulnerable or back to Idle
+	check_all_cubes_dead()
+
+func _on_vulnerable_state_entered():
+	manual_state = "vulnerable"
+	orbit_speed = 0.0
+	head_sprite.modulate = color_vulnerable
+	print("CORE EXPOSED!")
+	
+	# Wait for the vulnerable phase to finish
+	await get_tree().create_timer(vulnerable_duration).timeout
+	
+	if core_health > 0:
+		# Send the event to move back to Stunned while the cubes reboot
+		state_chart.send_event("cubes_respawning")
+		respawn_cubes()
+
+func respawn_cubes():
+	print("Respawning Cubes! Core Heals!")
+	
+	core_health = min(core_max_health, core_health + 200) 
+	head_sprite.modulate = Color.WHITE
+	core_hp_bar.value = core_health 
+	
+	for color in active_cubes:
+		active_cubes[color]["is_alive"] = true
+		active_cubes[color]["hp"] = cube_max_health
+		active_cubes[color]["node"].visible = true
+		if color == "red": red_hp_bar.value = cube_max_health
+		elif color == "blue": blue_hp_bar.value = cube_max_health
+		elif color == "green": green_hp_bar.value = cube_max_health
+		
+	# Give them a fast reverse-spin for 2 seconds as they boot up!
+	orbit_speed = -5.0 
+	await get_tree().create_timer(2.0).timeout
+	orbit_speed = 1.5
+	
+	# We don't need to change manual_state here because the State Chart 
+	# will naturally move from Stunned -> Idle and handle it for us!
+
+func _draw():
+	if not is_awake:
+		draw_arc(Vector2.ZERO, detection_radius, 0, TAU, 64, Color(0.6, 0.0, 0.8, 0.6), 4.0)
 
 func damage_cube(color: String, amount: int):
 	if not active_cubes[color]["is_alive"]: return
@@ -290,16 +366,16 @@ func damage_cube(color: String, amount: int):
 	var cube_node = active_cubes[color]["node"]
 	var cube_sprite = cube_node.get_node("Sprite2D") 
 	
-	# --- NEW: ARMOR THRESHOLD CHECK ---
-	if amount < 25:
-		# Flash grey to show the attack bounced off
-		cube_sprite.modulate = Color(0.5, 0.5, 0.5)
-		await get_tree().create_timer(0.1).timeout
+	# --- ARMOR THRESHOLD EFFECT ---
+	if amount < armor_threshold:
+		cube_sprite.modulate = color_armor_cube
+		await get_tree().create_timer(bounce_flash_time).timeout
 		if is_instance_valid(cube_sprite):
+			# Restore the original elemental color
 			if color == "red": cube_sprite.modulate = Color(2.0, 0.5, 0.5)
 			elif color == "blue": cube_sprite.modulate = Color(0.5, 0.5, 2.0)
 			elif color == "green": cube_sprite.modulate = Color(0.5, 2.0, 0.5)
-		return # Stop the function here, take 0 damage!
+		return # No damage taken!
 	
 	active_cubes[color]["hp"] -= amount
 	AudioManager.play_boss_hit(global_position)
@@ -324,11 +400,8 @@ func kill_cube(color: String):
 	active_cubes[color]["is_alive"] = false
 	active_cubes[color]["node"].visible = false 
 	
-	current_state = State.STUNNED
-	print(color + " cube broken! Boss Stunned!")
-	await get_tree().create_timer(1.5).timeout
-	
-	check_all_cubes_dead()
+	print(color + " cube broken!")
+	state_chart.send_event("cube_broken") # The State Chart handles the stun now!
 
 func check_all_cubes_dead():
 	var all_dead = true
@@ -338,53 +411,22 @@ func check_all_cubes_dead():
 			break
 			
 	if all_dead:
-		trigger_vulnerable_phase()
+		# Tell the State Chart to move to Vulnerable!
+		state_chart.send_event("all_cubes_dead")
 	else:
-		current_state = State.IDLE
-
-func trigger_vulnerable_phase():
-	current_state = State.VULNERABLE
-	orbit_speed = 0.0
-	head_sprite.modulate = Color(0.5, 0.5, 0.5) 
-	
-	print("CORE EXPOSED!")
-	await get_tree().create_timer(8.0).timeout
-	
-	if core_health > 0:
-		respawn_cubes()
-
-func respawn_cubes():
-	print("Respawning Cubes! Core Heals!")
-	current_state = State.STUNNED
-	
-	core_health = min(core_max_health, core_health + 200) 
-	head_sprite.modulate = Color.WHITE
-	
-	for color in active_cubes:
-		active_cubes[color]["is_alive"] = true
-		active_cubes[color]["hp"] = cube_max_health
-		active_cubes[color]["node"].visible = true
-		if color == "red": red_hp_bar.value = cube_max_health
-		elif color == "blue": blue_hp_bar.value = cube_max_health
-		elif color == "green": green_hp_bar.value = cube_max_health
-		
-	orbit_speed = -5.0 
-	await get_tree().create_timer(2.0).timeout
-	orbit_speed = 1.5
-	current_state = State.IDLE
-	
-	core_hp_bar.value = core_health 
+		# Tell the State Chart to go back to Idle!
+		state_chart.send_event("recover")
+		manual_state = "active"
 
 func take_damage(amount: int):
-	# --- NEW: ARMOR THRESHOLD CHECK ---
-	if amount < 25:
-		# Flash blue so the player knows the core is too tough
-		body_sprite.modulate = Color(0.5, 0.5, 2.0)
-		await get_tree().create_timer(0.1).timeout
+	# --- CORE ARMOR EFFECT ---
+	if amount < armor_threshold:
+		body_sprite.modulate = color_armor_core
+		await get_tree().create_timer(bounce_flash_time).timeout
 		body_sprite.modulate = Color.WHITE
-		return # Stop the function here, take 0 damage!
+		return
 
-	if current_state == State.VULNERABLE or current_state == State.STUNNED:
+	if manual_state == "vulnerable" or manual_state == "stunned":
 		core_health -= amount
 		AudioManager.play_boss_hit(global_position)
 		core_hp_bar.value = core_health
@@ -401,50 +443,45 @@ func take_damage(amount: int):
 		body_sprite.modulate = Color.WHITE
 
 func die():
-	if is_dying: return # If already dead, ignore any extra hits!
-	is_dying = true
-	print("TITAN DEFEATED!")
-	current_state = State.STUNNED # Stop the boss from attacking
+	if is_dying: return
 	
-	# 1. Instantly hide the cubes and health bar
+	is_dying = true
+	
+	# --- ANIME SLOW-MO DEATH ---
+	Engine.time_scale = 0.2 	
+	
+	var time_tween = create_tween()
+	time_tween.tween_property(Engine, "time_scale", 1.0, 2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	
+	manual_state = "stunned"
+	
+	# Clean up enemies
+	for enemy in get_tree().get_nodes_in_group("Enemy"):
+		if is_instance_valid(enemy) and enemy != self:
+			enemy.queue_free()
+	
 	orbit_center.hide() 
 	core_hp_bar.hide()
 	
-	# 2. Pan the camera to the Boss
-	if is_instance_valid(player):
-		player_cam = player.get_node_or_null("Camera2D")
-		if player_cam:
-			player_cam.enabled = false
-			
-	boss_camera.top_level = true
-	if is_instance_valid(player):
-		boss_camera.global_position = player.global_position
-	boss_camera.enabled = true
-	boss_camera.make_current()
-	boss_camera.zoom = Vector2(1.5, 1.5) 
-	
-	var pan_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	pan_tween.tween_property(boss_camera, "global_position", global_position, 1.0)
-	await pan_tween.finished
-	
-	# 3. Dramatic pause before crumbling...
-	await get_tree().create_timer(0.5).timeout
-	
-	# 4. Swap to the Death Sprite and play the animation!
+	boss_camera.priority = 20
+	# Wait 1.5 seconds in REAL time (ignores slow mo)
+	await get_tree().create_timer(1.5, true, false, true).timeout
+	print(manual_state)
 	body_sprite.hide()
 	head_sprite.hide()
 	death_sprite.show()
+	print("sprite showed")
+	death_sprite.speed_scale = 1.0 # Let the animation speed naturally recover with the Tween
 	death_sprite.play("death")
-	
-	# 5. Massive screen shake as it falls apart
+	print("animation played")
 	get_tree().call_group("Camera", "apply_shake", 40.0) 
 	
-	# 6. Wait for the crumble animation to completely finish
-	await death_sprite.animation_finished
+	# THE FIX: Bypass the buggy animation signal entirely. 
+	# Wait exactly 2.5 real-world seconds to let the death animation play out safely.
+	await get_tree().create_timer(2.5, true, false, true).timeout
 	
-	# 7. One last pause to look at the rubble before showing the Win Screen
-	await get_tree().create_timer(1.5).timeout
-	
+	# Final Safety: Reset time scale before scene change
+	Engine.time_scale = 1.0
 	get_tree().change_scene_to_packed(win_scene)
 	queue_free()
 
@@ -564,3 +601,12 @@ func perform_green_burst():
 			
 		if "damage" in bullet:
 			bullet.damage = 15
+
+# This function is called by the Skip Button
+func skip_cutscene():
+	force_skip = true
+	# Snap camera back instantly
+	boss_camera.priority = 0
+	# Unpause the world
+	get_tree().paused = false
+	process_mode = Node.PROCESS_MODE_INHERIT

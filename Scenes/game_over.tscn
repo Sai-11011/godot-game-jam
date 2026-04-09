@@ -143,3 +143,4 @@ theme = ExtResource("2_ek8ke")
 text = "Menu"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/HBoxContainer/Menu" to="." method="_on_menu_pressed"]

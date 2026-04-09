@@ -238,7 +238,7 @@ _data = {
 
 [node name="Tank" type="CharacterBody2D" unique_id=1322696617 groups=["Enemy", "Tank"]]
 collision_layer = 4
-collision_mask = 11
+collision_mask = 10
 script = ExtResource("1_0ys04")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1407916124]

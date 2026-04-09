@@ -51,11 +51,17 @@ func _physics_process(delta):
 		var target_shard = get_nearest_matching_shard()
 		
 		if target_shard:
-			# navigation
-			nav_agent.target_position = target_shard.global_position
-			var next_path_pos = nav_agent.get_next_path_position()
-			var direction = global_position.direction_to(next_path_pos)
-			velocity = direction * speed
+			# --- THE FIX: Check if we are close enough to take a bite! ---
+			var dist_to_shard = global_position.distance_to(target_shard.global_position)
+			if dist_to_shard <= 15.0: 
+				eat(target_shard)
+			else:
+				# Not close enough yet, keep using navigation
+				nav_agent.target_position = target_shard.global_position
+				var next_path_pos = nav_agent.get_next_path_position()
+				var direction = global_position.direction_to(next_path_pos)
+				velocity = direction * speed
+			# -------------------------------------------------------------
 		else:
 			# NO TARGET IN RANGE: Wander randomly
 			wander_timer -= delta
@@ -65,7 +71,7 @@ func _physics_process(delta):
 			velocity = wander_direction * (speed * 0.5) 
 
 		# 4-direction movement animation
-		if velocity != Vector2.ZERO:
+		if velocity != Vector2.ZERO and not is_eating:
 			if abs(velocity.x) > abs(velocity.y):
 				if velocity.x > 0: facing_dir = "right"
 				else: facing_dir = "left"
@@ -76,7 +82,7 @@ func _physics_process(delta):
 			AudioManager.play_slime_movement(global_position)
 		else:
 			anim.pause()
-			
+		
 	# Move and slide natively handles sliding against solid walls
 	move_and_slide()
 

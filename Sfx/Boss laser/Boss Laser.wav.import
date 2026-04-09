@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://dajxpq6rpoj67"
+path="res://.godot/imported/Boss Laser.wav-1294e71e034d54a1b31f2a80167f4fee.sample"
+
+[deps]
+
+source_file="res://Sfx/Boss laser/Boss Laser.wav"
+dest_files=["res://.godot/imported/Boss Laser.wav-1294e71e034d54a1b31f2a80167f4fee.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

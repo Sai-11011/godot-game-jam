@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://ddw5nl1uf6y55"
+path="res://.godot/imported/Steps on Grass.mp3-a51c3acf87e9960b236134a5ac4bb757.mp3str"
+
+[deps]
+
+source_file="res://Sfx/Hero steps/grass/Steps on grass/Steps on Grass.mp3"
+dest_files=["res://.godot/imported/Steps on Grass.mp3-a51c3acf87e9960b236134a5ac4bb757.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

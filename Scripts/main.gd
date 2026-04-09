@@ -9,6 +9,7 @@ var player_scene: PackedScene = load(Global.SCENES.player)
 func _ready() -> void:
 	AudioManager.switch_bgm_phase(2)
 	spawn_player()
+	
 
 func spawn_player():
 	if player_scene == null:

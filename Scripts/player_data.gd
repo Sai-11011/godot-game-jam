@@ -3,6 +3,7 @@ extends Node
 signal max_health_update
 var is_game_started := false
 
+var is_testing := true
 # SHARD INVENTORY 
 var shards_collected := {
 	"red": 0,
@@ -28,7 +29,7 @@ var attacks := {
 var attack_stats := {
 	"base":{
 		"range":230,
-		"cooldown":0.25,
+		"cooldown":0.3,
 		"attack_time":0.25,#duration of attack 
 	},
 	"high":{
@@ -53,8 +54,8 @@ var is_boss_active: bool = false
 # PLAYER BASE STATS 
 var max_health: int = 100
 var current_health: int = 100
-var base_damage: float = 20.0 
-var current_damage: float = 20.0
+var base_damage: float = 20.0 # 20
+var current_damage: float = 20.0 #20
 var base_speed: float = 150.0
 var current_speed: float = 150.0
 var heavy_is_active :bool = false

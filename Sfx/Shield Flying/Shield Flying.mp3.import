@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bnu2gys1a4o8j"
+path="res://.godot/imported/Shield Flying.mp3-2e7da0119f685a26b4899c6f5e4d17da.mp3str"
+
+[deps]
+
+source_file="res://Sfx/Shield Flying/Shield Flying.mp3"
+dest_files=["res://.godot/imported/Shield Flying.mp3-2e7da0119f685a26b4899c6f5e4d17da.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

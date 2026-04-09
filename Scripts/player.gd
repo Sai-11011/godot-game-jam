@@ -9,13 +9,14 @@ signal health_bar_update
 @onready var sprite = $PlayerAnimation
 @onready var thrust_hitbox = $ThrustHitbox
 @onready var heavy_particles =  $HeavyBuffParticles
-@onready var camera = $Camera2D
-@onready var core_light = $PointLight2D
+@onready var camera = $PlayerPCam
+@onready var core_light = $PlayerAnimation/PointLight2D
+@onready var dash_particles = $DashParticles
 
 #STATS
 var attack_stats: Dictionary = PlayerData.attack_stats
-var acceleration = 800
-var friction = 1000
+var acceleration = 3000 # Increased from 800
+var friction = 3500     # Increased from 1000
 var can_attack: bool = true 
 var can_heavy_attack: bool = true
 var facing_dir: String = "right" 
@@ -57,7 +58,7 @@ func _physics_process(delta: float) -> void:
 				facing_dir = "down"
 			else:
 				facing_dir = "up"
-		if not is_attacking and sprite.animation != "hit":
+		if not is_attacking :
 			sprite.play("walk_" + facing_dir)
 		velocity = velocity.move_toward(direction * speed, acceleration * delta)
 		
@@ -69,22 +70,17 @@ func _physics_process(delta: float) -> void:
 			
 		velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
 		
-	if facing_dir == "left" and is_hit:
-		sprite.scale.x = -1
-	else:
-		sprite.scale.x = 1
-		
 	move_and_slide()
+	
+	if Input.is_action_pressed("attack"):
+		perform_base_attack()
 	
 	update_compass(red_pointer, "red")
 	update_compass(blue_pointer, "blue")
 	update_compass(green_pointer, "green")
-	
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("attack"):
-		perform_base_attack()
-	elif event.is_action_pressed("thrust"):
+	if event.is_action_pressed("thrust"):
 		perform_thrust_attack()
 	elif event.is_action_pressed("bullet"): 
 		perform_bullet_attack()
@@ -116,17 +112,19 @@ func update_compass(pointer: Polygon2D, target_color: String):
 func perform_base_attack():
 	if not can_attack or slash_scene == null:
 		return 
+		
 	can_attack = false 
-	#AudioManager.play_sfx("player_slash")
+	
 	var slash = slash_scene.instantiate()
 	get_tree().current_scene.add_child(slash)
 	
 	var current_range = attack_stats["base"]["range"]
 	var target = get_closest_enemy(current_range)
 	
-	if target:
+	if is_instance_valid(target) and "global_position" in target:
 		slash.global_position = global_position
-		slash.look_at(target.global_position)
+		if slash.global_position != target.global_position:
+			slash.look_at(target.global_position)
 	else:
 		slash.global_position = global_position
 		var default_dir = Vector2.ZERO
@@ -137,6 +135,15 @@ func perform_base_attack():
 		slash.rotation = default_dir.angle()
 
 	slash.global_position += Vector2.RIGHT.rotated(slash.rotation) * 10.0
+	
+	# --- CLEAN RECOIL JUICE (No light code) ---
+	var recoil_dir = Vector2.LEFT.rotated(slash.rotation)
+	var original_sprite_pos = sprite.position
+	
+	var recoil_tween = create_tween()
+	recoil_tween.tween_property(sprite, "position", original_sprite_pos + (recoil_dir * 12.0), 0.05).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	recoil_tween.tween_property(sprite, "position", original_sprite_pos, 0.15).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	# ------------------------------------------
 	
 	var cooldown_time = attack_stats["base"]["cooldown"]
 	await get_tree().create_timer(cooldown_time).timeout
@@ -149,7 +156,6 @@ func perform_thrust_attack():
 	can_attack = false 
 	PlayerData.attacks["blue"] -= 1
 	is_invincible = true # BECOME INVINCIBLE
-	#AudioManager.play_sfx("player_thrust")
 	
 	var thrust_stats = PlayerData.attack_stats.thrust
 	var thrust_range = thrust_stats["range"]
@@ -160,91 +166,120 @@ func perform_thrust_attack():
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	
 	if input_dir != Vector2.ZERO:
-		# 1. ESCAPE MODE: If the player is holding a direction, dash exactly that way!
+		# 1. ESCAPE MODE: Dash the way you are holding
 		dash_dir = input_dir.normalized()
 	else:
-		# 2. COMBAT MODE: Standing still? Auto-lock onto the best group of enemies!
+		# 2. COMBAT MODE: Auto-lock onto enemies
 		dash_dir = get_best_thrust_direction(thrust_range)
 		
-		# 3. FALLBACK: Standing still and no enemies around? Dash the way we are facing.
+		# 3. FALLBACK: Dash the way we are facing
 		if dash_dir == Vector2.ZERO:
 			if facing_dir == "right": dash_dir = Vector2.RIGHT
 			elif facing_dir == "left": dash_dir = Vector2.LEFT
 			elif facing_dir == "up": dash_dir = Vector2.UP
 			elif facing_dir == "down": dash_dir = Vector2.DOWN
 			
+	var start_pos = global_position # Save where we started the dash!
 	var target_pos = global_position + (dash_dir * thrust_range)
 	
 	flash_light_color(Color(0.5, 0.5, 2.0), attack_duration)
 	
+	flash_light_color(Color(0.5, 0.5, 2.0), attack_duration)
+	
+	# --- NEW: SQUASH AND STRETCH JUICE ---
+	var original_scale = sprite.scale
+	# Stretch the sprite forward, squash it flat!
+	sprite.scale = Vector2(1.8, 0.5) 
+	# Point the sprite in the direction of the dash
+	sprite.rotation = dash_dir.angle() 
+	# -------------------------------------
+	# --- NEW: DASH DUST JUICE ---
+	# Point the dust in the exact OPPOSITE direction of the dash
+	dash_particles.rotation = dash_dir.angle() + PI 
+	dash_particles.restart() # 'restart()' forces One-Shot particles to explode immediately
+	# ----------------------------
 	# Phase through space using the Tween
 	var tween = create_tween()
+	
 	tween.tween_property(self, "global_position", target_pos, attack_duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	
-	# Damage enemies during the dash
+	# --- DAMAGE ENEMIES ALONG THE DASH PATH (SYNCED TIMING) ---
 	var hit_radius = 40.0 
 	var enemies = get_tree().get_nodes_in_group("Enemy")
 	for enemy in enemies:
-		var closest_point = Geometry2D.get_closest_point_to_segment(enemy.global_position, global_position, target_pos)
-		if closest_point.distance_to(enemy.global_position) <= hit_radius:
-			if enemy.has_method("take_damage"):
-				enemy.take_damage(PlayerData.current_damage)
-				PlayerData.apply_knockback(enemy, global_position, "thrust")
-	
-	# Ghost trail loop
+		if is_instance_valid(enemy):
+			var closest_point = Geometry2D.get_closest_point_to_segment(enemy.global_position, start_pos, target_pos)
+			
+			if closest_point.distance_to(enemy.global_position) <= hit_radius:
+				# Calculate the exact millisecond the player will reach this enemy!
+				var distance_to_enemy = start_pos.distance_to(closest_point)
+				var time_to_impact = (distance_to_enemy / thrust_range) * attack_duration
+				
+				# Fire a delayed signal so the hit happens when you actually touch them
+				get_tree().create_timer(time_to_impact).timeout.connect(func():
+					if is_instance_valid(enemy):
+						if enemy.has_method("take_damage"):
+							enemy.take_damage(PlayerData.current_damage)
+							
+							# Push them outward from wherever the player is at this exact moment
+							PlayerData.apply_knockback(enemy, global_position, "thrust")
+							
+							enemy.modulate = Color(5.0, 5.0, 5.0) 
+							var flash = create_tween()
+							flash.tween_property(enemy, "modulate", Color.WHITE, 0.2)
+				)
+				
+	# Ghost trail loop (This also waits for the dash to physically finish)
 	while tween and tween.is_running():
 		if not is_inside_tree(): break 
 		spawn_ghost_trail()
 		await get_tree().create_timer(0.03).timeout
 		
-	# --- NEW COLLISION PROPEL LOGIC (WALLS) ---
+	# --- COLLISION PROPEL LOGIC (WALLS) ---
 	if is_inside_tree():
-		# test_move checks if our current position is overlapping a solid physics body
 		var is_stuck = test_move(global_transform, Vector2.ZERO)
-		
 		if is_stuck:
-			var step = 10.0 # How many pixels to jump per check
-			var max_forward_checks = 15 # Look up to 150px forward (good for pillars)
+			var step = 10.0 
+			var max_forward_checks = 15 
 			var found_safe_spot = false
 			
-			# 1. Propel Forward (through pillars)
 			for i in range(1, max_forward_checks + 1):
 				var test_transform = global_transform
 				test_transform.origin += dash_dir * (step * i)
-				
-				# If this new spot is NOT stuck, move there and break the loop
 				if not test_move(test_transform, Vector2.ZERO):
 					global_position = test_transform.origin
 					trigger_wall_pop_effect()
 					found_safe_spot = true
 					break
 					
-			# 2. Propel Backward (Hit the map wall)
 			if not found_safe_spot:
-				# If we couldn't find an exit forward, we hit the infinite void. Reverse direction!
-				for i in range(1, 50): # Look far backward to get back into the arena
+				for i in range(1, 50): 
 					var test_transform = global_transform
 					test_transform.origin -= dash_dir * (step * i)
-					
 					if not test_move(test_transform, Vector2.ZERO):
 						global_position = test_transform.origin
 						trigger_wall_pop_effect()
 						break
 
+	# --- ANTI-STUCK SYSTEM (ENEMIES) ---
+	# We ONLY check this once at the very end of the dash!
+	for enemy in get_tree().get_nodes_in_group("Enemy"):
+		if is_instance_valid(enemy) and global_position.distance_to(enemy.global_position) < 70.0:
+			# Calculate direction FROM player TO enemy
+			var push_dir = global_position.direction_to(enemy.global_position) 
+			if push_dir == Vector2.ZERO: 
+				push_dir = dash_dir
+				
+			# SHUT DOWN PLAYER BOUNCE! Push the ENEMY away instead!
+			if enemy.has_method("receive_knockback"):
+				enemy.receive_knockback(push_dir * 1000.0) # Massive shove!
+				
 	is_invincible = false # REMOVE INVINCIBILITY
 	
-	# --- NEW: ANTI-STUCK SYSTEM (ENEMIES) ---
-	# Since we ignored knockback while invincible, check if we accidentally parked inside an Enemy!
-	for enemy in get_tree().get_nodes_in_group("Enemy"):
-		# 70.0 pixels is large enough to cover the Tank's thick body
-		if is_instance_valid(enemy) and global_position.distance_to(enemy.global_position) < 70.0:
-			var push_dir = enemy.global_position.direction_to(global_position)
-			if push_dir == Vector2.ZERO: 
-				push_dir = Vector2.RIGHT
-				
-			# Apply a massive, instant knockback velocity to forcefully slide out of the enemy!
-			knockback_velocity = push_dir * 1500.0 
-			break # We only need to pop out once, so stop checking other enemies
+	# --- NEW: RESTORE SPRITE ---
+	sprite.scale = original_scale
+	sprite.rotation = 0.0
+	# ---------------------------
 	
 	await get_tree().create_timer(cooldown_time).timeout
 	can_attack = true
@@ -318,10 +353,12 @@ func perform_heavy_attack():
 	
 	# 1. TURN ON THE POWER UP
 	heavy_particles.emitting = true
+	get_tree().call_group("Camera", "apply_shake", 15.0)
+	
 	PlayerData.current_damage *= 3.0 # DOUBLE DAMAGE!
 	sprite.modulate = Color(1.5, 0.5, 0.5) 
 	PlayerData.heavy_is_active = true
-	
+	trigger_impact_frame()
 	flash_light_color(Color(2.0, 0.5, 0.5), buff_duration)
 	
 	# 2. WAIT FOR BUFF TO END (You can still use other attacks during this time!)
@@ -337,6 +374,37 @@ func perform_heavy_attack():
 	# 4. START COOLDOWN
 	await get_tree().create_timer(cooldown_time).timeout
 	can_heavy_attack = true
+
+func apply_hit_stop(duration: float = 0.05):
+	# Freeze the engine
+	get_tree().paused = true
+	# Wait for the duration (the 'true' makes the timer ignore the pause!)
+	await get_tree().create_timer(duration, true).timeout
+	# Unfreeze
+	get_tree().paused = false
+
+func trigger_impact_frame():
+	# 1. Create a CanvasLayer to draw over the HUD
+	var canvas = CanvasLayer.new()
+	canvas.layer = 100 
+	
+	# 2. Create the flash block
+	var flash = ColorRect.new()
+	flash.color = Color.WHITE
+	flash.set_anchors_preset(Control.PRESET_FULL_RECT) 
+	
+	canvas.add_child(flash)
+	get_tree().current_scene.add_child(canvas)
+	
+	# Flash White (slightly longer)
+	await get_tree().create_timer(0.05, true).timeout
+	flash.color = Color.BLACK
+	
+	# Flash Black
+	await get_tree().create_timer(0.05, true).timeout
+	
+	# Delete the whole canvas
+	canvas.queue_free()
 
 # AUTO TARGETS FORM HERE 
 func get_best_thrust_direction(attack_range: float) -> Vector2:
@@ -373,28 +441,41 @@ func get_best_thrust_direction(attack_range: float) -> Vector2:
 	return best_dir
 
 func get_closest_enemy(attack_range: float) -> Node2D:
-	# 1. Gather our priority targets
-	var boss_targets = get_tree().get_nodes_in_group("BossCube")
-	boss_targets.append_array(get_tree().get_nodes_in_group("Boss"))
+	var valid_boss_targets = []
 	
-	# 2. Try to target the Boss/Cubes FIRST
-	var closest_boss = find_closest_in_array(boss_targets, attack_range)
+	# 1. ALWAYS target live cubes first
+	valid_boss_targets.append_array(get_tree().get_nodes_in_group("BossCube"))
+	
+	# 2. ONLY add the main Boss body to the target list if it can actually take damage!
+	var bosses = get_tree().get_nodes_in_group("Boss")
+	for boss in bosses:
+		if is_instance_valid(boss):
+			# We check the manual_state variable we made in Phase 4!
+			var state = boss.get("manual_state")
+			if state == "vulnerable" or state == "stunned":
+				valid_boss_targets.append(boss)
+				
+	# 3. Try to target the Cubes (or the Exposed Core) FIRST
+	var closest_boss = find_closest_in_array(valid_boss_targets, attack_range)
 	if closest_boss != null:
 		return closest_boss
 		
-	# 3. If no boss targets are near, target regular enemies
+	# 4. If no boss targets are near, fallback to targeting regular minions
 	var regular_enemies = get_tree().get_nodes_in_group("Enemy")
 	return find_closest_in_array(regular_enemies, attack_range)
 
-# Helper function to prevent repeating code
+# Replace your old helper function with this safe version
 func find_closest_in_array(target_array: Array, attack_range: float) -> Node2D:
 	var closest = null
 	var shortest_distance = attack_range 
 	
 	for target in target_array:
-		# Don't target hidden cubes (dead ones)
-		if not is_instance_valid(target) or not target.visible: 
+		# SAFETY CHECK: Ensure the node actually has the 'visible' and 'global_position' properties
+		if not is_instance_valid(target) or not "visible" in target or not target.visible: 
 			continue 
+			
+		if not "global_position" in target:
+			continue
 			
 		var distance = global_position.distance_to(target.global_position)
 		if distance <= shortest_distance:
@@ -481,6 +562,7 @@ func spawn_ghost_trail():
 	tween.tween_callback(ghost.queue_free)
 
 func _on_thrust_hit_box_body_entered(body: Node2D) -> void:
+	apply_hit_stop(0.05)
 	if body.is_in_group("Enemy"):
 		if body.has_method("take_damage"):
 			body.take_damage(PlayerData.current_damage)
@@ -493,9 +575,7 @@ func apply_zoom():
 	else :
 		current_zoom = 1.5
 		
-	# Instead of snapping instantly, tell our new Juicy Camera to glide there over 0.4 seconds!
-	camera.smooth_zoom(Vector2(current_zoom, current_zoom), 0.4)
-
+	camera.zoom = Vector2(current_zoom, current_zoom)
 
 func take_damage(damage: int) -> void:
 	if is_dead or is_invincible or not PlayerData.is_game_started:
@@ -508,29 +588,24 @@ func take_damage(damage: int) -> void:
 	
 	if PlayerData.current_health <= 0:
 		is_dead = true
-		is_hit = true
-		sprite.play("hit")
 		flash_red()
-		await sprite.animation_finished
-		is_hit = false
+		# Wait just a split second for the red flash to finish, then die
+		await get_tree().create_timer(0.2).timeout 
 		if is_inside_tree():
 			die()
 	else:
-		is_hit = true
-		sprite.play("hit")
+		# Just flash red and instantly let the player keep moving!
 		flash_red()
-		await sprite.animation_finished # Wait for the hit flash to end
-		is_hit = false
-		
-		# UNLOCK THE ANIMATION:
-		# Change the string away from "hit" so _physics_process can take over again!
-		if sprite.animation == "hit" and not is_dead:
-			sprite.play("idle_" + facing_dir)
 
 func flash_red():
 	sprite.modulate = Color(1, 0.3, 0.3, 0.7)
 	await get_tree().create_timer(0.15).timeout
-	sprite.modulate = Color(1, 1, 1)
+	
+	# Check if we should return to the Heavy Buff color or normal White
+	if PlayerData.heavy_is_active:
+		sprite.modulate = Color(1.5, 0.5, 0.5) 
+	else:
+		sprite.modulate = Color.WHITE
 
 func die():
 	AudioManager.play_player_death()
@@ -563,7 +638,6 @@ func flash_light_color(ability_color: Color, fade_time: float):
 	var color_tween = create_tween()
 	color_tween.tween_property(core_light, "color", Color.WHITE, fade_time)
 
-
 func _on_hit_box_area_entered(area: Area2D) -> void:
 	# 1. COLLECTIBLES (Shards)
 	if area.is_in_group("Shards"):
@@ -573,9 +647,14 @@ func _on_hit_box_area_entered(area: Area2D) -> void:
 			if area.shard_type == "main_orb":
 				PlayerData.has_top_orb = true
 				PlayerData.is_boss_active = true
-				# Add the collect_shard call here so it triggers the Full Heal!
-				get_tree().call_group("HUD", "show_primal_choice")
 				PlayerData.collect_shard("main_orb") 
+				
+				# --- NEW: SAFE MENU POPUP ---
+				# If we grabbed it while dashing, wait a split second for the dash to finish!
+				if is_invincible:
+					await get_tree().create_timer(PlayerData.attack_stats.thrust["attack_time"]).timeout
+					
+				get_tree().call_group("HUD", "show_primal_choice")
 			else:
 				PlayerData.collect_shard(area.shard_type)
 				

@@ -4,7 +4,7 @@ extends ScrollContainer
 @onready var margin : MarginContainer = $MarginContainer
 var main_menu_scene: PackedScene = load(Global.SCENES.start_ui)
 # Use pixels per second for more natural control
-@export_range(10, 500, 5) var scroll_speed : float = 100.0 
+@export_range(10, 500, 5) var scroll_speed : float = 50.0 
 @export_range(0, 10000, 0.1) var margin_extra : float = 100.0
 
 var scroll_tween: Tween # <-- ADDED: Class variable to track the tween

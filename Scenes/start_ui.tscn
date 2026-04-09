@@ -77,7 +77,7 @@ animations = [{
 }]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wfxj5"]
-bg_color = Color(0, 0, 0, 0.7058824)
+bg_color = Color(0, 0, 0, 0.9019608)
 
 [node name="StartUI" type="Control" unique_id=523426118]
 layout_mode = 3
@@ -140,11 +140,10 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 180
-text = "Titan’s Wake"
+text = "Titan's Wake"
 horizontal_alignment = 2
 
 [node name="ControlsOverlay" type="Panel" parent="." unique_id=1579331619]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -179,23 +178,35 @@ theme_override_font_sizes/bold_italics_font_size = 24
 theme_override_font_sizes/italics_font_size = 24
 theme_override_font_sizes/mono_font_size = 24
 bbcode_enabled = true
-text = "[center][color=#c285ff]✦ THE TITAN AWAKENS ✦[/color][/center]
+text = "[center][color=#ff5555]--- CONTAINMENT ZONE BREACHED ---[/color][/center]
 
-[center][color=#a3a3a3]\"For ages, the Titan lay dormant beneath the ruins.
-Now, the purple eclipse spreads... it senses you.
-You have to prepare for what comes next.
+[center][color=#a3a3a3]\"System Critical. Fall impact survived.
+You have breached a sealed perimeter. A massive dormant lifeform rests in the ruins.
 
-Gather shards to grow stronger.
-But as you rise, so does the Titan.
-When it awakens, there will be no escape.\"[/color][/center]
+Do not let its expanding biometric radar touch you, or it will awaken.
+Harvest crystalline shards to power your Suit and Sword Arts.
+To shatter the barrier, the Titan must fall.\"[/color][/center]
 
-[center][color=#ff0000]♦[/color][color=#00ff00] ♦ [/color][color=#0000ff]♦[/color][/center]
+[center][font_size=40][color=#ff4444]-[/color][color=#4444ff] - [/color][color=#44ff44]-[/color][/font_size][/center]
 
 [center][color=#ffffff][b]YOUR OBJECTIVE[/b][/color]
-[color=#dddddd]Slay minions and harvest shards to upgrade stats.
-Survive the Fight, then [color=#ff5555]destroy the Titan's
-three orbiting cubes[/color] to expose its core![/color][/center]
-"
+[color=#dddddd]Harvest shards to charge your abilities.
+When the Titan wakes, [color=#ff5555]destroy its three orbiting cubes[/color]
+to stun it and expose the vulnerable core![/color][/center]
+
+[center]
+[font_size=32][b][color=#ffd700]— COMBAT SUIT CONTROLS —[/color][/b][/font_size]
+
+[table=2]
+[cell][color=#a3a3a3]MOVEMENT[/color][/cell] [cell][b]WASD[/b][/cell]
+[cell][color=#a3a3a3]BASE SLASH[/color][/cell] [cell][b]LMB[/b] (Auto-Targets!)[/cell]
+[cell][color=#44ff44]BULLET SHOT[/color][/cell] [cell][b]RMB[/b] (Consumes Green)[/cell]
+[cell][color=#4444ff]THRUST DASH[/color][/cell] [cell][b]SPACE[/b] (Consumes Blue)[/cell]
+[cell][color=#ff4444]HEAVY BUFF[/color][/cell] [cell][b]Q / E[/b] (Consumes Red)[/cell]
+[cell][color=#a3a3a3]CHANGE ZOOM[/color][/cell] [cell][b]Z[/b][/cell]
+[cell][color=#a3a3a3]PAUSE GAME[/color][/cell] [cell][b]ESC[/b][/cell]
+[/table]
+[/center]"
 fit_content = true
 scroll_active = false
 horizontal_alignment = 1
