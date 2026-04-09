@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://batrx4fglxfdd"
+path="res://.godot/imported/Slime Eating.wav-87c7b644f62705317634e47c2495ac0d.sample"
+
+[deps]
+
+source_file="res://Sfx/Slime Eating/Slime Eating.wav"
+dest_files=["res://.godot/imported/Slime Eating.wav-87c7b644f62705317634e47c2495ac0d.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

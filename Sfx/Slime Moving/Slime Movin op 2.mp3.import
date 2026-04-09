@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://p7byfl450iik"
+path="res://.godot/imported/Slime Movin op 2.mp3-2be035310cacd874f240e79571f2855d.mp3str"
+
+[deps]
+
+source_file="res://Sfx/Slime Moving/Slime Movin op 2.mp3"
+dest_files=["res://.godot/imported/Slime Movin op 2.mp3-2be035310cacd874f240e79571f2855d.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

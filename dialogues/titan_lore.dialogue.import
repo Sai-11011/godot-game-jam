@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://b36cod86183hi"
+path="res://.godot/imported/titan_lore.dialogue-fb2db0e65c154c15334cdbc7a4366e7a.tres"
+
+[deps]
+
+source_file="res://dialogues/titan_lore.dialogue"
+dest_files=["res://.godot/imported/titan_lore.dialogue-fb2db0e65c154c15334cdbc7a4366e7a.tres"]
+
+[params]
+
+defaults=true

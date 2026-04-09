@@ -2,16 +2,16 @@
 
 [ext_resource type="Script" uid="uid://chny23dbskf7g" path="res://Scripts/player.gd" id="1_v0iea"]
 [ext_resource type="Texture2D" uid="uid://saj535dyh3ql" path="res://Assets/MC/Cyborg_Sword-up_Side_Sheet7.png" id="2_3smsa"]
-[ext_resource type="Script" uid="uid://b46p0s88aw2h8" path="res://Scripts/juicy_camera.gd" id="2_ukyrk"]
 [ext_resource type="Texture2D" uid="uid://cdef2s0f0lmqc" path="res://Assets/MC/Cyborg_Idle_Left.png" id="2_x3wgy"]
 [ext_resource type="Texture2D" uid="uid://br7llh0511qsy" path="res://Assets/MC/Cyborg_Idle_Right.png" id="3_3smsa"]
-[ext_resource type="Texture2D" uid="uid://ulhd670gmxt0" path="res://Assets/MC/Cyborg_Getting-Hit_Side_Sheet3.png" id="3_gymyn"]
 [ext_resource type="PackedScene" uid="uid://yqhkv2dsrv7y" path="res://Scenes/hud.tscn" id="4_vgqql"]
 [ext_resource type="Texture2D" uid="uid://dkt85nq4b8ne4" path="res://Assets/MC/Cyborg_Run_Left_Side.png" id="4_x3wgy"]
 [ext_resource type="Texture2D" uid="uid://cuw3nnbehped1" path="res://Assets/MC/Cyborg_Run_Right_Side.png" id="5_3smsa"]
 [ext_resource type="Texture2D" uid="uid://du0iod16fn48v" path="res://Assets/MC/Cyborg_Run_Down_Sheet6.png" id="5_tx1dd"]
 [ext_resource type="Texture2D" uid="uid://bs3ftumr6ygm8" path="res://Assets/textures/light.svg" id="8_8erm5"]
 [ext_resource type="Texture2D" uid="uid://bmlo1vs5i2gt5" path="res://Assets/MC/Cyborg_Run_Up_Sheet6.png" id="8_gymyn"]
+[ext_resource type="Script" uid="uid://bhexx6mj1xv3q" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="12_ukyrk"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="13_7dp3o"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wohnl"]
 atlas = ExtResource("2_3smsa")
@@ -40,18 +40,6 @@ region = Rect2(160, 0, 32, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_qpa8y"]
 atlas = ExtResource("2_3smsa")
 region = Rect2(192, 0, 32, 64)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_e6mvm"]
-atlas = ExtResource("3_gymyn")
-region = Rect2(0, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_57lvd"]
-atlas = ExtResource("3_gymyn")
-region = Rect2(32, 0, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ie7r7"]
-atlas = ExtResource("3_gymyn")
-region = Rect2(64, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_sbwqj"]
 atlas = ExtResource("5_tx1dd")
@@ -224,20 +212,6 @@ animations = [{
 "loop": false,
 "name": &"bullet",
 "speed": 12.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_e6mvm")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_57lvd")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ie7r7")
-}],
-"loop": false,
-"name": &"hit",
-"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -427,6 +401,27 @@ scale_max = 5.0
 scale_curve = SubResource("CurveTexture_3smsa")
 color_ramp = SubResource("GradientTexture1D_3smsa")
 
+[sub_resource type="Resource" id="Resource_h4iuc"]
+script = ExtResource("13_7dp3o")
+duration = 1.5
+transition = 1
+
+[sub_resource type="Curve" id="Curve_pu2lt"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_ukyrk"]
+curve = SubResource("Curve_pu2lt")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7dp3o"]
+particle_flag_disable_z = true
+initial_velocity_min = 180.0
+initial_velocity_max = 250.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.29999998
+scale_max = 0.29999998
+scale_curve = SubResource("CurveTexture_ukyrk")
+
 [node name="Player" type="CharacterBody2D" unique_id=1455887580 groups=["Player"]]
 y_sort_enabled = true
 collision_mask = 34
@@ -437,25 +432,18 @@ y_sort_enabled = true
 position = Vector2(1, -2)
 polygon = PackedVector2Array(-2, -2, -7, 3, -1, 7, 5, 2)
 
-[node name="Camera2D" type="Camera2D" parent="." unique_id=1616223039 groups=["Camera"]]
-zoom = Vector2(2, 2)
-position_smoothing_enabled = true
-position_smoothing_speed = 8.0
-rotation_smoothing_enabled = true
-rotation_smoothing_speed = 8.0
-drag_horizontal_enabled = true
-drag_vertical_enabled = true
-drag_left_margin = 0.1
-drag_top_margin = 0.1
-drag_right_margin = 0.1
-drag_bottom_margin = 0.1
-script = ExtResource("2_ukyrk")
-
 [node name="PlayerAnimation" type="AnimatedSprite2D" parent="." unique_id=844829674]
 position = Vector2(1, -10)
 sprite_frames = SubResource("SpriteFrames_f1ek2")
-animation = &"walk_up"
+animation = &"bullet"
 autoplay = "idle_right"
+
+[node name="PointLight2D" type="PointLight2D" parent="PlayerAnimation" unique_id=1602773180]
+self_modulate = Color(1, 0.7520891, 0.5303806, 1)
+position = Vector2(-1, -1.999999)
+scale = Vector2(0.06933594, 0.058593757)
+color = Color(1, 1, 1, 0.5882353)
+texture = ExtResource("8_8erm5")
 
 [node name="Compass" type="Node2D" parent="." unique_id=1891374764]
 z_index = 10
@@ -490,18 +478,30 @@ amount = 30
 sub_emitter = NodePath(".")
 process_material = SubResource("ParticleProcessMaterial_8erm5")
 
-[node name="PointLight2D" type="PointLight2D" parent="." unique_id=1602773180]
-self_modulate = Color(1, 0.7520891, 0.5303806, 1)
-position = Vector2(0, -11.999999)
-scale = Vector2(0.06933594, 0.058593757)
-color = Color(1, 1, 1, 0.5882353)
-texture = ExtResource("8_8erm5")
-
 [node name="HitBox" type="Area2D" parent="." unique_id=1483307326]
 collision_mask = 116
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="HitBox" unique_id=1649666134]
 polygon = PackedVector2Array(-4, -21, -4, -13, -2, 5, 5, 4, 3, -14, 3, -20)
+
+[node name="PlayerPCam" type="Node2D" parent="." unique_id=1389839695 node_paths=PackedStringArray("follow_target")]
+top_level = true
+script = ExtResource("12_ukyrk")
+priority = 10
+follow_mode = 5
+follow_target = NodePath("..")
+zoom = Vector2(2, 2)
+tween_resource = SubResource("Resource_h4iuc")
+metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
+
+[node name="DashParticles" type="GPUParticles2D" parent="." unique_id=124427706]
+modulate = Color(0.43137255, 0.25882354, 0, 0.21176471)
+self_modulate = Color(1, 1, 1, 0.39215687)
+emitting = false
+texture = ExtResource("8_8erm5")
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_7dp3o")
 
 [connection signal="body_entered" from="ThrustHitbox" to="." method="_on_thrust_hit_box_body_entered"]
 [connection signal="area_entered" from="HitBox" to="." method="_on_hit_box_area_entered"]

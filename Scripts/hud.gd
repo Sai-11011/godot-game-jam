@@ -39,9 +39,9 @@ func _process(_delta):
 	
 	# 1. Update Attack Counters
 	# 1. Update Attack Counters (Shows ∞ if they have over 9000 ammo!)
-	heavy_count.text = "Heavy: " + ("∞" if PlayerData.attacks["red"] > 9000 else str(PlayerData.attacks["red"]))
-	thrust_count.text = "Thrust: " + ("∞" if PlayerData.attacks["blue"] > 9000 else str(PlayerData.attacks["blue"]))
-	bullet_count.text = "Bullet: " + ("∞" if PlayerData.attacks["green"] > 9000 else str(PlayerData.attacks["green"]))
+	heavy_count.text = "Heavy: " +  str(PlayerData.attacks["red"])
+	thrust_count.text = "Thrust: " +  str(PlayerData.attacks["blue"])
+	bullet_count.text = "Bullet: " + str(PlayerData.attacks["green"])
 
 	# 2. Build the BBCode Stats String
 	var stats_text = "[b]PLAYER STATS[/b]\n"

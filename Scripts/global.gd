@@ -15,8 +15,11 @@ const SCENES := {
 	"game_over":"uid://d2hjnmw6yepcr",
 	"tank":"uid://bs6kcurb4niw3",
 	"win":"uid://cvocabs0gq8mi",
-	"credits":"uid://b27w0j41si1s0"
+	"credits":"uid://b27w0j41si1s0",
+	"balloon":"uid://c4powygd3cct8"
 }
+
+const titan_lore := "uid://b36cod86183hi"
 
 # ENEMY DATA 
 var  enemies_data := {

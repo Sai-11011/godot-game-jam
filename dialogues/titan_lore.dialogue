@@ -1,0 +1,25 @@
+~ impact_sequence
+
+Suit_AI: [wave amp=25 freq=5]System Critical. Fall impact survived.[/wave]
+Suit_AI: Warning: You have breached a sealed containment zone. A high-density energy barrier has locked the perimeter.
+Suit_AI: Scanning environment...
+
+=> END
+
+~ scan_sequence
+
+Suit_AI: Scans indicate a massive dormant lifeform in the center of the ruins. 
+Suit_AI: [color=#ff0000][b]D A N G E R :[/b][/color] The entity is projecting a subconscious biometric radar. It is slowly expanding. 
+Suit_AI: If that radar touches you, the Titan will awaken to defend its territory. 
+Suit_AI: Recommendation: Harvest the crystalline shards scattered in the arena. Your suit can convert them into energy to power your Sword Arts. 
+Suit_AI: You cannot outrun the radar forever. Prepare your blade. To shatter the barrier, the Titan must fall.
+
+=> END
+
+~ wake_up_sequence
+
+Suit_AI: [color=#ff0000][b]A L E R T :[/b][/color] Bio-signature confirmed. The Titan is fully operational.
+Suit_AI: Perimeter lockdown absolute. Protocol: [wave]Hostile Neutralization.[/wave]
+Suit_AI: Good luck, Archaeologist. 
+
+=> END

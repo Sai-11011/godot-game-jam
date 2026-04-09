@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://csox2t8s12xxe"
+path="res://.godot/imported/Boss Flying.mp3-0360818dabe155dc30ee907b84e1990b.mp3str"
+
+[deps]
+
+source_file="res://Sfx/Boss flying/Boss Flying.mp3"
+dest_files=["res://.godot/imported/Boss Flying.mp3-0360818dabe155dc30ee907b84e1990b.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

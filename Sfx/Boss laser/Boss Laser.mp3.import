@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cd56if40rm4l2"
+path="res://.godot/imported/Boss Laser.mp3-67a08fbe06946488b8b568c808113f8a.mp3str"
+
+[deps]
+
+source_file="res://Sfx/Boss laser/Boss Laser.mp3"
+dest_files=["res://.godot/imported/Boss Laser.mp3-67a08fbe06946488b8b568c808113f8a.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

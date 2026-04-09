@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bjwh2j5hdaxtl"
+path="res://.godot/imported/Steps on Land.wav-8c7f2f845c4612a453eff6077539698e.sample"
+
+[deps]
+
+source_file="res://Sfx/Hero steps/land/Steps on land/Steps on Land.wav"
+dest_files=["res://.godot/imported/Steps on Land.wav-8c7f2f845c4612a453eff6077539698e.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

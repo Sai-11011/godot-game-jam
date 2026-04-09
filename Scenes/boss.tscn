@@ -8,6 +8,12 @@
 [ext_resource type="Texture2D" uid="uid://dtsxnsr83sphy" path="res://Assets/Enemies/Boss/Boss_Block.png" id="6_nuv35"]
 [ext_resource type="Texture2D" uid="uid://bj5e8c2i2lnhd" path="res://Assets/Enemies/Boss/Boss_Sleeping.png" id="8_odcco"]
 [ext_resource type="Texture2D" uid="uid://b21tfwq8ri6yv" path="res://Assets/Enemies/Boss/Boss_Death-Sheet8.png" id="8_yq25j"]
+[ext_resource type="Script" uid="uid://bhexx6mj1xv3q" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="9_q76ad"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="10_nuv35"]
+[ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="11_r0blv"]
+[ext_resource type="Script" uid="uid://jk2jm1g6q853" path="res://addons/godot_state_charts/compound_state.gd" id="12_42olf"]
+[ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="13_hbq6j"]
+[ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="14_ursto"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lel8w"]
 radius = 36.0
@@ -82,6 +88,11 @@ animations = [{
 "name": &"death",
 "speed": 8.0
 }]
+
+[sub_resource type="Resource" id="Resource_lel8w"]
+script = ExtResource("10_nuv35")
+duration = 1.5
+transition = 1
 
 [node name="Boss" type="CharacterBody2D" unique_id=1719500555 groups=["Enemy"]]
 y_sort_enabled = true
@@ -216,12 +227,113 @@ max_value = 3000.0
 step = 1.0
 value = 3000.0
 
-[node name="BossCamera" type="Camera2D" parent="." unique_id=108528805 groups=["Camera"]]
-position_smoothing_enabled = true
-rotation_smoothing_enabled = true
-
 [node name="DeathSprite" type="AnimatedSprite2D" parent="." unique_id=9011471]
 visible = false
 z_index = 5
 sprite_frames = SubResource("SpriteFrames_ursto")
 animation = &"death"
+
+[node name="BossPCam" type="Node2D" parent="." unique_id=327297760 node_paths=PackedStringArray("follow_target")]
+top_level = true
+script = ExtResource("9_q76ad")
+follow_mode = 1
+follow_target = NodePath("..")
+zoom = Vector2(1.5, 1.5)
+tween_resource = SubResource("Resource_lel8w")
+metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
+
+[node name="StateChart" type="Node" parent="." unique_id=1201070885]
+script = ExtResource("11_r0blv")
+metadata/_custom_type_script = "uid://couw105c3bde4"
+
+[node name="Root" type="Node" parent="StateChart" unique_id=720116329]
+script = ExtResource("12_42olf")
+initial_state = NodePath("Sleeping")
+metadata/_custom_type_script = "uid://jk2jm1g6q853"
+
+[node name="Sleeping" type="Node" parent="StateChart/Root" unique_id=654453821]
+script = ExtResource("13_hbq6j")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="Transition" type="Node" parent="StateChart/Root/Sleeping" unique_id=1183076152]
+script = ExtResource("14_ursto")
+to = NodePath("../../Waking")
+event = &"player_detected"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="Waking" type="Node" parent="StateChart/Root" unique_id=1959733418]
+script = ExtResource("13_hbq6j")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="Transition" type="Node" parent="StateChart/Root/Waking" unique_id=1630898390]
+script = ExtResource("14_ursto")
+to = NodePath("../../Idle")
+event = &"wake_finished"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="Idle" type="Node" parent="StateChart/Root" unique_id=1607681779]
+script = ExtResource("13_hbq6j")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="Transition" type="Node" parent="StateChart/Root/Idle" unique_id=797514274]
+script = ExtResource("14_ursto")
+to = NodePath("../../Attacking")
+event = &"choose_attack"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="Transition2" type="Node" parent="StateChart/Root/Idle" unique_id=2113427723]
+script = ExtResource("14_ursto")
+to = NodePath("../../Stunned")
+event = &"cube_broken"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="Attacking" type="Node" parent="StateChart/Root" unique_id=1795794681]
+script = ExtResource("13_hbq6j")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="Transition" type="Node" parent="StateChart/Root/Attacking" unique_id=1138390816]
+script = ExtResource("14_ursto")
+to = NodePath("../../Idle")
+event = &"attack_finished"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="Transition2" type="Node" parent="StateChart/Root/Attacking" unique_id=202379300]
+script = ExtResource("14_ursto")
+to = NodePath("../../Stunned")
+event = &"cube_broken"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="Stunned" type="Node" parent="StateChart/Root" unique_id=1130096192]
+script = ExtResource("13_hbq6j")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="Transition" type="Node" parent="StateChart/Root/Stunned" unique_id=1669544616]
+script = ExtResource("14_ursto")
+to = NodePath("../../Idle")
+event = &"recover"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="Transition2" type="Node" parent="StateChart/Root/Stunned" unique_id=59529420]
+script = ExtResource("14_ursto")
+to = NodePath("../../Vulnerable")
+event = &"all_cubes_dead"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
+
+[node name="Vulnerable" type="Node" parent="StateChart/Root" unique_id=1568367270]
+script = ExtResource("13_hbq6j")
+metadata/_custom_type_script = "uid://cytafq8i1y8qm"
+
+[node name="Transition" type="Node" parent="StateChart/Root/Vulnerable" unique_id=662746789]
+script = ExtResource("14_ursto")
+to = NodePath("../../Stunned")
+event = &"cubes_respawning"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
