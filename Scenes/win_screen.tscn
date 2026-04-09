@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://culqsre4x6162" path="res://Scripts/win_screen.gd" id="1_awi1s"]
 [ext_resource type="FontFile" uid="uid://cgo7riob5uqxg" path="res://Assets/fonts/ThaleahFat.ttf" id="2_awi1s"]
 [ext_resource type="Theme" uid="uid://bmun2ysgx4il8" path="res://Themes/Button.tres" id="3_85imr"]
+[ext_resource type="FontFile" uid="uid://dl2qnelvliach" path="res://Assets/fonts/m5x7.ttf" id="3_bwc64"]
 
 [node name="WinScreen" type="Control" unique_id=953237444]
 layout_mode = 3
@@ -42,13 +43,15 @@ text = "TITAN DEFEATED"
 
 [node name="TimeLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1957929219]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_awi1s")
-theme_override_font_sizes/font_size = 80
+theme_override_fonts/font = ExtResource("3_bwc64")
+theme_override_font_sizes/font_size = 56
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="CenterContainer/VBoxContainer" unique_id=1046466327]
 layout_mode = 2
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_bottom = 50
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer/MarginContainer" unique_id=1595837256]
 layout_mode = 2

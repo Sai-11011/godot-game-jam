@@ -94,11 +94,11 @@ func update_facing_direction(vel: Vector2):
 
 # --- THE HAND SLAM MECHANIC ---
 func start_slam_attack():
+	AudioManager.play_boss_red_attack(self.position)
 	is_attacking = true
 	sprite.rotation = 0 
 	sprite.scale = Vector2(1, 1)
 	sprite.hframes = 8
-	
 	var wind_up_time = 1.5 
 	
 	# --- THIS WILL AUTOMATICALLY MATCH YOUR ANIMATION NAMES ---
@@ -190,7 +190,7 @@ func die():
 	var random_roll = randf()
 	
 	# 1. Check for the 5% Rare Orb Drop (ONLY if we don't have it yet!)
-	if not PlayerData.has_top_orb and random_roll <= 0.05:
+	if not PlayerData.has_top_orb and random_roll <= 0.95:
 		var orb = shard_scene.instantiate()
 		orb.shard_type = "main_orb" # We will code this into the shard script next!
 		orb.global_position = global_position

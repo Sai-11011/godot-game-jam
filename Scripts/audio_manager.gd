@@ -22,10 +22,61 @@ var last_played = {}
 @onready var slime_movement := $Slime/SlimeMove
 @onready var slime_eating := $Slime/SlimeEating
 
+# --- BGM NODES ---
+@onready var bgm_1 := $BGM/Layer1
+@onready var bgm_2 := $BGM/Layer2
+@onready var bgm_3 := $BGM/Layer3
+@onready var bgm_4 := $BGM/Layer4
+
 # --- OFFSET LOGIC FOR THE BOSS HITS (Tower Hits.mp3) ---
 var boss_hit_offsets: Array[float] = [0.0, 3.2, 6.4, 9.6, 12.8, 16.0] # <-- Change these to your actual seconds!
 var current_boss_hit_index: int = 0
 var single_hit_duration: float = 1.0 # How long one slice of the audio lasts
+
+var current_bgm_phase: int = 0
+
+# ==========================================
+# BGM SYSTEMS
+# ==========================================
+
+func start_bgm():
+	# Play all tracks simultaneously so their beats are permanently synced
+	bgm_1.play()
+	bgm_2.play()
+	bgm_3.play()
+	bgm_4.play()
+	
+	# Instantly mute everything except Layer 1
+	bgm_1.volume_db = -16.0
+	bgm_2.volume_db = -50.0
+	bgm_3.volume_db = -50.0
+	bgm_4.volume_db = -50.0
+	current_bgm_phase = 1
+
+func switch_bgm_phase(phase: int):
+	if current_bgm_phase == phase:
+		return
+	current_bgm_phase = phase
+	
+	# create_tween().set_parallel(true) means all volume changes happen at the same time
+	var tween = create_tween().set_parallel(true)
+	var fade_time = 0.5 # A smooth 2-second crossfade
+	
+	# First, tell all tracks to fade to silent
+	tween.tween_property(bgm_1, "volume_db", -50.0, fade_time)
+	tween.tween_property(bgm_2, "volume_db", -50.0, fade_time)
+	tween.tween_property(bgm_3, "volume_db", -50.0, fade_time)
+	tween.tween_property(bgm_4, "volume_db", -50.0, fade_time)
+	
+	# Then, override the silent command for the specific track we want to hear!
+	if phase == 1:
+		tween.tween_property(bgm_1, "volume_db", -16.0, fade_time)
+	elif phase == 2:
+		tween.tween_property(bgm_2, "volume_db", -16.0, fade_time)
+	elif phase == 3:
+		tween.tween_property(bgm_3, "volume_db", -16.0, fade_time)
+	elif phase == 4:
+		tween.tween_property(bgm_4, "volume_db", -16.0, fade_time)
 
 # --- CORE SYSTEMS ---
 func can_play(sound_name: String, cooldown: float) -> bool:

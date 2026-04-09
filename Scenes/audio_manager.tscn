@@ -15,6 +15,11 @@
 [ext_resource type="AudioStream" uid="uid://cvji4ntefvmuf" path="res://Music/boss hits/Tower Hits.mp3" id="9_s7ae5"]
 [ext_resource type="AudioStream" uid="uid://cnkc8wm1w1u3m" path="res://Music/Shield Flying/Shield Flying.wav" id="10_w4e61"]
 [ext_resource type="AudioStream" uid="uid://dystjsgci3x4b" path="res://Music/Shield fire/Shield Fire.wav" id="11_uebr4"]
+[ext_resource type="AudioStream" uid="uid://bxc85qv8h3co5" path="res://Music/Music Intro and boss death 2.mp3" id="16_bkjj7"]
+[ext_resource type="AudioStream" uid="uid://erskhy6nx6t0" path="res://Music/Layeres Combat Music1and2/Layered Combat Music 1.wav" id="17_w4e61"]
+[ext_resource type="AudioStream" uid="uid://cycl5s2tjuklx" path="res://Music/Layeres Combat Music1and2/Layered Combat Music 2 good.wav" id="18_uebr4"]
+[ext_resource type="AudioStream" uid="uid://81tkwp1qtlg" path="res://Music/Layered Combas Music 3and4/Layered Combat Music 3.wav" id="19_ype7x"]
+[ext_resource type="AudioStream" uid="uid://322wcwcvwoya" path="res://Music/Layered Combas Music 3and4/Layered Combat Music 4.wav" id="20_7oln7"]
 
 [node name="audio_manager" type="Node" unique_id=989714405]
 script = ExtResource("1_4tj6f")
@@ -72,3 +77,18 @@ stream = ExtResource("7_5nrbi")
 [node name="SlimeEating" type="AudioStreamPlayer2D" parent="Slime" unique_id=517424016]
 stream = ExtResource("4_tnn7g")
 volume_db = -4.665
+
+[node name="BGM" type="AudioStreamPlayer" parent="." unique_id=697128537]
+stream = ExtResource("16_bkjj7")
+
+[node name="Layer1" type="AudioStreamPlayer" parent="BGM" unique_id=34380097]
+stream = ExtResource("17_w4e61")
+
+[node name="Layer2" type="AudioStreamPlayer" parent="BGM" unique_id=864003699]
+stream = ExtResource("18_uebr4")
+
+[node name="Layer3" type="AudioStreamPlayer" parent="BGM" unique_id=1122307567]
+stream = ExtResource("19_ype7x")
+
+[node name="Layer4" type="AudioStreamPlayer" parent="BGM" unique_id=2069281967]
+stream = ExtResource("20_7oln7")
