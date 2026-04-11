@@ -54,13 +54,16 @@ autoplay = "default"
 frame_progress = 0.833134
 
 [node name="PointLight2D" type="PointLight2D" parent="." unique_id=845429744]
+y_sort_enabled = true
 position = Vector2(0, -6)
-scale = Vector2(3.7387757, 3.2464614)
+scale = Vector2(15, 15)
+color = Color(1, 1, 0.7058824, 1)
+energy = 0.6
 texture = ExtResource("2_wh1uv")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1780614611]
 collision_layer = 2
-collision_mask = 5
+collision_mask = 21
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=790733213]
-polygon = PackedVector2Array(-1, 0, -1, 7, -3, 10, -3, 13, 3, 13, 3, 10, 1, 7, 1, 0)
+polygon = PackedVector2Array(-1, 7, -3, 10, -3, 13, 3, 13, 3, 10, 1, 7, 1, 4, -1, 4)

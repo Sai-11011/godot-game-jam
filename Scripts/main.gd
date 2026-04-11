@@ -4,7 +4,7 @@ extends Node2D
 var player_scene: PackedScene = load(Global.SCENES.player)
 
 # Get a reference to your Ysort node exactly as it's named in the scene tree
-@onready var ysort_node = $Ysort 
+@onready var ysort_node = $Ysort
 
 func _ready() -> void:
 	AudioManager.switch_bgm_phase(2)

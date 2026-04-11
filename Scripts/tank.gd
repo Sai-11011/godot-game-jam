@@ -48,7 +48,8 @@ func _physics_process(delta: float) -> void:
 	if player:
 		var distance = global_position.distance_to(player.global_position)
 		
-		if distance <= 120.0:
+		# --- ADDED THE STATE CHECKS HERE ---
+		if distance <= 100.0 and not is_attacking and not is_recovering:
 			start_slam_attack()
 		elif distance <= vision:
 			nav_agent.target_position = player.global_position
@@ -57,7 +58,6 @@ func _physics_process(delta: float) -> void:
 			
 			update_facing_direction(velocity)
 			
-			# The heavy drag effect (disabled during jam if using walk animations instead)
 			var drag_time = Time.get_ticks_msec() / 250.0
 			sprite.scale.x = 1.0 + (sin(drag_time) * 0.06)
 			sprite.scale.y = 1.0 - (sin(drag_time) * 0.06)
@@ -68,6 +68,7 @@ func _physics_process(delta: float) -> void:
 			sprite.rotation = lerp(sprite.rotation, 0.0, 5.0 * delta)
 
 	move_and_slide()
+
 
 func update_facing_direction(vel: Vector2):
 	if abs(vel.x) > abs(vel.y):
@@ -94,49 +95,48 @@ func update_facing_direction(vel: Vector2):
 
 # --- THE HAND SLAM MECHANIC ---
 func start_slam_attack():
-	AudioManager.play_boss_red_attack(self.position)
 	is_attacking = true
 	sprite.rotation = 0 
 	sprite.scale = Vector2(1, 1)
 	sprite.hframes = 8
-	var wind_up_time = 1.5 
 	
-	# --- THIS WILL AUTOMATICALLY MATCH YOUR ANIMATION NAMES ---
+	# We want the WHOLE animation to take 1.5s
+	var total_attack_duration = 1.5 
 	var anim_name = "slam_" + facing_dir 
 	
-	# Flip the sprite if attacking left!
 	if facing_dir == "left":
 		sprite.flip_h = true
 	else:
 		sprite.flip_h = false
 		
-	# Fallback just in case a name is misspelled
 	if not anim_player.has_animation(anim_name):
 		anim_name = "slam_down"
 		sprite.flip_h = false
 		
-	# 1. PLAY ANIMATION AND SYNC THE SPEED
 	if anim_player.has_animation(anim_name):
 		var original_length = anim_player.get_animation(anim_name).length
-		if original_length > 0:
-			anim_player.speed_scale = original_length / wind_up_time
+		var s_scale = original_length / total_attack_duration
+		anim_player.speed_scale = s_scale
 		anim_player.play(anim_name)
-	
-	# 2. START TELEGRAPH CIRCLE
-	show_warning = true
-	current_warning_radius = 0.0
-	
-	var circle_tween = create_tween()
-	circle_tween.tween_method(update_warning_circle, 0.0, slam_radius, wind_up_time)
+		
+		# --- SYNC MATH ---
+		# Your hit frame is at 0.54. We divide by scale to find real-world time.
+		var hit_frame_at = 0.54 
+		var actual_time_to_hit = hit_frame_at / s_scale
+		
+		show_warning = true
+		current_warning_radius = 0.0
+		
+		var circle_tween = create_tween()
+		circle_tween.tween_method(update_warning_circle, 0.0, slam_radius, actual_time_to_hit)
 
 func execute_slam():
-	# Reset the animation speed back to normal for walking!
-	anim_player.speed_scale = 1.0 
-	
+	# Reset visual warnings immediately
 	show_warning = false
+	current_warning_radius = 0.0
 	queue_redraw() 
 	
-	# Flash bright white on impact
+	# Flash effect
 	var flash_tween = create_tween()
 	sprite.modulate = Color(3.0, 3.0, 3.0) 
 	flash_tween.tween_property(sprite, "modulate", Color(1.0, 1.0, 1.0), 0.3)
@@ -144,24 +144,23 @@ func execute_slam():
 	if is_instance_valid(player):
 		var distance = global_position.distance_to(player.global_position)
 		
-		# Proximity Camera Shake
-		var max_shake_distance = 800.0 
-		if distance < max_shake_distance:
-			var shake_multiplier = 1.0 - (distance / max_shake_distance)
-			var dynamic_shake_strength = 15.0 * shake_multiplier 
-			get_tree().call_group("Camera", "apply_shake", dynamic_shake_strength)
+		# Shake
+		if distance < 800.0:
+			var shake_multiplier = 1.0 - (distance / 800.0)
+			get_tree().call_group("Camera", "apply_shake", 15.0 * shake_multiplier)
 		
-		# Damage & Knockback
+		# Damage
 		if distance <= slam_radius:
 			if player.has_method("take_damage"):
 				player.take_damage(damage)
 			Global.apply_knockback(global_position, player, 800.0)
 	
-	# Recovery phase after the slam
+	# Recovery phase
 	is_recovering = true
 	await get_tree().create_timer(1.2).timeout 
 	is_recovering = false
 	is_attacking = false
+	anim_player.speed_scale = 1.0 # Reset for other animations
 
 func _draw():
 	if show_warning:

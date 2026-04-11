@@ -238,7 +238,6 @@ top_level = true
 script = ExtResource("9_q76ad")
 follow_mode = 1
 follow_target = NodePath("..")
-zoom = Vector2(1.5, 1.5)
 tween_resource = SubResource("Resource_lel8w")
 metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
 
