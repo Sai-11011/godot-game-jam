@@ -45,7 +45,7 @@ window/stretch/mode="viewport"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg", "res://addons/godot_state_charts/plugin.cfg", "res://addons/phantom_camera/plugin.cfg", "res://addons/rmsmartshape/plugin.cfg", "res://addons/scatter2d/plugin.cfg")
+enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg", "res://addons/godot_state_charts/plugin.cfg", "res://addons/phantom_camera/plugin.cfg", "res://addons/rmsmartshape/plugin.cfg")
 
 [global_group]
 
