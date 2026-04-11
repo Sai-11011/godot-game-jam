@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://ba164ipdgpaog"]
+
+[ext_resource type="Texture2D" uid="uid://dhvspgcrmgun5" path="res://Assets/objects/Pillar_2.png" id="1_7533j"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4jhqi"]
+radius = 8.0
+height = 24.0
+
+[node name="Pillar4" type="StaticBody2D" unique_id=2027948513]
+collision_layer = 2
+collision_mask = 21
+
+[node name="Pillar2" type="Sprite2D" parent="." unique_id=1042848897]
+position = Vector2(0, -12)
+texture = ExtResource("1_7533j")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=955438098]
+shape = SubResource("CapsuleShape2D_4jhqi")

@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bmpj5sj6eebme"]
+
+[ext_resource type="Texture2D" uid="uid://bbwndefliip35" path="res://Assets/objects/Pillar_1_Broken.png" id="1_tclu7"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8kxvj"]
+radius = 5.0
+height = 14.0
+
+[node name="Pillar2" type="StaticBody2D" unique_id=572985361]
+collision_layer = 2
+collision_mask = 21
+
+[node name="Pillar1Broken" type="Sprite2D" parent="." unique_id=426978553]
+position = Vector2(0, -9)
+texture = ExtResource("1_tclu7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=181908192]
+shape = SubResource("CapsuleShape2D_8kxvj")

@@ -44,11 +44,11 @@ func _physics_process(delta: float) -> void:
 		if player:
 			var distance = global_position.distance_to(player.global_position)
 			
-			if distance < 100:
+			if distance < 60:
 				# Player is too close! Back away to maintain distance
 				var direction_away = player.global_position.direction_to(global_position)
 				velocity = direction_away * speed
-			elif distance <= 150:
+			elif distance <= 100:
 				# Perfect shooting range (100 - 150px). Stop moving and shoot!
 				velocity = Vector2.ZERO
 				if can_shoot:

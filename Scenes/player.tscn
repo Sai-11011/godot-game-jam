@@ -433,9 +433,10 @@ position = Vector2(1, -2)
 polygon = PackedVector2Array(-2, -2, -7, 3, -1, 7, 5, 2)
 
 [node name="PlayerAnimation" type="AnimatedSprite2D" parent="." unique_id=844829674]
+y_sort_enabled = true
 position = Vector2(1, -10)
 sprite_frames = SubResource("SpriteFrames_f1ek2")
-animation = &"bullet"
+animation = &"idle_left"
 autoplay = "idle_right"
 
 [node name="PointLight2D" type="PointLight2D" parent="PlayerAnimation" unique_id=1602773180]
@@ -490,8 +491,13 @@ script = ExtResource("12_ukyrk")
 priority = 10
 follow_mode = 5
 follow_target = NodePath("..")
-zoom = Vector2(2, 2)
+zoom = Vector2(3, 3)
 tween_resource = SubResource("Resource_h4iuc")
+lookahead = true
+lookahead_acceleration = 1.0
+lookahead_deceleration = 1.0
+lookahead_max = true
+lookahead_max_value = Vector2(50, 50)
 metadata/_custom_type_script = "uid://bhexx6mj1xv3q"
 
 [node name="DashParticles" type="GPUParticles2D" parent="." unique_id=124427706]

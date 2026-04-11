@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bq3vc54svkxxp"]
+
+[ext_resource type="Texture2D" uid="uid://bgea7h8e0oelp" path="res://Assets/objects/Pillar_1_Fallen.png" id="1_eoy0u"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_er2el"]
+size = Vector2(29, 5)
+
+[node name="Pillar3" type="StaticBody2D" unique_id=686978943]
+collision_layer = 2
+collision_mask = 21
+
+[node name="Pillar1Fallen" type="Sprite2D" parent="." unique_id=1632494912]
+texture = ExtResource("1_eoy0u")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1235884175]
+position = Vector2(-2.0000002, 1.1920929e-07)
+rotation = -0.11984975
+shape = SubResource("RectangleShape2D_er2el")

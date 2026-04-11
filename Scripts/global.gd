@@ -33,7 +33,7 @@ var  enemies_data := {
 		"speed" : 100,
 		"damage" : 10,
 		"base_health" : 60,
-		"vision":500,#you change it for the best for the ranged attacker
+		"vision":200,#you change it for the best for the ranged attacker
 	},
 	"tank":{
 		"speed" : 50,

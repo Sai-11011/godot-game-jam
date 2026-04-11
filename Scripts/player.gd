@@ -20,7 +20,8 @@ var friction = 3500     # Increased from 1000
 var can_attack: bool = true 
 var can_heavy_attack: bool = true
 var facing_dir: String = "right" 
-var current_zoom := 2.0
+var current_zoom := 3.0
+var current_lookahead := 50
 var spawn_radius:= 800
 var is_attacking: bool = false
 var is_hit: bool = false
@@ -568,14 +569,21 @@ func _on_thrust_hit_box_body_entered(body: Node2D) -> void:
 			body.take_damage(PlayerData.current_damage)
 
 func apply_zoom():
-	if current_zoom == 1.5:
+	if current_zoom == 3.0:
+		current_zoom = 2.5
+		current_lookahead = 100
+	elif current_zoom == 2.5:
 		current_zoom = 2.0
+		current_lookahead = 130
 	elif current_zoom == 2.0 :
-		current_zoom = 1.0
-	else :
 		current_zoom = 1.5
+		current_lookahead = 180
+	else :
+		current_zoom = 3.0
+		current_lookahead = 50
 		
 	camera.zoom = Vector2(current_zoom, current_zoom)
+	camera.lookahead_max_value = Vector2(current_lookahead,current_lookahead)
 
 func take_damage(damage: int) -> void:
 	if is_dead or is_invincible or not PlayerData.is_game_started:
